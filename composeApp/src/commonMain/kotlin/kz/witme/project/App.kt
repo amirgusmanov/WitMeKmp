@@ -30,6 +30,7 @@ import witmekmp.composeapp.generated.resources.compose_multiplatform
  * 3. add voyager cmp support
  * 4. research about what can replace main activity viewmodel in cmp
  * 5. add data module with ktor networking support with (darwin and okhttp)
+ * 6. add network call wrapers to handle network exception etc
  */
 @Composable
 @Preview
