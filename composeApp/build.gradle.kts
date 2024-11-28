@@ -42,7 +42,8 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
 
-            implementation(project(":core:common-ui"))
+            implementation(projects.core.common)
+            implementation(projects.core.commonUi)
         }
     }
 }

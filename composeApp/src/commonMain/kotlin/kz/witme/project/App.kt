@@ -23,6 +23,14 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import witmekmp.composeapp.generated.resources.Res
 import witmekmp.composeapp.generated.resources.compose_multiplatform
 
+/**
+ * todo
+ * 1. make something with previews
+ * 2. add koin di
+ * 3. add voyager cmp support
+ * 4. research about what can replace main activity viewmodel in cmp
+ * 5. add data module with ktor networking support with (darwin and okhttp)
+ */
 @Composable
 @Preview
 fun App() {
@@ -44,11 +52,10 @@ fun App() {
                 )
             }
             AnimatedVisibility(showContent) {
-                val greeting = remember { Greeting().greet() }
                 Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                     Image(painterResource(Res.drawable.compose_multiplatform), null)
                     Text(
-                        "Compose: $greeting",
+                        "Compose",
                         style = LocalWitMeTheme.typography.regular12,
                         color = LocalWitMeTheme.colors.link200
                     )
