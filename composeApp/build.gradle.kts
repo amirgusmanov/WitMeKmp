@@ -31,6 +31,7 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.koin.android)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -44,6 +45,7 @@ kotlin {
 
             implementation(projects.core.common)
             implementation(projects.core.commonUi)
+            implementation(projects.core.data)
         }
     }
 }
@@ -66,6 +68,9 @@ android {
     }
     buildTypes {
         getByName("release") {
+            isMinifyEnabled = true
+        }
+        getByName("debug") {
             isMinifyEnabled = false
         }
     }
