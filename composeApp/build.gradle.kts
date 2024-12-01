@@ -43,6 +43,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
 
+            implementation(projects.core.navigation)
             implementation(projects.core.common)
             implementation(projects.core.commonUi)
             implementation(projects.core.data)
