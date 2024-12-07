@@ -20,7 +20,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
-            baseName = "common-ui"
+            baseName = "common_ui"
             isStatic = true
         }
     }
@@ -42,9 +42,9 @@ kotlin {
 
 android {
     namespace = "kz.witme.project.common_ui"
-    compileSdk = 34
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
     defaultConfig {
-        minSdk = 24
+        minSdk = libs.versions.android.minSdk.get().toInt()
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8

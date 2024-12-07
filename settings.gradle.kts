@@ -13,6 +13,7 @@ pluginManagement {
         mavenCentral()
         gradlePluginPortal()
     }
+    includeBuild("core/plugin")
 }
 
 dependencyResolutionManagement {
@@ -33,4 +34,4 @@ include(":core:common")
 include(":core:common-ui")
 include(":core:data")
 include(":core:navigation")
-include(":core:buildSrc")
+include(":feature:auth")

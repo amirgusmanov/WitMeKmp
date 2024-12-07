@@ -1,4 +1,4 @@
-package kz.witme.project.buildsrc
+package kz.witme.project.plugin
 
 import com.android.build.gradle.LibraryExtension
 import org.gradle.api.Plugin

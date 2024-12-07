@@ -1,4 +1,4 @@
-package kz.witme.project.buildsrc
+package kz.witme.project.plugin
 
 import com.android.build.gradle.LibraryExtension
 import org.gradle.api.JavaVersion
@@ -16,9 +16,9 @@ internal fun Project.configureKotlinAndroid(extension: LibraryExtension) = exten
     if (moduleName.contains("-")) moduleName.replace("-", "_")
 
     namespace = if (moduleName.isNotEmpty()) "kz.witme.project.$moduleName" else "kz.witme.project"
-    compileSdk = libs.findVersion("compileSdk").get().requiredVersion.toInt()
+    compileSdk = libs.findVersion("android-compileSdk").get().requiredVersion.toInt()
     defaultConfig {
-        minSdk = libs.findVersion("minSdk").get().requiredVersion.toInt()
+        minSdk = libs.findVersion("android-minSdk").get().requiredVersion.toInt()
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -58,8 +58,8 @@ internal fun Project.configureComposeMultiplatform(extension: KotlinMultiplatfor
                     implementation(libs.findLibrary("kotlinx.coroutines.core").get())
                     implementation(libs.findLibrary("kotlinx.serialization.json").get())
                     implementation(libs.findLibrary("kotlinx.immutable").get())
-                    implementation(libs.findLibrary("bundles.ktor").get())
-                    implementation(libs.findLibrary("bundles.coil").get())
+//                    implementation(libs.findLibrary("bundles.ktor").get())
+//                    implementation(libs.findLibrary("bundles.coil").get())
                     implementation(libs.findLibrary("datastore").get())
                     implementation(libs.findLibrary("datastore.preferences").get())
                     implementation(libs.findLibrary("androidx.lifecycle.runtime.compose").get())

@@ -1,4 +1,4 @@
-package kz.witme.project.buildsrc
+package kz.witme.project.plugin
 
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog
