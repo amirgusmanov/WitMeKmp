@@ -3,4 +3,16 @@
     <string name="error">Ошибка</string>
     <string name="ok">Хорошо</string>
     <string name="next">Далее</string>
+    <string name="witbook">WitBook</string>
+    <string name="email">Email адрес</string>
+    <string name="password">Пароль</string>
+    <string name="email_msg">Авторизируйтесь используя свой Email</string>
+    <string name="auth">Авторизация</string>
+    <string name="back">Назад</string>
+    <string name="new_account">Новый аккаунт</string>
+    <string name="have_no_account">У меня нет аккаунта</string>
+    <string name="onboarding_welcome_message">\n1. Создавайте список книг \n2. Пишите заметки \n3. Отслеживайте прогресс \n4. Ведите журнал \n5. Читайте эффективней \n6. Задавайте вопросы \n7. Получайте ответы\n</string>
+    <string name="email_sign">\@</string>
+    <string name="think_about_password">Придумайте пароль для аккаунта</string>
+    <string name="login_button_text">Войти или зарегестрироваться</string>
 </resources>

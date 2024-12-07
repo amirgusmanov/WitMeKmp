@@ -40,6 +40,10 @@ kotlin {
     }
 }
 
+compose.resources {
+    publicResClass = true
+}
+
 android {
     namespace = "kz.witme.project.common_ui"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
