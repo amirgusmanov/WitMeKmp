@@ -4,7 +4,7 @@ import cafe.adriel.voyager.core.registry.ScreenProvider
 
 sealed interface Destination : ScreenProvider {
     data object Onboarding : Destination
-    data object Auth : Destination
+    data object Login : Destination
     data object Registration : Destination
     data object EditProfile : Destination
     data object Dashboard : Destination

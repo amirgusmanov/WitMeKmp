@@ -16,12 +16,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import kz.witme.project.common_ui.base.BlurredGradientSphere
 import kz.witme.project.common_ui.base.DefaultProgressButton
 import kz.witme.project.common_ui.theme.DefaultRoundedShape
 import kz.witme.project.common_ui.theme.LocalWitMeTheme
+import kz.witme.project.navigation.Destination
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import witmekmp.core.common_ui.generated.resources.Res
@@ -41,7 +43,7 @@ class OnboardingScreen : Screen {
 
 @Composable
 internal fun OnboardingScreenContent() {
-//    val authScreen = rememberScreen(provider = Destination.Auth)
+    val authScreen = rememberScreen(provider = Destination.Login)
     val navigator = LocalNavigator.current
 
     Scaffold(
@@ -96,7 +98,7 @@ internal fun OnboardingScreenContent() {
                 DefaultProgressButton(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = {
-//                        navigator?.push(authScreen)
+                        navigator?.push(authScreen)
                     },
                     text = stringResource(Res.string.login_button_text),
                 )
