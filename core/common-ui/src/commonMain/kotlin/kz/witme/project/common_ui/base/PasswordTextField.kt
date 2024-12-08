@@ -36,6 +36,7 @@ fun PasswordTextField(
     query: String,
     textPlaceholder: String,
     minHeight: Dp = 40.dp,
+    isError: Boolean = false,
     onQueryChanged: (String) -> Unit = {}
 ) {
     var passwordVisibility by remember { mutableStateOf(false) }
@@ -50,12 +51,13 @@ fun PasswordTextField(
         onValueChange = onQueryChanged,
         singleLine = true,
         colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedLabelColor = LocalWitMeTheme.colors.search,
-            disabledLabelColor = LocalWitMeTheme.colors.search,
+            backgroundColor = LocalWitMeTheme.colors.search,
             textColor = Color.Black,
             disabledTextColor = Color.Black,
             focusedBorderColor = LocalWitMeTheme.colors.search,
             unfocusedBorderColor = LocalWitMeTheme.colors.search,
+            errorBorderColor = LocalWitMeTheme.colors.error200,
+            errorTrailingIconColor = LocalWitMeTheme.colors.error200
         ),
         trailingIcon = {
             IconButton(onClick = {
@@ -80,6 +82,7 @@ fun PasswordTextField(
         } else {
             PasswordVisualTransformation()
         },
+        isError = isError,
         textStyle = LocalWitMeTheme.typography.regular14,
         modifier = modifier
             .fillMaxWidth()

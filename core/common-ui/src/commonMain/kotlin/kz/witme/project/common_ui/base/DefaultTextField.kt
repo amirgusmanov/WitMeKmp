@@ -39,7 +39,8 @@ fun DefaultTextField(
     textStyle: TextStyle = LocalWitMeTheme.typography.regular14,
     trailingIcon: ImageVector? = null,
     singleLine: Boolean = true,
-    openKeyboardEnabled: Boolean = true
+    openKeyboardEnabled: Boolean = true,
+    isError: Boolean = false
 ) {
     OutlinedTextField(
         value = query,
@@ -54,12 +55,13 @@ fun DefaultTextField(
         },
         singleLine = singleLine,
         colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedLabelColor = containerColor,
-            disabledLabelColor = containerColor,
+            backgroundColor = containerColor,
             textColor = Color.Black,
             disabledTextColor = Color.Black,
             focusedBorderColor = borderColor,
             unfocusedBorderColor = borderColor,
+            errorBorderColor = LocalWitMeTheme.colors.error200,
+            errorTrailingIconColor = LocalWitMeTheme.colors.error200
         ),
         interactionSource = interactionSource,
         maxLines = maxLines,
@@ -67,6 +69,7 @@ fun DefaultTextField(
         keyboardOptions = keyboardOptions,
         textStyle = textStyle,
         shape = DefaultRoundedShape,
+        isError = isError,
         modifier = modifier
             .fillMaxWidth()
             .heightIn(min = minHeight),

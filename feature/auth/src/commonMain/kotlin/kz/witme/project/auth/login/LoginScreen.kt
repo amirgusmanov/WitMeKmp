@@ -10,13 +10,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.BlendMode
@@ -24,12 +24,15 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import kz.witme.project.common_ui.base.BlurredGradientSphere
 import kz.witme.project.common_ui.base.DefaultProgressButton
 import kz.witme.project.common_ui.base.DefaultTextField
+import kz.witme.project.common_ui.base.ErrorAlert
 import kz.witme.project.common_ui.base.PasswordTextField
 import kz.witme.project.common_ui.extension.clickableWithoutRipple
+import kz.witme.project.common_ui.extension.collectAsStateWithLifecycle
 import kz.witme.project.common_ui.extension.textBrush
 import kz.witme.project.common_ui.theme.LocalWitMeTheme
 import kz.witme.project.common_ui.theme.TextBrush
@@ -48,43 +51,38 @@ class LoginScreen : Screen {
 
     @Composable
     override fun Content() {
-//        val controller: AuthViewModel = getViewModel()
-//        val uiState by controller.uiState.collectAsStateWithLifecycle()
+        val controller: LoginViewModel = koinScreenModel<LoginViewModel>()
+        val uiState by controller.uiState.collectAsStateWithLifecycle()
 
         LoginScreenContent(
-//            uiState = uiState,
-            controller = object : LoginController {
-                override fun onEmailQueryChanged(query: String) = Unit
-                override fun onPasswordQueryChanged(query: String) = Unit
-                override fun onLoginClick() = Unit
-                override fun onLoginErrorDismiss() = Unit
-            }
+            uiState = uiState,
+            controller = controller
         )
     }
 }
 
 @Composable
 internal fun LoginScreenContent(
-//    uiState: AuthUiState,
+    uiState: LoginUiState,
     controller: LoginController
 ) {
     val navigator = LocalNavigator.current
 //    val registrationScreen = rememberScreen(provider = Destination.Registration)
 //    val dashboardScreen = rememberScreen(provider = Destination.Dashboard)
 
-//    LaunchedEffect(uiState.isLoginSuccess) {
-//        if (uiState.isLoginSuccess) {
+    LaunchedEffect(uiState.isLoginSuccess) {
+        if (uiState.isLoginSuccess) {
 //            navigator?.replaceAll(dashboardScreen)
-//        }
-//    }
-
-//    if (uiState.loginErrorMessage.isNotEmpty()) {
-//        ErrorAlert(
-//            errorText = uiState.loginErrorMessage,
-//            onDismiss = controller::onLoginErrorDismiss
-//        )
-//    }
-
+            controller.onEmailQueryChanged("")
+            controller.onPasswordQueryChanged("")
+        }
+    }
+    if (uiState.loginErrorMessage.isNotEmpty()) {
+        ErrorAlert(
+            errorText = uiState.loginErrorMessage,
+            onDismiss = controller::onLoginErrorDismiss
+        )
+    }
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = LocalWitMeTheme.colors.white
@@ -97,27 +95,25 @@ internal fun LoginScreenContent(
                 modifier = Modifier.padding(horizontal = 16.dp)
             ) {
                 Spacer(modifier = Modifier.height(80.dp))
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        painter = painterResource(Res.drawable.ic_back),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .clickableWithoutRipple { navigator?.pop() }
-                            .graphicsLayer(alpha = 0.99f)
-                            .drawWithCache {
-                                onDrawWithContent {
-                                    drawContent()
-                                    drawRect(TextBrush, blendMode = BlendMode.SrcAtop)
-                                }
+                Icon(
+                    painter = painterResource(Res.drawable.ic_back),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .clickableWithoutRipple { navigator?.pop() }
+                        .graphicsLayer(alpha = 0.99f)
+                        .drawWithCache {
+                            onDrawWithContent {
+                                drawContent()
+                                drawRect(TextBrush, blendMode = BlendMode.SrcAtop)
                             }
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = stringResource(Res.string.auth),
-                        style = LocalWitMeTheme.typography.medium20,
-                        modifier = Modifier.textBrush(TextBrush)
-                    )
-                }
+                        }
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = stringResource(Res.string.auth),
+                    style = LocalWitMeTheme.typography.medium20,
+                    modifier = Modifier.textBrush(TextBrush)
+                )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = stringResource(Res.string.email_msg),
@@ -126,14 +122,14 @@ internal fun LoginScreenContent(
                 )
                 Spacer(modifier = Modifier.height(24.dp))
                 DefaultTextField(
-                    query = "uiState.emailQuery",
+                    query = uiState.emailQuery,
                     textPlaceholder = stringResource(Res.string.email),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                     onQueryChanged = controller::onEmailQueryChanged
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 PasswordTextField(
-                    query = "uiState.passwordQuery",
+                    query = uiState.passwordQuery,
                     textPlaceholder = stringResource(Res.string.password),
                     onQueryChanged = controller::onPasswordQueryChanged
                 )
@@ -141,8 +137,7 @@ internal fun LoginScreenContent(
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Spacer(modifier = Modifier.weight(1f))
                     AnimatedVisibility(
-//                        visible = uiState.isLoginButtonLoading.not()
-                        visible = true
+                        visible = uiState.isLoginButtonLoading.not()
                     ) {
                         Text(
                             text = stringResource(Res.string.have_no_account),
@@ -164,14 +159,11 @@ internal fun LoginScreenContent(
                         onClick = controller::onLoginClick,
                         text = stringResource(Res.string.next),
                         modifier = Modifier.fillMaxWidth(),
-//                        isEnabled = uiState.isLoginButtonEnabled
-//                                && uiState.emailQuery.contains(stringResource(Res.string.email_sign)),
-//                        isLoading = uiState.isLoginButtonLoading
-                        isEnabled = true,
-                        isLoading = true
+                        isEnabled = uiState.isLoginButtonEnabled,
+                        isLoading = uiState.isLoginButtonLoading
                     )
                 }
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(40.dp))
             }
         }
     }
