@@ -1,9 +1,7 @@
-package kz.witme.project.auth.login
+package kz.witme.project.auth.registration
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,7 +21,6 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -37,52 +34,49 @@ import kz.witme.project.common_ui.extension.collectAsStateWithLifecycle
 import kz.witme.project.common_ui.extension.textBrush
 import kz.witme.project.common_ui.theme.LocalWitMeTheme
 import kz.witme.project.common_ui.theme.TextBrush
-import kz.witme.project.navigation.Destination
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import witmekmp.core.common_ui.generated.resources.Res
-import witmekmp.core.common_ui.generated.resources.auth
 import witmekmp.core.common_ui.generated.resources.email
-import witmekmp.core.common_ui.generated.resources.email_msg
-import witmekmp.core.common_ui.generated.resources.have_no_account
 import witmekmp.core.common_ui.generated.resources.ic_back
+import witmekmp.core.common_ui.generated.resources.new_account
 import witmekmp.core.common_ui.generated.resources.next
 import witmekmp.core.common_ui.generated.resources.password
+import witmekmp.core.common_ui.generated.resources.think_about_password
 
-class LoginScreen : Screen {
+class RegistrationScreen : Screen {
 
     @Composable
     override fun Content() {
-        val controller: LoginViewModel = koinScreenModel<LoginViewModel>()
+        val controller: RegistrationViewModel = koinScreenModel<RegistrationViewModel>()
         val uiState by controller.uiState.collectAsStateWithLifecycle()
 
-        LoginScreenContent(
-            uiState = uiState,
-            controller = controller
+        RegistrationScreenContent(
+            controller = controller,
+            uiState = uiState
         )
     }
 }
 
 @Composable
-internal fun LoginScreenContent(
-    uiState: LoginUiState,
-    controller: LoginController
+internal fun RegistrationScreenContent(
+    controller: RegistrationController,
+    uiState: RegistrationUiState,
 ) {
     val navigator = LocalNavigator.current
-    val registrationScreen = rememberScreen(provider = Destination.Registration)
-//    val dashboardScreen = rememberScreen(provider = Destination.Dashboard)
+//    val editProfileScreen = rememberScreen(provider = Destination.EditProfile)
 
-    LaunchedEffect(uiState.isLoginSuccess) {
-        if (uiState.isLoginSuccess) {
-//            navigator?.replaceAll(dashboardScreen)
+    LaunchedEffect(uiState.isRegistrationSuccess) {
+        if (uiState.isRegistrationSuccess) {
+//            navigator?.replaceAll(editProfileScreen)
             controller.onEmailQueryChanged("")
             controller.onPasswordQueryChanged("")
         }
     }
-    if (uiState.loginErrorMessage.isNotEmpty()) {
+    if (uiState.registrationErrorMessage.isNotBlank()) {
         ErrorAlert(
-            errorText = uiState.loginErrorMessage,
-            onDismiss = controller::onLoginErrorDismiss
+            errorText = uiState.registrationErrorMessage,
+            onDismiss = controller::onRegistrationErrorDismiss
         )
     }
     Scaffold(
@@ -112,15 +106,9 @@ internal fun LoginScreenContent(
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = stringResource(Res.string.auth),
+                    text = stringResource(Res.string.new_account),
                     style = LocalWitMeTheme.typography.medium20,
                     modifier = Modifier.textBrush(TextBrush)
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(
-                    text = stringResource(Res.string.email_msg),
-                    style = LocalWitMeTheme.typography.regular16,
-                    color = LocalWitMeTheme.colors.secondary500
                 )
                 Spacer(modifier = Modifier.height(24.dp))
                 DefaultTextField(
@@ -130,27 +118,17 @@ internal fun LoginScreenContent(
                     onQueryChanged = controller::onEmailQueryChanged
                 )
                 Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = stringResource(Res.string.think_about_password),
+                    style = LocalWitMeTheme.typography.regular16,
+                    color = LocalWitMeTheme.colors.secondary500
+                )
+                Spacer(modifier = Modifier.height(16.dp))
                 PasswordTextField(
                     query = uiState.passwordQuery,
                     textPlaceholder = stringResource(Res.string.password),
                     onQueryChanged = controller::onPasswordQueryChanged
                 )
-                Spacer(modifier = Modifier.height(16.dp))
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    Spacer(modifier = Modifier.weight(1f))
-                    AnimatedVisibility(
-                        visible = uiState.isLoginButtonLoading.not()
-                    ) {
-                        Text(
-                            text = stringResource(Res.string.have_no_account),
-                            style = LocalWitMeTheme.typography.regular12,
-                            color = LocalWitMeTheme.colors.link200,
-                            modifier = Modifier.clickableWithoutRipple {
-                                navigator?.push(registrationScreen)
-                            }
-                        )
-                    }
-                }
                 Spacer(modifier = Modifier.weight(1f))
                 Box(
                     modifier = Modifier
@@ -158,11 +136,11 @@ internal fun LoginScreenContent(
                         .imePadding()
                 ) {
                     DefaultProgressButton(
-                        onClick = controller::onLoginClick,
+                        onClick = controller::onRegisterClick,
                         text = stringResource(Res.string.next),
                         modifier = Modifier.fillMaxWidth(),
-                        isEnabled = uiState.isLoginButtonEnabled,
-                        isLoading = uiState.isLoginButtonLoading
+                        isEnabled = uiState.isRegistrationButtonEnabled,
+                        isLoading = uiState.isRegistrationButtonLoading
                     )
                 }
                 Spacer(modifier = Modifier.height(40.dp))
