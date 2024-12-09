@@ -31,7 +31,42 @@ internal fun Project.configureKotlinAndroid(extension: LibraryExtension) = exten
     }
 }
 
-internal fun Project.configureComposeMultiplatform(extension: KotlinMultiplatformExtension) =
+internal fun Project.configureServiceKotlinMultiplatform(extension: KotlinMultiplatformExtension) =
+    extension.apply {
+        jvmToolchain(17)
+        androidTarget()
+        iosArm64()
+        iosX64()
+        iosSimulatorArm64()
+        applyDefaultHierarchyTemplate()
+
+        sourceSets.apply {
+            commonMain {
+                dependencies {
+                    implementation(libs.findLibrary("ktor-client-core").get())
+                    implementation(libs.findLibrary("ktor-client-okhttp").get())
+                    implementation(libs.findLibrary("ktor-client-darwin").get())
+                    implementation(libs.findLibrary("ktor-client-content-negotiation").get())
+                    implementation(libs.findLibrary("ktor-client-logging").get())
+                    implementation(libs.findLibrary("ktor-serialization-kotlinx-json").get())
+                    implementation(libs.findLibrary("ktor-client-auth").get())
+                    implementation(libs.findLibrary("koin-core").get())
+                    implementation(libs.findLibrary("kotlinx-coroutines-core").get())
+                    implementation(libs.findLibrary("kotlinx-immutable").get())
+                    implementation(libs.findLibrary("kotlinx-serialization-json").get())
+                    implementation(libs.findLibrary("datastore-preferences").get())
+                    implementation(libs.findLibrary("datastore").get())
+                }
+            }
+            androidMain {
+                dependencies {
+                    implementation(libs.findLibrary("koin-core").get())
+                }
+            }
+        }
+    }
+
+internal fun Project.configureFeatureComposeMultiplatform(extension: KotlinMultiplatformExtension) =
     extension.apply {
         jvmToolchain(17)
         androidTarget()
@@ -58,8 +93,11 @@ internal fun Project.configureComposeMultiplatform(extension: KotlinMultiplatfor
                     implementation(libs.findLibrary("kotlinx.coroutines.core").get())
                     implementation(libs.findLibrary("kotlinx.serialization.json").get())
                     implementation(libs.findLibrary("kotlinx.immutable").get())
-//                    implementation(libs.findLibrary("bundles.ktor").get())
-//                    implementation(libs.findLibrary("bundles.coil").get())
+                    implementation(libs.findLibrary("coil-compose").get())
+                    implementation(libs.findLibrary("coil-compose-core").get())
+                    implementation(libs.findLibrary("coil-network-ktor2").get())
+                    implementation(libs.findLibrary("coil-network-ktor3").get())
+                    implementation(libs.findLibrary("coil-mp").get())
                     implementation(libs.findLibrary("datastore").get())
                     implementation(libs.findLibrary("datastore.preferences").get())
                     implementation(libs.findLibrary("androidx.lifecycle.runtime.compose").get())
@@ -70,7 +108,6 @@ internal fun Project.configureComposeMultiplatform(extension: KotlinMultiplatfor
                     implementation(project(":core:navigation"))
                 }
             }
-
             androidMain {
                 dependencies {
                     implementation(libs.findLibrary("koin.android").get())
