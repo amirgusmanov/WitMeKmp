@@ -11,4 +11,8 @@ sealed interface DataError : Error {
         UNKNOWN,
         NPE
     }
+
+    enum class Local : DataError {
+        UNKNOWN
+    }
 }

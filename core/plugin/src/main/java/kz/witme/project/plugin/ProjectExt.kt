@@ -41,21 +41,32 @@ internal fun Project.configureServiceKotlinMultiplatform(extension: KotlinMultip
         applyDefaultHierarchyTemplate()
 
         sourceSets.apply {
+            androidMain {
+                dependencies {
+                    implementation(libs.findLibrary("ktor-client-okhttp").get())
+                }
+            }
+            iosMain {
+                dependencies {
+                    implementation(libs.findLibrary("ktor-client-darwin").get())
+                }
+            }
             commonMain {
                 dependencies {
                     implementation(libs.findLibrary("ktor-client-core").get())
-                    implementation(libs.findLibrary("ktor-client-okhttp").get())
-                    implementation(libs.findLibrary("ktor-client-darwin").get())
                     implementation(libs.findLibrary("ktor-client-content-negotiation").get())
                     implementation(libs.findLibrary("ktor-client-logging").get())
                     implementation(libs.findLibrary("ktor-serialization-kotlinx-json").get())
                     implementation(libs.findLibrary("ktor-client-auth").get())
+                    implementation(libs.findLibrary("ktorfit").get())
                     implementation(libs.findLibrary("koin-core").get())
                     implementation(libs.findLibrary("kotlinx-coroutines-core").get())
                     implementation(libs.findLibrary("kotlinx-immutable").get())
                     implementation(libs.findLibrary("kotlinx-serialization-json").get())
                     implementation(libs.findLibrary("datastore-preferences").get())
                     implementation(libs.findLibrary("datastore").get())
+                    implementation(project(":core:common"))
+                    implementation(project(":core:data"))
                 }
             }
             androidMain {

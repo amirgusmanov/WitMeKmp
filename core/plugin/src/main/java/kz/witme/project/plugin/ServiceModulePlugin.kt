@@ -13,6 +13,8 @@ class ServiceModulePlugin : Plugin<Project> {
             apply(libs.findPlugin("kotlinMultiplatform").get().get().pluginId)
             apply(libs.findPlugin("androidLibrary").get().get().pluginId)
             apply(libs.findPlugin("ksp").get().get().pluginId)
+            apply(libs.findPlugin("jetbrains-kotlin-serialization").get().get().pluginId)
+            apply(libs.findPlugin("ktorfitPlugin").get().get().pluginId)
         }
         extensions.configure<LibraryExtension>(::configureKotlinAndroid)
         extensions.configure<KotlinMultiplatformExtension>(::configureServiceKotlinMultiplatform)

@@ -10,7 +10,7 @@ gradlePlugin {
         }
         register("service-module") {
             id = "kz.witme.project.service-module"
-            implementationClass = "kz.witme.project.plugin.FeatureModulePlugin"
+            implementationClass = "kz.witme.project.plugin.ServiceModulePlugin"
         }
     }
 }
