@@ -48,6 +48,7 @@ kotlin {
             implementation(projects.core.commonUi)
             implementation(projects.core.data)
             implementation(projects.feature.auth)
+            implementation(projects.service.auth)
         }
     }
 }

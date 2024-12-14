@@ -3,7 +3,10 @@ package kz.witme.project.service.auth.data.repository
 import kz.witme.project.data.network.DataError
 import kz.witme.project.data.network.RequestResult
 import kz.witme.project.data.network.safeCall
+import kz.witme.project.service.auth.data.model.request.AuthRequest
 import kz.witme.project.service.auth.data.network.AuthApi
+import kz.witme.project.service.auth.domain.model.UserInfo
+import kz.witme.project.service.auth.domain.model.toUserInfo
 import kz.witme.project.service.auth.domain.repository.AuthRepository
 
 internal class AuthRepositoryImpl(
@@ -14,18 +17,18 @@ internal class AuthRepositoryImpl(
         email: String,
         password: String
     ): RequestResult<Unit, DataError.Remote> = safeCall {
-        TODO("Not yet implemented")
+        api.login(registerRequest = AuthRequest(email = email, password = password))
     }
 
     override suspend fun register(
         email: String,
         password: String
-    ): RequestResult<Unit, DataError.Remote> {
-        TODO("Not yet implemented")
+    ): RequestResult<Unit, DataError.Remote> = safeCall {
+        api.register(registerRequest = AuthRequest(email = email, password = password))
     }
 
-    override suspend fun getMe(): RequestResult<Unit, DataError.Remote> {
-        TODO("Not yet implemented")
+    override suspend fun getMe(): RequestResult<UserInfo, DataError.Remote> = safeCall {
+        api.getMe().toUserInfo()
     }
 
     override suspend fun navigateUser(): RequestResult<Unit, DataError.Local> {

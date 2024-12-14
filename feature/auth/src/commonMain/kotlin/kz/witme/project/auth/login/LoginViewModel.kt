@@ -2,14 +2,17 @@ package kz.witme.project.auth.login
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kz.witme.project.common.extension.tryToUpdate
+import kz.witme.project.data.network.getMessage
+import kz.witme.project.data.network.onError
+import kz.witme.project.data.network.onSuccess
+import kz.witme.project.service.auth.domain.repository.AuthRepository
 
 internal class LoginViewModel(
-//    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository
 ) : ScreenModel, LoginController {
 
     val uiState: StateFlow<LoginUiState> = MutableStateFlow(LoginUiState())
@@ -32,28 +35,23 @@ internal class LoginViewModel(
                 return@launch
             }
             startLoginLoading()
-//            val response = authRepository.login(
-//                email = uiState.value.emailQuery,
-//                password = uiState.value.passwordQuery
-//            )
-            delay(2000L)
-            stopLoginLoading()
-//            when (response) {
-//                is RequestResult.Error -> {
-//                    uiState.tryToUpdate {
-//                        it.copy(loginErrorMessage = response.error?.message.toString())
-//                    }
-//                }
-//
-//                is RequestResult.Success -> {
-//                    uiState.tryToUpdate {
-//                        it.copy(isLoginSuccess = true)
-//                    }
-//                }
-//            }
-            uiState.tryToUpdate {
-                it.copy(isLoginSuccess = true)
-            }
+            authRepository.login(
+                email = uiState.value.emailQuery,
+                password = uiState.value.passwordQuery
+            )
+                .onSuccess {
+                    uiState.tryToUpdate {
+                        it.copy(isLoginSuccess = true)
+                    }
+                }
+                .onError { error ->
+                    uiState.tryToUpdate {
+                        it.copy(loginErrorMessage = error.getMessage())
+                    }
+                }
+                .also {
+                    stopLoginLoading()
+                }
         }
     }
 

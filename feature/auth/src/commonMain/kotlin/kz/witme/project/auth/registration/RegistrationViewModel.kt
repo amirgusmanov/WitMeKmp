@@ -2,14 +2,17 @@ package kz.witme.project.auth.registration
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kz.witme.project.common.extension.tryToUpdate
+import kz.witme.project.data.network.getMessage
+import kz.witme.project.data.network.onError
+import kz.witme.project.data.network.onSuccess
+import kz.witme.project.service.auth.domain.repository.AuthRepository
 
 internal class RegistrationViewModel(
-//    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository
 ) : ScreenModel, RegistrationController {
 
     val uiState: StateFlow<RegistrationUiState> = MutableStateFlow(RegistrationUiState())
@@ -33,25 +36,23 @@ internal class RegistrationViewModel(
                 return@launch
             }
             startRegistrationLoading()
-//            val response = authRepository.register(
-//                email = uiState.value.emailQuery,
-//                password = uiState.value.passwordQuery
-//            )
-            delay(2000L)
-            stopRegistrationLoading()
-//            when (response) {
-//                is RequestResult.Error -> {
-//                    uiState.tryToUpdate {
-//                        it.copy(registrationErrorMessage = response.error?.message.toString())
-//                    }
-//                }
-//
-//                is RequestResult.Success -> {
-//                    uiState.tryToUpdate {
-//                        it.copy(isRegistrationSuccess = true)
-//                    }
-//                }
-//            }
+            authRepository.register(
+                email = uiState.value.emailQuery,
+                password = uiState.value.passwordQuery
+            )
+                .onSuccess {
+                    uiState.tryToUpdate {
+                        it.copy(isRegistrationSuccess = true)
+                    }
+                }
+                .onError { error ->
+                    uiState.tryToUpdate {
+                        it.copy(registrationErrorMessage = error.getMessage())
+                    }
+                }
+                .also {
+                    stopRegistrationLoading()
+                }
         }
     }
 

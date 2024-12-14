@@ -1,12 +1,18 @@
 package kz.witme.project.data.di
 
-import io.ktor.client.HttpClient
+import de.jensklingenberg.ktorfit.Ktorfit
 import kz.witme.project.data.network.HttpClientFactory
+import kz.witme.project.data.util.Constants
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
-expect val dataModule: Module
+expect val platformDataModule: Module
 
 val sharedDataModule = module {
-    single<HttpClient> { HttpClientFactory.create(get()) }
+    single<Ktorfit> {
+        Ktorfit.Builder()
+            .httpClient(HttpClientFactory.create(get()))
+            .baseUrl(Constants.BASE_URL)
+            .build()
+    }
 }

@@ -1,56 +1,51 @@
 package kz.witme.project.data.network
 
 import io.ktor.client.call.NoTransformationFoundException
-import io.ktor.client.call.body
 import io.ktor.client.network.sockets.SocketTimeoutException
+import io.ktor.client.plugins.ClientRequestException
+import io.ktor.client.plugins.ServerResponseException
 import io.ktor.client.statement.HttpResponse
 import io.ktor.util.network.UnresolvedAddressException
 import kz.witme.project.common.log.Logger
 
 suspend inline fun <reified T> safeCall(
-    execute: () -> HttpResponse
-): RequestResult<T, DataError.Remote> {
-    val response = try {
-        execute()
-    } catch (npe: NullPointerException) {
-        Logger.e(message = npe.toString())
-        return RequestResult.Error(DataError.Remote.NPE)
-    } catch (e: SocketTimeoutException) {
-        Logger.e(message = e.toString())
-        return RequestResult.Error(DataError.Remote.REQUEST_TIMEOUT)
-    } catch (e: UnresolvedAddressException) {
-        Logger.e(message = e.toString())
-        return RequestResult.Error(DataError.Remote.NO_INTERNET)
-    } catch (throwable: Throwable) {
-        Logger.e(message = throwable.toString())
-        return RequestResult.Error(DataError.Remote.UNKNOWN)
-    }
-
-    return responseToResult(response)
+    execute: () -> T
+): RequestResult<T, DataError.Remote> = try {
+    RequestResult.Success(execute())
+} catch (e: ClientRequestException) { // Handles 4xx responses
+    handleHttpException(e.response)
+} catch (e: ServerResponseException) { // Handles 5xx responses
+    RequestResult.Error(DataError.Remote.SERVER)
+} catch (e: NullPointerException) {
+    Logger.e(message = e.toString())
+    RequestResult.Error(DataError.Remote.NPE)
+} catch (e: SocketTimeoutException) {
+    Logger.e(message = e.toString())
+    RequestResult.Error(DataError.Remote.REQUEST_TIMEOUT)
+} catch (e: UnresolvedAddressException) {
+    Logger.e(message = e.toString())
+    RequestResult.Error(DataError.Remote.NO_INTERNET)
+} catch (e: NoTransformationFoundException) {
+    RequestResult.Error(DataError.Remote.SERIALIZATION)
+} catch (e: Throwable) {
+    Logger.e(message = e.toString())
+    RequestResult.Error(DataError.Remote.UNKNOWN)
 }
 
-suspend inline fun <reified T> responseToResult(
-    response: HttpResponse
-): RequestResult<T, DataError.Remote> = when (response.status.value) {
-    in 200..299 -> {
-        try {
-            RequestResult.Success(response.body<T>())
-        } catch (e: NoTransformationFoundException) {
-            RequestResult.Error(DataError.Remote.SERIALIZATION)
-        }
+fun handleHttpException(response: HttpResponse): RequestResult.Error<DataError.Remote> {
+    return when (response.status.value) {
+        401 -> RequestResult.Error(DataError.Remote.UNAUTHORIZED)
+        408 -> RequestResult.Error(DataError.Remote.REQUEST_TIMEOUT)
+        429 -> RequestResult.Error(DataError.Remote.TOO_MANY_REQUESTS)
+        else -> RequestResult.Error(DataError.Remote.UNKNOWN)
     }
-
-    401 -> RequestResult.Error(DataError.Remote.UNAUTHORIZED)
-    408 -> RequestResult.Error(DataError.Remote.REQUEST_TIMEOUT)
-    429 -> RequestResult.Error(DataError.Remote.TOO_MANY_REQUESTS)
-    in 500..599 -> RequestResult.Error(DataError.Remote.SERVER)
-    else -> RequestResult.Error(DataError.Remote.UNKNOWN)
 }
+
 
 /**
  * to display error text in snackbar or error dialog
  */
-fun DataError.toText(): String = when (this) {
+fun DataError.getMessage(): String = when (this) {
     DataError.Remote.REQUEST_TIMEOUT -> ERROR_REQUEST_TIMEOUT
     DataError.Remote.TOO_MANY_REQUESTS -> ERROR_TOO_MANY_REQUESTS
     DataError.Remote.NO_INTERNET -> ERROR_NO_INTERNET
@@ -58,7 +53,7 @@ fun DataError.toText(): String = when (this) {
     else -> ERROR_UNKNOWN
 }
 
-//todo: separate this into strings.xml
+//todo: separate this into strings.xml and observe on each string Res into to display it
 private const val ERROR_UNKNOWN = "Упс, что-то пошло не так"
 private const val ERROR_REQUEST_TIMEOUT = "Время запроса истекло"
 private const val ERROR_NO_INTERNET = "Не удалось соединиться с сервером, проверьте подключение"

@@ -9,16 +9,16 @@ import kz.witme.project.service.auth.data.model.response.UserInfoResponse
 
 internal interface AuthApi {
 
-    @POST("auth/login")
+    @POST("users/login/")
     suspend fun login(
         @Body registerRequest: AuthRequest
-    ): Result<LoginResponse>
+    ): LoginResponse
 
-    @POST("auth/register")
+    @POST("users/register/")
     suspend fun register(
         @Body registerRequest: AuthRequest
-    ): Result<LoginResponse>
+    ): LoginResponse
 
-    @GET("auth/me")
-    suspend fun getMe(): Result<UserInfoResponse>
+    @GET("users/profile/")
+    suspend fun getMe(): UserInfoResponse
 }

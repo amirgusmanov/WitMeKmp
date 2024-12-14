@@ -37,6 +37,7 @@ kotlin {
             implementation(libs.datastore.preferences)
             implementation(libs.datastore)
             implementation(projects.core.common)
+            implementation(libs.ktorfit)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)

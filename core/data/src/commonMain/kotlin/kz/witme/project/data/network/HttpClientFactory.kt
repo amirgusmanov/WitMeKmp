@@ -6,17 +6,17 @@ import io.ktor.client.plugins.HttpSend
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
-import io.ktor.client.plugins.logging.DEFAULT
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.plugins.plugin
 import io.ktor.client.request.accept
-import io.ktor.client.request.parameter
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
+import kz.witme.project.data.util.Constants
+import kz.witme.project.common.log.Logger as SharedLogger
 
 internal object HttpClientFactory {
 
@@ -33,7 +33,11 @@ internal object HttpClientFactory {
             requestTimeoutMillis = 20_000L
         }
         install(Logging) {
-            logger = Logger.DEFAULT
+            logger = object : Logger {
+                override fun log(message: String) {
+                    SharedLogger.d(Constants.NETWORK_LOG_TAG, message)
+                }
+            }
             level = LogLevel.ALL
         }
         defaultRequest {
@@ -43,7 +47,7 @@ internal object HttpClientFactory {
         }
     }.also {
         it.plugin(HttpSend).intercept { request ->
-            request.parameter(key = "Bearer", value = "")
+//            request.parameter(key = "Bearer", value = "")
             execute(request)
         }
     }
