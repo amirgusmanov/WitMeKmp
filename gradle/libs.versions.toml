@@ -27,6 +27,7 @@ datastore = "1.1.1"
 jetbrainsKotlinJvm = "2.0.20"
 compose = "1.7.0"
 ktorfit = "2.1.0"
+runtimeAndroid = "1.7.6"
 
 [libraries]
 android-gradlePlugin = { module = "com.android.tools.build:gradle", version.ref = "gradlePlugin" }
@@ -76,6 +77,7 @@ voyager-bottom-sheet-navigator = { module = "cafe.adriel.voyager:voyager-bottom-
 
 datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
 datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
+androidx-runtime-android = { group = "androidx.compose.runtime", name = "runtime-android", version.ref = "runtimeAndroid" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

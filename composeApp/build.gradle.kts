@@ -49,6 +49,7 @@ kotlin {
             implementation(projects.core.data)
             implementation(projects.feature.auth)
             implementation(projects.service.auth)
+            implementation(projects.feature.profile)
         }
     }
 }
