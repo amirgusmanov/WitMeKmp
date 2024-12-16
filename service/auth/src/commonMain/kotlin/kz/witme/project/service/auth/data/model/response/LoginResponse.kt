@@ -4,6 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 internal class LoginResponse(
-    val accessToken: String? = null,
-    val refreshToken: String? = null
+    val accessToken: String,
+    val refreshToken: String
 )

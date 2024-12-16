@@ -109,8 +109,6 @@ internal fun Project.configureFeatureComposeMultiplatform(extension: KotlinMulti
                     implementation(libs.findLibrary("coil-network-ktor2").get())
                     implementation(libs.findLibrary("coil-network-ktor3").get())
                     implementation(libs.findLibrary("coil-mp").get())
-                    implementation(libs.findLibrary("datastore").get())
-                    implementation(libs.findLibrary("datastore.preferences").get())
                     implementation(libs.findLibrary("androidx.lifecycle.runtime.compose").get())
 
                     implementation(project(":core:common"))

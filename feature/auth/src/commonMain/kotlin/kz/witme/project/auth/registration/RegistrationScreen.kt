@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -34,6 +35,7 @@ import kz.witme.project.common_ui.extension.collectAsStateWithLifecycle
 import kz.witme.project.common_ui.extension.textBrush
 import kz.witme.project.common_ui.theme.LocalWitMeTheme
 import kz.witme.project.common_ui.theme.TextBrush
+import kz.witme.project.navigation.Destination
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import witmekmp.core.common_ui.generated.resources.Res
@@ -64,13 +66,11 @@ internal fun RegistrationScreenContent(
     uiState: RegistrationUiState,
 ) {
     val navigator = LocalNavigator.current
-//    val editProfileScreen = rememberScreen(provider = Destination.EditProfile)
+    val editProfileScreen = rememberScreen(Destination.EditProfile)
 
     LaunchedEffect(uiState.isRegistrationSuccess) {
         if (uiState.isRegistrationSuccess) {
-//            navigator?.replaceAll(editProfileScreen)
-            controller.onEmailQueryChanged("")
-            controller.onPasswordQueryChanged("")
+            navigator?.replaceAll(editProfileScreen)
         }
     }
     if (uiState.registrationErrorMessage.isNotBlank()) {

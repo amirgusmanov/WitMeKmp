@@ -41,7 +41,6 @@ internal object HttpClientFactory {
             level = LogLevel.ALL
         }
         defaultRequest {
-            //todo add base url here
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
         }
