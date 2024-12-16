@@ -25,6 +25,7 @@ internal object HttpClientFactory {
             json(
                 json = Json {
                     ignoreUnknownKeys = true
+                    isLenient = true
                 }
             )
         }
@@ -46,7 +47,6 @@ internal object HttpClientFactory {
         }
     }.also {
         it.plugin(HttpSend).intercept { request ->
-//            request.parameter(key = "Bearer", value = "")
             execute(request)
         }
     }
