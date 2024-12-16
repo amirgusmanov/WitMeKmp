@@ -32,7 +32,7 @@ internal interface EditProfileController {
 
     fun onGalleryPermissionAsk()
 
-    fun onAvatarPick(image: ImageBitmap)
+    fun onAvatarPick(image: ImageBitmap, imageByteArray: ByteArray)
 
     fun onAvatarClear()
 }

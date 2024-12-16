@@ -7,13 +7,18 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kz.witme.project.common.extension.tryToUpdate
-import kz.witme.project.common.log.Logger
+import kz.witme.project.data.network.getMessage
+import kz.witme.project.data.network.onError
+import kz.witme.project.data.network.onSuccess
+import kz.witme.project.profile.domain.repository.ProfileUpdateRepository
 
 internal class EditProfileViewModel(
-//    private val profileRepository: ProfileRepository
+    private val profileUpdateRepository: ProfileUpdateRepository
 ) : ScreenModel, EditProfileController {
 
     val uiState: StateFlow<EditProfileUiState> = MutableStateFlow(EditProfileUiState())
+
+    private val imageByteArray: StateFlow<ByteArray?> = MutableStateFlow(null)
 
     override fun onNameQueryChange(query: String) {
         uiState.tryToUpdate {
@@ -28,27 +33,25 @@ internal class EditProfileViewModel(
     }
 
     override fun onNextButtonClick() {
-//        if (uiState.value.avatarUri.isNull() || uiState.value.nameQuery.isBlank()) return
         screenModelScope.launch {
             startUpdateLoading()
-//            val response = profileRepository.updateProfile(
-//                name = uiState.value.nameQuery,
-//                avatarUri = uiState.value.avatarUri!!
-//            )
-            stopUpdateLoading()
-//            when (response) {
-//                is RequestResult.Error -> {
-//                    uiState.tryToUpdate {
-//                        it.copy(updateErrorMessage = response.error?.message.toString())
-//                    }
-//                }
-//
-//                is RequestResult.Success -> {
-//                    uiState.tryToUpdate {
-//                        it.copy(isEditProfileSuccess = true)
-//                    }
-//                }
-//            }
+            profileUpdateRepository.uploadAvatar(
+                avatar = imageByteArray.value ?: return@launch,
+                username = uiState.value.nameQuery
+            )
+                .onSuccess {
+                    uiState.tryToUpdate {
+                        it.copy(isEditProfileSuccess = true)
+                    }
+                }
+                .onError { error ->
+                    uiState.tryToUpdate {
+                        it.copy(updateErrorMessage = error.getMessage())
+                    }
+                }
+                .also {
+                    stopUpdateLoading()
+                }
         }
     }
 
@@ -118,11 +121,9 @@ internal class EditProfileViewModel(
         }
     }
 
-    override fun onAvatarPick(image: ImageBitmap) {
-        Logger.e("Avatar", "$image")
-        uiState.tryToUpdate {
-            it.copy(imageBitmap = image)
-        }
+    override fun onAvatarPick(image: ImageBitmap, imageByteArray: ByteArray) {
+        uiState.tryToUpdate { it.copy(imageBitmap = image) }
+        this.imageByteArray.tryToUpdate { imageByteArray }
     }
 
     override fun onAvatarClear() {

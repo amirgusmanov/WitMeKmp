@@ -95,10 +95,15 @@ internal fun EditProfileScreenContent(
     )
     val handleImage: (SharedImage?) -> Unit = { image ->
         coroutineScope.launch {
-            val bitmap = withContext(Dispatchers.Default) {
-                image?.toImageBitmap()
+            val (bitmap, imageByteArray) = withContext(Dispatchers.Default) {
+                val bitmap = image?.toImageBitmap()
+                val byteArray = image?.toByteArray()
+
+                bitmap to byteArray
             }
-            controller.onAvatarPick(bitmap ?: return@launch)
+            if (bitmap != null && imageByteArray != null) {
+                controller.onAvatarPick(image = bitmap, imageByteArray = imageByteArray)
+            }
         }
     }
     val cameraManager = rememberCameraManager(handleImage)
@@ -192,7 +197,7 @@ private fun EditProfileContent(
         Column(
             modifier = Modifier.padding(horizontal = 16.dp)
         ) {
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(80.dp))
             ProfilePhotoCard(
                 modifier = Modifier.padding(horizontal = 20.dp),
                 chosenPhoto = remember(uiState.imageBitmap) {
@@ -247,7 +252,7 @@ private fun EditProfileContent(
                             && uiState.isUpdateButtonEnabled
                 )
             }
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(40.dp))
         }
     }
 }

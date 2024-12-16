@@ -8,5 +8,5 @@ import org.koin.dsl.module
 val featureAuthModule = module {
     factory { LoginViewModel(authRepository = get()) }
     factory { RegistrationViewModel(authRepository = get()) }
-    factory { EditProfileViewModel() }
+    factory { EditProfileViewModel(profileUpdateRepository = get()) }
 }

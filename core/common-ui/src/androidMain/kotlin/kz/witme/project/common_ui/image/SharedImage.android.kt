@@ -11,7 +11,7 @@ actual class SharedImage(private val bitmap: Bitmap?) {
         val byteArrayOutputStream = ByteArrayOutputStream()
         bitmap.compress(
             Bitmap.CompressFormat.JPEG,
-            100,
+            50,
             byteArrayOutputStream
         )
         byteArrayOutputStream.toByteArray()
