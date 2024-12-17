@@ -38,20 +38,16 @@ internal class EditProfileViewModel(
             profileUpdateRepository.uploadAvatar(
                 avatar = imageByteArray.value ?: return@launch,
                 username = uiState.value.nameQuery
-            )
-                .onSuccess {
-                    uiState.tryToUpdate {
-                        it.copy(isEditProfileSuccess = true)
-                    }
+            ).onSuccess {
+                uiState.tryToUpdate {
+                    it.copy(isEditProfileSuccess = true)
                 }
-                .onError { error ->
-                    uiState.tryToUpdate {
-                        it.copy(updateErrorMessage = error.getMessage())
-                    }
+            }.onError { error ->
+                uiState.tryToUpdate {
+                    it.copy(updateErrorMessage = error.getMessage())
                 }
-                .also {
-                    stopUpdateLoading()
-                }
+            }
+            stopUpdateLoading()
         }
     }
 

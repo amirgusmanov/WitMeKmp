@@ -39,20 +39,16 @@ internal class RegistrationViewModel(
             authRepository.register(
                 email = uiState.value.emailQuery,
                 password = uiState.value.passwordQuery
-            )
-                .onSuccess {
-                    uiState.tryToUpdate {
-                        it.copy(isRegistrationSuccess = true)
-                    }
+            ).onSuccess {
+                uiState.tryToUpdate {
+                    it.copy(isRegistrationSuccess = true)
                 }
-                .onError { error ->
-                    uiState.tryToUpdate {
-                        it.copy(registrationErrorMessage = error.getMessage())
-                    }
+            }.onError { error ->
+                uiState.tryToUpdate {
+                    it.copy(registrationErrorMessage = error.getMessage())
                 }
-                .also {
-                    stopRegistrationLoading()
-                }
+            }
+            stopRegistrationLoading()
         }
     }
 

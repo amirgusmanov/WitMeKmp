@@ -1,6 +1,7 @@
 package kz.witme.project.data.network
 
 import io.ktor.client.HttpClient
+import io.ktor.client.HttpClientConfig
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.HttpSend
 import io.ktor.client.plugins.HttpTimeout
@@ -11,16 +12,42 @@ import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.plugins.plugin
 import io.ktor.client.request.accept
+import io.ktor.client.request.header
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
+import kz.witme.project.data.local.SessionManager
 import kz.witme.project.data.util.Constants
 import kz.witme.project.common.log.Logger as SharedLogger
 
 internal object HttpClientFactory {
 
-    fun create(engine: HttpClientEngine): HttpClient = HttpClient(engine) {
+    fun create(
+        engine: HttpClientEngine,
+        sessionManager: SessionManager
+    ): HttpClient = HttpClient(engine) {
+        installContentNegotiation()
+        installHttpTimeout()
+        installLogging()
+        defaultRequest {
+            contentType(ContentType.Application.Json)
+            accept(ContentType.Application.Json)
+        }
+    }.apply {
+        plugin(HttpSend).intercept { request ->
+            val accessToken = sessionManager.getAccessToken()
+            if (accessToken.isNotBlank()) {
+                request.header(
+                    key = Headers.HEADER_AUTHORIZATION,
+                    value = "${Headers.BEARER} ${sessionManager.getAccessToken()}"
+                )
+            }
+            execute(request)
+        }
+    }
+
+    private fun HttpClientConfig<*>.installContentNegotiation() {
         install(ContentNegotiation) {
             json(
                 json = Json {
@@ -29,10 +56,16 @@ internal object HttpClientFactory {
                 }
             )
         }
+    }
+
+    private fun HttpClientConfig<*>.installHttpTimeout() {
         install(HttpTimeout) {
             socketTimeoutMillis = 20_000L
             requestTimeoutMillis = 20_000L
         }
+    }
+
+    private fun HttpClientConfig<*>.installLogging() {
         install(Logging) {
             logger = object : Logger {
                 override fun log(message: String) {
@@ -41,13 +74,10 @@ internal object HttpClientFactory {
             }
             level = LogLevel.ALL
         }
-        defaultRequest {
-            contentType(ContentType.Application.Json)
-            accept(ContentType.Application.Json)
-        }
-    }.also {
-        it.plugin(HttpSend).intercept { request ->
-            execute(request)
-        }
+    }
+
+    private object Headers {
+        const val HEADER_AUTHORIZATION = "Authorization"
+        const val BEARER = "Bearer"
     }
 }

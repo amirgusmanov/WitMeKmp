@@ -38,20 +38,16 @@ internal class LoginViewModel(
             authRepository.login(
                 email = uiState.value.emailQuery,
                 password = uiState.value.passwordQuery
-            )
-                .onSuccess {
-                    uiState.tryToUpdate {
-                        it.copy(isLoginSuccess = true)
-                    }
+            ).onSuccess {
+                uiState.tryToUpdate {
+                    it.copy(isLoginSuccess = true)
                 }
-                .onError { error ->
-                    uiState.tryToUpdate {
-                        it.copy(loginErrorMessage = error.getMessage())
-                    }
+            }.onError { error ->
+                uiState.tryToUpdate {
+                    it.copy(loginErrorMessage = error.getMessage())
                 }
-                .also {
-                    stopLoginLoading()
-                }
+            }
+            stopLoginLoading()
         }
     }
 

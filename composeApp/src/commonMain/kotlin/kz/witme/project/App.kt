@@ -28,7 +28,7 @@ fun App() {
             sheetShape = DefaultRoundedShape,
             skipHalfExpanded = true
         ) {
-            Navigator(screen = rememberScreen(Destination.EditProfile)) {
+            Navigator(screen = rememberScreen(Destination.Onboarding)) {
                 SlideTransition(navigator = it)
             }
         }

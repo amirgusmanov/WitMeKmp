@@ -9,5 +9,10 @@ import org.koin.dsl.module
 
 val serviceAuthModule = module {
     single<AuthApi> { get<Ktorfit>().createAuthApi() }
-    single<AuthRepository> { AuthRepositoryImpl(api = get()) }
+    single<AuthRepository> {
+        AuthRepositoryImpl(
+            api = get(),
+            sessionManager = get()
+        )
+    }
 }
