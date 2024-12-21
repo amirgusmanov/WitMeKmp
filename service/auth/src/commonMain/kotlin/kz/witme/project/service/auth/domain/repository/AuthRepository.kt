@@ -12,5 +12,5 @@ interface AuthRepository {
 
     suspend fun getMe(): RequestResult<UserInfo, DataError.Remote>
 
-    suspend fun navigateUser(): RequestResult<Unit, DataError.Local>
+    suspend fun navigateUser(): RequestResult<UserInfo, DataError.Remote>
 }

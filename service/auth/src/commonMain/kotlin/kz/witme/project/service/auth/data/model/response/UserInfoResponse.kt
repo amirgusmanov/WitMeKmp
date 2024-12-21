@@ -4,6 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 internal class UserInfoResponse(
-    val username: String,
-    val avatar: String
+    val username: String?,
+    val avatar: String?
 )

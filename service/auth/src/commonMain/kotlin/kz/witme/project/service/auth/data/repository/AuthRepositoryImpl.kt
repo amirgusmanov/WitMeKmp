@@ -45,7 +45,7 @@ internal class AuthRepositoryImpl(
         api.getMe().toUserInfo()
     }
 
-    override suspend fun navigateUser(): RequestResult<Unit, DataError.Local> {
-        TODO("Not yet implemented")
+    override suspend fun navigateUser(): RequestResult<UserInfo, DataError.Remote> = safeCall {
+        api.getMe().toUserInfo()
     }
 }

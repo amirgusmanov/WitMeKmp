@@ -2,18 +2,21 @@ package kz.witme.project.data.network
 
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
+import io.ktor.client.call.body
 import io.ktor.client.engine.HttpClientEngine
-import io.ktor.client.plugins.HttpSend
 import io.ktor.client.plugins.HttpTimeout
+import io.ktor.client.plugins.auth.Auth
+import io.ktor.client.plugins.auth.providers.BearerTokens
+import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
-import io.ktor.client.plugins.plugin
 import io.ktor.client.request.accept
-import io.ktor.client.request.header
+import io.ktor.client.request.post
 import io.ktor.http.ContentType
+import io.ktor.http.Url
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
@@ -30,20 +33,41 @@ internal object HttpClientFactory {
         installContentNegotiation()
         installHttpTimeout()
         installLogging()
+        installAuth(sessionManager)
         defaultRequest {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
         }
-    }.apply {
-        plugin(HttpSend).intercept { request ->
-            val accessToken = sessionManager.getAccessToken()
-            if (accessToken.isNotBlank()) {
-                request.header(
-                    key = Headers.HEADER_AUTHORIZATION,
-                    value = "${Headers.BEARER} ${sessionManager.getAccessToken()}"
-                )
+    }
+
+    private fun HttpClientConfig<*>.installAuth(
+        sessionManager: SessionManager
+    ) {
+        install(Auth) {
+            bearer {
+                refreshTokens {
+                    //todo test it
+                    client.post(
+                        Url("${Constants.BASE_URL}users/token/refresh/")
+                    ) {
+                        contentType(ContentType.Application.Json)
+                        markAsRefreshTokenRequest()
+                    }.body()
+                }
+                loadTokens {
+                    BearerTokens(
+                        accessToken = sessionManager.getAccessToken(),
+                        refreshToken = sessionManager.getRefreshToken()
+                    )
+                }
+                sendWithoutRequest { request ->
+                    val noAuthUrls = listOf(
+                        "${Constants.BASE_URL}users/login/",
+                        "${Constants.BASE_URL}users/register/"
+                    )
+                    !noAuthUrls.contains(request.url.toString())
+                }
             }
-            execute(request)
         }
     }
 
