@@ -7,6 +7,7 @@ import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BearerTokens
+import io.ktor.client.plugins.auth.providers.RefreshTokensParams
 import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
@@ -15,6 +16,7 @@ import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.accept
 import io.ktor.client.request.post
+import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.Url
 import io.ktor.http.contentType
@@ -40,19 +42,16 @@ internal object HttpClientFactory {
         }
     }
 
-    private fun HttpClientConfig<*>.installAuth(
-        sessionManager: SessionManager
-    ) {
+    private fun HttpClientConfig<*>.installAuth(sessionManager: SessionManager) {
         install(Auth) {
             bearer {
                 refreshTokens {
-                    //todo test it
-                    client.post(
-                        Url("${Constants.BASE_URL}users/token/refresh/")
-                    ) {
-                        contentType(ContentType.Application.Json)
-                        markAsRefreshTokenRequest()
-                    }.body()
+                    sendRefreshRequest(
+                        sessionManager = sessionManager,
+                        onRefreshFailed = {
+                            //todo need to navigate to onboarding
+                        }
+                    )
                 }
                 loadTokens {
                     BearerTokens(
@@ -61,13 +60,41 @@ internal object HttpClientFactory {
                     )
                 }
                 sendWithoutRequest { request ->
-                    val noAuthUrls = listOf(
-                        "${Constants.BASE_URL}users/login/",
-                        "${Constants.BASE_URL}users/register/"
-                    )
-                    !noAuthUrls.contains(request.url.toString())
+                    listOf(
+                        Constants.LOGIN_URL,
+                        Constants.REG_URL
+                    ).contains(request.url.toString()).not()
                 }
             }
+        }
+    }
+
+    private suspend fun RefreshTokensParams.sendRefreshRequest(
+        sessionManager: SessionManager,
+        onRefreshFailed: suspend () -> Unit
+    ): BearerTokens {
+        val response = client.post(Url(Constants.REFRESH_URL)) {
+            markAsRefreshTokenRequest()
+            contentType(ContentType.Application.Json)
+            setBody(
+                AuthModel(
+                    access = sessionManager.getAccessToken(),
+                    refresh = sessionManager.getRefreshToken()
+                )
+            )
+        }
+        if (response.status.value == 401) {
+            sessionManager.clearAccessToken()
+            sessionManager.clearRefreshToken()
+            onRefreshFailed()
+        } else {
+            with(response.body<AuthModel>()) {
+                sessionManager.setAccessToken(access)
+                sessionManager.setRefreshToken(refresh ?: return@with)
+            }
+        }
+        return with(response.body<AuthModel>()) {
+            BearerTokens(accessToken = access, refreshToken = refresh)
         }
     }
 
@@ -98,10 +125,5 @@ internal object HttpClientFactory {
             }
             level = LogLevel.ALL
         }
-    }
-
-    private object Headers {
-        const val HEADER_AUTHORIZATION = "Authorization"
-        const val BEARER = "Bearer"
     }
 }

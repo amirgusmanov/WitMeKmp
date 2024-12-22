@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import coil3.compose.AsyncImage
 import kotlinx.collections.immutable.ImmutableList
+import kz.witme.project.common_ui.extension.clickableWithoutRipple
 import kz.witme.project.common_ui.theme.LocalWitMeTheme
 import kz.witme.project.dashboard.BookEntry
 import org.jetbrains.compose.resources.painterResource
@@ -51,7 +52,7 @@ internal fun ToReadBooksView(
                 .padding(vertical = 1.dp),
             shape = CircleShape,
             colors = CardDefaults.elevatedCardColors(containerColor = LocalWitMeTheme.colors.white),
-            elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
         ) {
             Box(modifier = Modifier.height(42.dp))
         }
@@ -68,7 +69,7 @@ internal fun ToReadBooksView(
                 ToReadBook(
                     bookEntry = book,
                     onBookClick = {
-                        onBookClick((book as BookEntry.Book).bookResponse.name)
+                        onBookClick((book as BookEntry.Book).bookResponse.id)
                     },
                     onEmptyClick = onEmptyClick
                 )
@@ -89,25 +90,23 @@ private fun ToReadBook(
             Box(
                 modifier = modifier
                     .size(60.dp)
-                    .clickable {
-                        onBookClick(bookEntry.bookResponse.name)
+                    .clickableWithoutRipple {
+                        onBookClick(bookEntry.bookResponse.id)
                     },
                 contentAlignment = Alignment.Center
             ) {
-                if (bookEntry.bookResponse.imageUri.isNotBlank()) {
-                    AsyncImage(
-                        model = bookEntry.bookResponse.imageUri,
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .matchParentSize()
-                            .clip(CircleShape)
-                            .align(Alignment.Center),
-                        placeholder = ColorPainter(color = LocalWitMeTheme.colors.secondary400)
-                    )
-                } else {
-                    EmptyView(onClick = onEmptyClick)
-                }
+                AsyncImage(
+                    model = bookEntry.bookResponse.bookPhoto,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .matchParentSize()
+                        .clip(CircleShape)
+                        .align(Alignment.Center),
+                    placeholder = ColorPainter(color = LocalWitMeTheme.colors.secondary400),
+                    error = ColorPainter(color = LocalWitMeTheme.colors.secondary400),
+                    fallback = ColorPainter(color = LocalWitMeTheme.colors.secondary400)
+                )
             }
 
         BookEntry.Empty -> EmptyView(onClick = onEmptyClick)

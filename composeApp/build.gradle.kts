@@ -51,6 +51,7 @@ kotlin {
             implementation(projects.service.auth)
             implementation(projects.service.profile)
             implementation(projects.feature.dashboard)
+            implementation(projects.service.book)
         }
     }
 }

@@ -28,4 +28,6 @@
     <string name="permission_message">Чтобы установить фотографию профиля, предоставьте разрешение. Вы можете управлять разрешениями в настройках</string>
     <string name="currently_reading">Сейчас читаю</string>
     <string name="to_read">Прочитать</string>
+    <string name="add_book">Добавить книгу</string>
+    <string name="finished_reading">Прочитал</string>
 </resources>

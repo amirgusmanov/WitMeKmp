@@ -1,6 +1,7 @@
 package kz.witme.project.di
 
 import kz.witme.project.auth.di.featureAuthModule
+import kz.witme.project.book.di.serviceBookModule
 import kz.witme.project.dashboard.di.featureDashboardModule
 import kz.witme.project.data.di.platformDataModule
 import kz.witme.project.data.di.sharedDataModule
@@ -18,7 +19,8 @@ fun initKoin(config: KoinAppDeclaration? = null) {
             featureAuthModule,
             serviceAuthModule,
             sharedServiceProfileModule,
-            featureDashboardModule
+            featureDashboardModule,
+            serviceBookModule
         )
     }
 }

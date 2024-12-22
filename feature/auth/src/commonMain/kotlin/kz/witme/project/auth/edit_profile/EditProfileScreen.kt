@@ -18,8 +18,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.koinScreenModel
+import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -44,6 +46,7 @@ import kz.witme.project.common_ui.permission.PermissionType
 import kz.witme.project.common_ui.permission.createPermissionsManager
 import kz.witme.project.common_ui.theme.LocalWitMeTheme
 import kz.witme.project.common_ui.theme.TextBrush
+import kz.witme.project.navigation.Destination
 import org.jetbrains.compose.resources.stringResource
 import witmekmp.core.common_ui.generated.resources.Res
 import witmekmp.core.common_ui.generated.resources.name
@@ -183,13 +186,13 @@ private fun EditProfileContent(
     contentPaddingValues: PaddingValues,
     onAvatarAddClick: () -> Unit
 ) {
-//    val navigator = LocalNavigator.current
-//    val dashboardScreen = rememberScreen(provider = Destination.Dashboard)
-//    LaunchedEffect(uiState.isEditProfileSuccess) {
-//        if (uiState.isEditProfileSuccess) {
-//            navigator?.replaceAll(dashboardScreen)
-//        }
-//    }
+    val navigator = LocalNavigator.current
+    val dashboardScreen = rememberScreen(provider = Destination.Dashboard)
+    LaunchedEffect(uiState.isEditProfileSuccess) {
+        if (uiState.isEditProfileSuccess) {
+            navigator?.replaceAll(dashboardScreen)
+        }
+    }
     Box(
         modifier = Modifier.padding(contentPaddingValues)
     ) {
@@ -233,7 +236,7 @@ private fun EditProfileContent(
                         style = LocalWitMeTheme.typography.regular12,
                         color = LocalWitMeTheme.colors.link200,
                         modifier = Modifier.clickableWithoutRipple {
-//                                navigator?.replaceAll(dashboardScreen)
+                            navigator?.replaceAll(dashboardScreen)
                         }
                     )
                 }

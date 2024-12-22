@@ -70,13 +70,11 @@ internal fun LoginScreenContent(
 ) {
     val navigator = LocalNavigator.current
     val registrationScreen = rememberScreen(provider = Destination.Registration)
-//    val dashboardScreen = rememberScreen(provider = Destination.Dashboard)
+    val dashboardScreen = rememberScreen(provider = Destination.Dashboard)
 
     LaunchedEffect(uiState.isLoginSuccess) {
         if (uiState.isLoginSuccess) {
-//            navigator?.replaceAll(dashboardScreen)
-            controller.onEmailQueryChanged("")
-            controller.onPasswordQueryChanged("")
+            navigator?.replaceAll(dashboardScreen)
         }
     }
     if (uiState.loginErrorMessage.isNotEmpty()) {

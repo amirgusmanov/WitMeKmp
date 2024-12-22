@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -22,40 +21,38 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import kz.witme.project.common_ui.extension.clickableWithoutRipple
 import kz.witme.project.common_ui.theme.LocalWitMeTheme
 import kz.witme.project.common_ui.theme.TextBrush
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.pluralStringResource
 import witmekmp.core.common_ui.generated.resources.Res
 import witmekmp.core.common_ui.generated.resources.ic_current_status
 import witmekmp.core.common_ui.generated.resources.ic_date
 import witmekmp.core.common_ui.generated.resources.ic_notes
 import witmekmp.core.common_ui.generated.resources.ic_timer
+import witmekmp.core.common_ui.generated.resources.notes_amount
 
 @Composable
 internal fun BookCardView(
     id: String,
-    imageUrl: String,
+    imageUrl: String?,
     name: String,
     date: String,
     status: String,
     notes: String,
     modifier: Modifier = Modifier,
-    minHeight: Dp = 190.dp,
-    maxHeight: Dp = 215.dp,
     onTimerClick: (bookId: String) -> Unit = {},
     onBookClick: (bookId: String) -> Unit = {}
 ) {
     ElevatedCard(
         modifier = modifier
             .padding(vertical = 4.dp)
-            .heightIn(min = minHeight, max = maxHeight)
             .clickableWithoutRipple { onBookClick(id) },
         colors = CardDefaults.cardColors(containerColor = LocalWitMeTheme.colors.white),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         shape = RoundedCornerShape(size = 16.dp)
     ) {
         Spacer(
@@ -80,6 +77,8 @@ internal fun BookCardView(
                     contentDescription = "Atomic Habits",
                     contentScale = ContentScale.Crop,
                     placeholder = ColorPainter(LocalWitMeTheme.colors.searchPlaceholder),
+                    error = ColorPainter(LocalWitMeTheme.colors.searchPlaceholder),
+                    fallback = ColorPainter(LocalWitMeTheme.colors.searchPlaceholder),
                     modifier = Modifier
                         .weight(0.4f)
                         .wrapContentHeight()
@@ -133,7 +132,7 @@ internal fun BookCardView(
                         )
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
-                            text = notes,
+                            text = pluralStringResource(Res.plurals.notes_amount, notes.toInt()),
                             style = LocalWitMeTheme.typography.regular16,
                             color = LocalWitMeTheme.colors.secondary400
                         )
