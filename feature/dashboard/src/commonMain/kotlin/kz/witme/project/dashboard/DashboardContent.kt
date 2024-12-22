@@ -22,6 +22,7 @@ import kz.witme.project.common_ui.screen.getScreenWidth
 import kz.witme.project.common_ui.shimmer.ShimmerView
 import kz.witme.project.common_ui.theme.LocalWitMeTheme
 import kz.witme.project.dashboard.component.BookPager
+import kz.witme.project.dashboard.component.FinishedReadingBooksView
 import kz.witme.project.dashboard.component.ToReadBooksView
 import org.jetbrains.compose.resources.stringResource
 import witmekmp.core.common_ui.generated.resources.Res
@@ -70,6 +71,10 @@ internal fun DashboardContent(
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
             Spacer(modifier = Modifier.height(8.dp))
+            FinishedReadingBooksView(
+                books = finishedReadingBooks,
+                onBookClick = onBookClick
+            )
         }
     }
 }

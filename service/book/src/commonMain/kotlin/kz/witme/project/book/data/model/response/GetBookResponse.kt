@@ -32,7 +32,7 @@ internal fun GetBookResponse.toDomain(): GetBook = GetBook(
     readingStatus = ReadingStatusDto[readingStatus].toDomain(),
     starRate = starRate,
     avgEmoji = avgEmoji,
-    notesAmount = notesAmount,
+    notesAmount = notesAmount ?: 0,
     currentPage = currentPage,
     createdDate = createdDate
 )

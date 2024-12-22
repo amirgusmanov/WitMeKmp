@@ -49,7 +49,7 @@ internal fun BookPager(
                         name = book.bookResponse.name,
                         date = book.bookResponse.createdDate.toString(), //todo: parse date here with DateUtils
                         status = book.bookResponse.readingStatus.displayName,
-                        notes = book.bookResponse.notesAmount.toString(),
+                        notes = book.bookResponse.notesAmount,
                         onBookClick = onBookClick,
                         onTimerClick = onTimerClick,
                         modifier = Modifier.defaultDashboardCardModifier(

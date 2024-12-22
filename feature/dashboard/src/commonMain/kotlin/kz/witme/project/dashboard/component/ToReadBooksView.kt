@@ -103,9 +103,9 @@ private fun ToReadBook(
                         .matchParentSize()
                         .clip(CircleShape)
                         .align(Alignment.Center),
-                    placeholder = ColorPainter(color = LocalWitMeTheme.colors.secondary400),
-                    error = ColorPainter(color = LocalWitMeTheme.colors.secondary400),
-                    fallback = ColorPainter(color = LocalWitMeTheme.colors.secondary400)
+                    placeholder = ColorPainter(color = LocalWitMeTheme.colors.secondary300),
+                    error = ColorPainter(color = LocalWitMeTheme.colors.secondary300),
+                    fallback = ColorPainter(color = LocalWitMeTheme.colors.secondary300)
                 )
             }
 

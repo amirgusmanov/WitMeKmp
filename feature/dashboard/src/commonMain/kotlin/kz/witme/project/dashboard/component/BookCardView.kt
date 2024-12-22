@@ -42,7 +42,7 @@ internal fun BookCardView(
     name: String,
     date: String,
     status: String,
-    notes: String,
+    notes: Int,
     modifier: Modifier = Modifier,
     onTimerClick: (bookId: String) -> Unit = {},
     onBookClick: (bookId: String) -> Unit = {}
@@ -76,9 +76,9 @@ internal fun BookCardView(
                     model = imageUrl,
                     contentDescription = "Atomic Habits",
                     contentScale = ContentScale.Crop,
-                    placeholder = ColorPainter(LocalWitMeTheme.colors.searchPlaceholder),
-                    error = ColorPainter(LocalWitMeTheme.colors.searchPlaceholder),
-                    fallback = ColorPainter(LocalWitMeTheme.colors.searchPlaceholder),
+                    placeholder = ColorPainter(LocalWitMeTheme.colors.secondary300),
+                    error = ColorPainter(LocalWitMeTheme.colors.secondary300),
+                    fallback = ColorPainter(LocalWitMeTheme.colors.secondary300),
                     modifier = Modifier
                         .weight(0.4f)
                         .wrapContentHeight()
@@ -132,7 +132,11 @@ internal fun BookCardView(
                         )
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
-                            text = pluralStringResource(Res.plurals.notes_amount, notes.toInt()),
+                            text = pluralStringResource(
+                                resource = Res.plurals.notes_amount,
+                                quantity = notes,
+                                notes
+                            ),
                             style = LocalWitMeTheme.typography.regular16,
                             color = LocalWitMeTheme.colors.secondary400
                         )

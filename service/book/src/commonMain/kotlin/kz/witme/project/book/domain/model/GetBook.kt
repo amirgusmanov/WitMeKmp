@@ -10,7 +10,7 @@ data class GetBook(
     val readingStatus: ReadingStatus,
     val starRate: Double?,
     val avgEmoji: Int? = null,
-    val notesAmount: Int?,
+    val notesAmount: Int,
     val currentPage: Int,
     val createdDate: String? = null
 )
