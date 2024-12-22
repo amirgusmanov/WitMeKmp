@@ -26,4 +26,6 @@
     <string name="pick_from_gallery">Выбрать из галереи</string>
     <string name="attention">Внимание</string>
     <string name="permission_message">Чтобы установить фотографию профиля, предоставьте разрешение. Вы можете управлять разрешениями в настройках</string>
+    <string name="currently_reading">Сейчас читаю</string>
+    <string name="to_read">Прочитать</string>
 </resources>
