@@ -13,9 +13,9 @@ internal fun Project.configureKotlinAndroid(extension: LibraryExtension) = exten
         .drop(2)
         .joinToString(".")
 
-    if (moduleName.contains("-")) moduleName.replace("-", "_")
+    val newName = if (moduleName.contains("-")) moduleName.replace("-", "_") else moduleName
 
-    namespace = if (moduleName.isNotEmpty()) "kz.witme.project.$moduleName" else "kz.witme.project"
+    namespace = if (moduleName.isNotEmpty()) "kz.witme.project.$newName" else "kz.witme.project"
     compileSdk = libs.findVersion("android-compileSdk").get().requiredVersion.toInt()
     defaultConfig {
         minSdk = libs.findVersion("android-minSdk").get().requiredVersion.toInt()

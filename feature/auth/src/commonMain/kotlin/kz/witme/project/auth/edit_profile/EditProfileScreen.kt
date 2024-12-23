@@ -17,6 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.core.screen.Screen
@@ -187,6 +188,7 @@ private fun EditProfileContent(
     onAvatarAddClick: () -> Unit
 ) {
     val navigator = LocalNavigator.current
+    val focusManager = LocalFocusManager.current
     val dashboardScreen = rememberScreen(provider = Destination.Dashboard)
     LaunchedEffect(uiState.isEditProfileSuccess) {
         if (uiState.isEditProfileSuccess) {
@@ -194,7 +196,9 @@ private fun EditProfileContent(
         }
     }
     Box(
-        modifier = Modifier.padding(contentPaddingValues)
+        modifier = Modifier
+            .padding(contentPaddingValues)
+            .clickableWithoutRipple(onClick = focusManager::clearFocus)
     ) {
         BlurredGradientSphere()
         Column(

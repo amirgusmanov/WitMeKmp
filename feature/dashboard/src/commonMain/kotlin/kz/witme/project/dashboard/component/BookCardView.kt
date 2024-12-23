@@ -68,7 +68,7 @@ internal fun BookCardView(
             Text(
                 text = name,
                 style = LocalWitMeTheme.typography.medium20,
-                color = LocalWitMeTheme.colors.black
+                color = LocalWitMeTheme.colors.secondary500
             )
             Spacer(modifier = Modifier.height(16.dp))
             Row {

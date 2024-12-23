@@ -52,6 +52,7 @@ kotlin {
             implementation(projects.service.profile)
             implementation(projects.feature.dashboard)
             implementation(projects.service.book)
+            implementation(projects.feature.createBook)
         }
     }
 }

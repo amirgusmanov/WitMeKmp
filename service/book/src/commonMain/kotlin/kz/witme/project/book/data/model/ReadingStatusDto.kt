@@ -2,7 +2,7 @@ package kz.witme.project.book.data.model
 
 import kz.witme.project.book.domain.model.ReadingStatus
 
-internal enum class ReadingStatusDto(private val backendValue: String) {
+internal enum class ReadingStatusDto(val backendValue: String) {
     GoingToRead("will_read"),
     ReadingNow("now_reading"),
     FinishedReading("finished_reading");
