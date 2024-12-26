@@ -12,6 +12,7 @@ object NavRegistry {
             featureAuthModule()
             dashboardNavigationModule()
             createBookNavigationModule()
+            timerNavigationModule()
         }
     }
 }

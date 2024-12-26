@@ -33,8 +33,8 @@ import kz.witme.project.common_ui.base.PasswordTextField
 import kz.witme.project.common_ui.extension.clickableWithoutRipple
 import kz.witme.project.common_ui.extension.collectAsStateWithLifecycle
 import kz.witme.project.common_ui.extension.textBrush
+import kz.witme.project.common_ui.theme.LinearGradient
 import kz.witme.project.common_ui.theme.LocalWitMeTheme
-import kz.witme.project.common_ui.theme.TextBrush
 import kz.witme.project.navigation.Destination
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -100,7 +100,7 @@ internal fun RegistrationScreenContent(
                         .drawWithCache {
                             onDrawWithContent {
                                 drawContent()
-                                drawRect(TextBrush, blendMode = BlendMode.SrcAtop)
+                                drawRect(LinearGradient, blendMode = BlendMode.SrcAtop)
                             }
                         }
                 )
@@ -108,7 +108,7 @@ internal fun RegistrationScreenContent(
                 Text(
                     text = stringResource(Res.string.new_account),
                     style = LocalWitMeTheme.typography.medium20,
-                    modifier = Modifier.textBrush(TextBrush)
+                    modifier = Modifier.textBrush(LinearGradient)
                 )
                 Spacer(modifier = Modifier.height(24.dp))
                 DefaultTextField(

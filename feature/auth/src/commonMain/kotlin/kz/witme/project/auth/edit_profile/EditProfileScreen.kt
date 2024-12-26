@@ -45,8 +45,8 @@ import kz.witme.project.common_ui.permission.PermissionCallback
 import kz.witme.project.common_ui.permission.PermissionStatus
 import kz.witme.project.common_ui.permission.PermissionType
 import kz.witme.project.common_ui.permission.createPermissionsManager
+import kz.witme.project.common_ui.theme.LinearGradient
 import kz.witme.project.common_ui.theme.LocalWitMeTheme
-import kz.witme.project.common_ui.theme.TextBrush
 import kz.witme.project.navigation.Destination
 import org.jetbrains.compose.resources.stringResource
 import witmekmp.core.common_ui.generated.resources.Res
@@ -217,7 +217,7 @@ private fun EditProfileContent(
             Text(
                 text = stringResource(Res.string.your_profile),
                 style = LocalWitMeTheme.typography.medium20,
-                modifier = Modifier.textBrush(TextBrush)
+                modifier = Modifier.textBrush(LinearGradient)
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(

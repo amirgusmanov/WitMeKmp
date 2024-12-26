@@ -50,4 +50,24 @@
     <string name="rate_description">Описание оценки</string>
     <string name="ahuevshaya">Ахуевшая</string>
     <string name="cancel">Отменить</string>
+    <string name="hours">Часы</string>
+    <string name="minutes">Минуты</string>
+    <string name="seconds">Секунды</string>
+    <string name="end_session">Завершить сессию</string>
+    <string name="add_note">Добавить заметку</string>
+    <string name="what_book_you_read">Какую книгу вы читали</string>
+    <string name="timer_alert_message">Если вы сейчас выйдете, то сессия чтения не сохранится</string>
+    <string name="save_note">Сохранить заметку</string>
+    <string name="what_page_you_ended">На какой странице вы остановились?</string>
+    <string name="page">стр</string>
+    <string name="sec">сек</string>
+    <string name="min">мин</string>
+    <string name="str">стр.</string>
+    <string name="confirm_time_read">Подтвердите время чтения</string>
+    <string name="save_reading_session">Сохранить сессию чтения</string>
+    <string name="timer_details_message">Пожалуйста проверьте правильность данных</string>
+    <string name="good_boy">За эту сессию ты прочитал %1$d страниц</string>
+    <string name="session_time">Время сессии</string>
+    <string name="total_read">Всего страниц прочитано</string>
+    <string name="status">Статус</string>
 </resources>

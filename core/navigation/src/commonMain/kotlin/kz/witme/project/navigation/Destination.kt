@@ -10,4 +10,6 @@ sealed interface Destination : ScreenProvider {
     data object Dashboard : Destination
     data object CreateBook : Destination
     data object CreateStatusBook : Destination
+    data object Timer : Destination
+    data object TimerDetails : Destination
 }

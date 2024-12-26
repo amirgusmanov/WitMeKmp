@@ -35,8 +35,8 @@ import kz.witme.project.common_ui.base.InputSectionView
 import kz.witme.project.common_ui.base.TitledSelector
 import kz.witme.project.common_ui.extension.collectAsStateWithLifecycle
 import kz.witme.project.common_ui.screen.toolbarPaddings
+import kz.witme.project.common_ui.theme.LinearGradient
 import kz.witme.project.common_ui.theme.LocalWitMeTheme
-import kz.witme.project.common_ui.theme.TextBrush
 import kz.witme.project.create_book.component.EmojiBottomSheetScreen
 import kz.witme.project.create_book.component.StarRating
 import org.jetbrains.compose.resources.stringResource
@@ -114,8 +114,8 @@ internal fun CreateBookStatusScreenContent(
                 onBackClick = {
                     navigator?.pop()
                 },
-                titleGradient = TextBrush,
-                iconGradient = TextBrush,
+                titleGradient = LinearGradient,
+                iconGradient = LinearGradient,
                 titleStyle = LocalWitMeTheme.typography.medium20
             )
         }

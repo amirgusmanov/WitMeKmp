@@ -38,6 +38,7 @@ data class Typographies(
     val semiBold20: TextStyle,
     val semiBold24: TextStyle,
     val semiBold32: TextStyle,
+    val semiBold48: TextStyle,
     val bold14: TextStyle,
     val bold16: TextStyle,
     val bold20: TextStyle,
@@ -117,6 +118,12 @@ internal fun Typography() = Typographies(
         fontWeight = FontWeight.SemiBold,
         fontSize = 24.sp,
         lineHeight = 24.sp,
+    ),
+    semiBold48 = TextStyle(
+        fontFamily = GolosFontFamily(),
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 48.sp,
+        lineHeight = 48.sp,
     ),
     bold14 = TextStyle(
         fontFamily = GolosFontFamily(),

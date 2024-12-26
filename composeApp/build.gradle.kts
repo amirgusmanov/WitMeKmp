@@ -53,6 +53,7 @@ kotlin {
             implementation(projects.feature.dashboard)
             implementation(projects.service.book)
             implementation(projects.feature.createBook)
+            implementation(projects.feature.timer)
         }
     }
 }

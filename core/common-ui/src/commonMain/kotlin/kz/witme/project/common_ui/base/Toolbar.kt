@@ -19,8 +19,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.TextStyle
 import kz.witme.project.common_ui.extension.textBrush
+import kz.witme.project.common_ui.theme.LinearGradient
 import kz.witme.project.common_ui.theme.LocalWitMeTheme
-import kz.witme.project.common_ui.theme.TextBrush
 import kz.witme.project.common_ui.theme.WitMeTheme
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -61,7 +61,7 @@ fun DefaultToolbar(
                                 .drawWithCache {
                                     onDrawWithContent {
                                         drawContent()
-                                        drawRect(TextBrush, blendMode = BlendMode.SrcAtop)
+                                        drawRect(LinearGradient, blendMode = BlendMode.SrcAtop)
                                     }
                                 }
                         )
@@ -79,7 +79,7 @@ fun DefaultToolbar(
                 Text(
                     text = toolbarTitle,
                     style = titleStyle,
-                    modifier = Modifier.textBrush(TextBrush)
+                    modifier = Modifier.textBrush(LinearGradient)
                 )
             } ?: run {
                 Text(

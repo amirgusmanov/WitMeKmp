@@ -22,7 +22,8 @@ fun initKoin(config: KoinAppDeclaration? = null) {
             sharedServiceProfileModule,
             featureDashboardModule,
             serviceBookModule,
-            featureCreateBookModule
+            featureCreateBookModule,
+            featureTimerModule
         )
     }
 }
