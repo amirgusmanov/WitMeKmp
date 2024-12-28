@@ -28,7 +28,7 @@ fun App() {
             sheetShape = DefaultRoundedShape,
             skipHalfExpanded = true
         ) {
-            Navigator(screen = rememberScreen(Destination.TimerDetails)) {
+            Navigator(screen = rememberScreen(Destination.Timer)) {
                 SlideTransition(navigator = it)
             }
         }

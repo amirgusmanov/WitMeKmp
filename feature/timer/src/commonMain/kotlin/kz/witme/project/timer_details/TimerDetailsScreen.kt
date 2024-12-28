@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
 import kz.witme.project.common_ui.extension.clickableWithPressedState
 import kz.witme.project.common_ui.screen.toolbarPaddings
 import kz.witme.project.common_ui.theme.LocalWitMeTheme
@@ -53,6 +54,7 @@ class TimerDetailsScreen : Screen {
 internal fun TimerDetailsScreenContent(
     bookName: String
 ) {
+    val navigator = LocalNavigator.current
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -62,7 +64,7 @@ internal fun TimerDetailsScreenContent(
                     .padding(top = 16.dp)
                     .clickableWithPressedState(
                         onClick = {
-
+                            navigator?.pop()
                         }
                     ),
                 painter = painterResource(Res.drawable.ic_back),
