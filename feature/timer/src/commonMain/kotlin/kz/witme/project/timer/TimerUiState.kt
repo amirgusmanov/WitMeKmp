@@ -6,5 +6,6 @@ import kz.witme.project.timer.model.TimerHelperModel
 @Stable
 data class TimerUiState(
     val timer: TimerHelperModel = TimerHelperModel.EMPTY,
-    val isRunning: Boolean = false
+    val isRunning: Boolean = false,
+    val tempNote: String = ""
 )

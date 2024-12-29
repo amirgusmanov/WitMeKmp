@@ -5,9 +5,11 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
@@ -20,9 +22,14 @@ internal class TimerViewModel : ScreenModel, TimerController {
 
     val uiState: StateFlow<TimerUiState> = MutableStateFlow(TimerUiState())
 
+    private val _responseEvent = Channel<ResponseEvent>()
+    override val responseEvent = _responseEvent.receiveAsFlow()
+
     private var timerJob: Job? = null
     private var elapsedSeconds: Long = 0L
+
     private val mutex = Mutex()
+    private val notesList: MutableList<String> = mutableListOf()
 
     override fun onDispose() {
         super.onDispose()
@@ -35,6 +42,24 @@ internal class TimerViewModel : ScreenModel, TimerController {
         } else {
             startTimer()
         }
+    }
+
+    fun onNoteChanged(currentNoteText: String) {
+        uiState.tryToUpdate {
+            it.copy(
+                tempNote = currentNoteText
+            )
+        }
+    }
+
+    fun onNoteAdded(note: String) {
+        if (note.isBlank()) return
+        uiState.tryToUpdate {
+            it.copy(
+                tempNote = ""
+            )
+        }
+        notesList.add(note.trimIndent())
     }
 
     private fun startTimer() {
@@ -70,10 +95,20 @@ internal class TimerViewModel : ScreenModel, TimerController {
     }
 
     override fun onAddNoteClick() {
-
+        screenModelScope.launch {
+            _responseEvent.send(ResponseEvent.ShowBookNoteSheet)
+        }
     }
 
     override fun onEndSessionClick() {
+        screenModelScope.launch {
+            stopTimer()
+            _responseEvent.send(ResponseEvent.NavigateToDetails)
+        }
+    }
 
+    sealed interface ResponseEvent {
+        data object NavigateToDetails : ResponseEvent
+        data object ShowBookNoteSheet : ResponseEvent
     }
 }

@@ -14,12 +14,16 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.registry.ScreenRegistry
+import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
+import kotlinx.coroutines.flow.collectLatest
 import kz.witme.project.common_ui.base.DefaultToolbar
 import kz.witme.project.common_ui.base.ErrorAlert
 import kz.witme.project.common_ui.base.PiggySmileView
@@ -27,6 +31,7 @@ import kz.witme.project.common_ui.base.TopCurvedCircle
 import kz.witme.project.common_ui.extension.collectAsStateWithLifecycle
 import kz.witme.project.common_ui.screen.toolbarPaddings
 import kz.witme.project.common_ui.theme.LocalWitMeTheme
+import kz.witme.project.navigation.Destination
 import org.jetbrains.compose.resources.stringResource
 import witmekmp.core.common_ui.generated.resources.Res
 import witmekmp.core.common_ui.generated.resources.currently_reading
@@ -52,19 +57,26 @@ internal fun DashboardScreenContent(
 ) {
     val navigator = LocalNavigator.current
     val scrollState = rememberScrollState()
-//    val createBookScreen = rememberScreen(Destination.CreateBook)
+    val createBookScreen = rememberScreen(Destination.CreateBook)
     val currentlyReadingBooksPager = rememberPagerState(
         pageCount = uiState.currentlyReadingBooks::size
     )
-    val finishedReadingBooksPager = rememberPagerState(
-        pageCount = uiState.finishedReadingBooks::size
-    )
-
     if (uiState.errorMessage.isNotBlank()) {
         ErrorAlert(
             errorText = uiState.errorMessage,
             onDismiss = controller::onErrorDismiss
         )
+    }
+    LaunchedEffect(controller.responseEvent) {
+        controller.responseEvent.collectLatest { event ->
+            when (event) {
+                is DashboardViewModel.DashboardResponseEvent.NavigateToTimer -> {
+                    ScreenRegistry.get(Destination.Timer(event.bookId)).let {
+                        navigator?.push(it)
+                    }
+                }
+            }
+        }
     }
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -100,7 +112,7 @@ internal fun DashboardScreenContent(
                             finishedReadingBooks = uiState.finishedReadingBooks,
                             currentlyReadingBooksPager = currentlyReadingBooksPager,
                             onEmptyClick = {
-                                //navigator?.push(createBookScreen)
+                                navigator?.push(createBookScreen)
                             },
                             onBookClick = controller::onBookClick,
                             onTimerClick = controller::onTimerClick

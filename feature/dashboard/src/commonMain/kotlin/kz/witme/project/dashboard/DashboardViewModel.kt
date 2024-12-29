@@ -3,8 +3,11 @@ package kz.witme.project.dashboard
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kz.witme.project.book.domain.model.GetBook
 import kz.witme.project.book.domain.model.ReadingStatus
@@ -21,6 +24,9 @@ internal class DashboardViewModel(
 ) : ScreenModel, DashboardController {
 
     val uiState: StateFlow<DashboardUiState> = MutableStateFlow(DashboardUiState())
+
+    private val _responseEvent = Channel<DashboardResponseEvent>()
+    override val responseEvent: Flow<DashboardResponseEvent> = _responseEvent.receiveAsFlow()
 
     init {
         getBooks()
@@ -80,6 +86,12 @@ internal class DashboardViewModel(
     }
 
     override fun onTimerClick(bookId: String) {
-        //todo
+        screenModelScope.launch {
+            _responseEvent.send(DashboardResponseEvent.NavigateToTimer(bookId))
+        }
+    }
+
+    sealed interface DashboardResponseEvent {
+        data class NavigateToTimer(val bookId: String) : DashboardResponseEvent
     }
 }
