@@ -8,6 +8,7 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
@@ -44,6 +45,13 @@ internal fun BookPager(
         contentPadding = PaddingValues(horizontal = (getScreenWidth().value * 0.1).dp)
     ) { pageIndex ->
         books.getOrNull(pageIndex)?.let { book ->
+            val pageOffset = remember(
+                pagerState.currentPage,
+                pagerState.currentPageOffsetFraction
+            ) {
+                ((pagerState.currentPage - pageIndex) + pagerState.currentPageOffsetFraction)
+                    .absoluteValue
+            }
             when (book) {
                 is BookEntry.Book -> {
                     BookCardView(
@@ -55,19 +63,13 @@ internal fun BookPager(
                         notes = book.bookResponse.notesAmount,
                         onBookClick = onBookClick,
                         onTimerClick = onTimerClick,
-                        modifier = Modifier.defaultDashboardCardModifier(
-                            pagerState = pagerState,
-                            pageIndex = pageIndex
-                        )
+                        modifier = Modifier.defaultDashboardCardModifier(pageOffset = pageOffset)
                     )
                 }
 
                 BookEntry.Empty -> DefaultAddCardView(
                     text = stringResource(Res.string.add_book),
-                    modifier = Modifier.defaultDashboardCardModifier(
-                        pagerState = pagerState,
-                        pageIndex = pageIndex
-                    ),
+                    modifier = Modifier.defaultDashboardCardModifier(pageOffset = pageOffset),
                     onClick = onEmptyClick
                 )
             }
@@ -78,14 +80,10 @@ internal fun BookPager(
 @Stable
 @Composable
 private fun Modifier.defaultDashboardCardModifier(
-    pagerState: PagerState,
-    pageIndex: Int
+    pageOffset: Float
 ) = width((getScreenWidth().value * 0.8).dp)
     .heightIn(min = 190.dp, max = 215.dp)
     .graphicsLayer {
-        val pageOffset =
-            ((pagerState.currentPage - pageIndex) + pagerState.currentPageOffsetFraction)
-                .absoluteValue
         val scale = lerp(
             start = 0.85f,
             stop = 1f,
