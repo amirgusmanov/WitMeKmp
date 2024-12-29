@@ -8,13 +8,18 @@ import kz.witme.project.book.data.network.CreateBookApi
 import kz.witme.project.book.domain.model.CreateBookRequest
 import kz.witme.project.book.domain.model.toDto
 import kz.witme.project.book.domain.repository.CreateBookRepository
+import kz.witme.project.data.network.DataError
+import kz.witme.project.data.network.RequestResult
+import kz.witme.project.data.network.safeCall
 import kotlin.random.Random
 
 internal class CreateBookRepositoryImpl(
     private val api: CreateBookApi
 ) : CreateBookRepository {
 
-    override suspend fun createBook(request: CreateBookRequest) {
+    override suspend fun createBook(
+        request: CreateBookRequest
+    ): RequestResult<Unit, DataError.Remote> = safeCall {
         api.createBook(
             map = MultiPartFormDataContent(
                 formData {

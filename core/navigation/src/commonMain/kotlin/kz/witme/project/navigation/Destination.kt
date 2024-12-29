@@ -9,7 +9,7 @@ sealed interface Destination : ScreenProvider {
     data object EditProfile : Destination
     data object Dashboard : Destination
     data object CreateBook : Destination
-    data object CreateStatusBook : Destination
-    data class Timer(private val bookId: String? = null) : Destination
+    data class CreateStatusBook(val args: CreateBookArgs) : Destination
+    data class Timer(val bookId: String? = null) : Destination
     data object TimerDetails : Destination
 }

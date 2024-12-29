@@ -75,6 +75,10 @@ internal fun DashboardScreenContent(
                         navigator?.push(it)
                     }
                 }
+
+                DashboardViewModel.DashboardResponseEvent.NavigateToCreateBook -> {
+                    navigator?.push(createBookScreen)
+                }
             }
         }
     }
@@ -111,9 +115,7 @@ internal fun DashboardScreenContent(
                             toReadBooks = uiState.toReadBooks,
                             finishedReadingBooks = uiState.finishedReadingBooks,
                             currentlyReadingBooksPager = currentlyReadingBooksPager,
-                            onEmptyClick = {
-                                navigator?.push(createBookScreen)
-                            },
+                            onEmptyClick = controller::onEmptyClick,
                             onBookClick = controller::onBookClick,
                             onTimerClick = controller::onTimerClick
                         )

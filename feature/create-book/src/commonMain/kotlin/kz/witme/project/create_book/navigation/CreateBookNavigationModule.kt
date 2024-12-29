@@ -7,5 +7,7 @@ import kz.witme.project.navigation.Destination
 
 val createBookNavigationModule = screenModule {
     register<Destination.CreateBook> { CreateBookScreen() }
-    register<Destination.CreateStatusBook> { CreateBookStatusScreen() }
+    register<Destination.CreateStatusBook> { destination ->
+        CreateBookStatusScreen(args = destination.args)
+    }
 }

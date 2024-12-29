@@ -46,7 +46,8 @@ internal fun DashboardContent(
             books = currentlyReadingBooks,
             pagerState = currentlyReadingBooksPager,
             onBookClick = onBookClick,
-            onTimerClick = onTimerClick
+            onTimerClick = onTimerClick,
+            onEmptyClick = onEmptyClick
         )
         Spacer(modifier = Modifier.height(60.dp))
         Text(

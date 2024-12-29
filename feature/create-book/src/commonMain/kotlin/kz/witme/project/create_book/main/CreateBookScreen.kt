@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -52,6 +53,7 @@ import kz.witme.project.common_ui.permission.PermissionType
 import kz.witme.project.common_ui.permission.createPermissionsManager
 import kz.witme.project.common_ui.screen.toolbarPaddings
 import kz.witme.project.common_ui.theme.LocalWitMeTheme
+import kz.witme.project.navigation.Destination
 import org.jetbrains.compose.resources.stringResource
 import witmekmp.core.common_ui.generated.resources.Res
 import witmekmp.core.common_ui.generated.resources.add_book
@@ -84,7 +86,6 @@ internal fun CreateBookScreenContent(
 ) {
     val navigator = LocalNavigator.current
     val bottomSheetNavigator = LocalBottomSheetNavigator.current
-//    val createStatusScreen = rememberScreen(Destination.CreateStatusBook)
     val coroutineScope = rememberCoroutineScope()
     val permissionsManager = createPermissionsManager(
         callback = object : PermissionCallback {
@@ -161,8 +162,10 @@ internal fun CreateBookScreenContent(
     LaunchedEffect(Unit) {
         controller.createBookNavigateFlow.collectLatest { result ->
             when (result) {
-                CreateBookViewModel.CreateBookNavigateChannel.NavigateToCreateStatus -> {
-//                    navigator?.push(createStatusScreen)
+                is CreateBookViewModel.CreateBookNavigateChannel.NavigateToCreateStatus -> {
+                    ScreenRegistry.get(Destination.CreateStatusBook(result.args)).let {
+                        navigator?.push(it)
+                    }
                 }
             }
         }

@@ -39,6 +39,7 @@ import kz.witme.project.common_ui.theme.LinearGradient
 import kz.witme.project.common_ui.theme.LocalWitMeTheme
 import kz.witme.project.create_book.component.EmojiBottomSheetScreen
 import kz.witme.project.create_book.component.StarRating
+import kz.witme.project.navigation.CreateBookArgs
 import org.jetbrains.compose.resources.stringResource
 import witmekmp.core.common_ui.generated.resources.Res
 import witmekmp.core.common_ui.generated.resources.add_book
@@ -48,13 +49,16 @@ import witmekmp.core.common_ui.generated.resources.book_status
 import witmekmp.core.common_ui.generated.resources.next
 import witmekmp.core.common_ui.generated.resources.star_rating
 
-class CreateBookStatusScreen : Screen {
+class CreateBookStatusScreen(private val args: CreateBookArgs) : Screen {
 
     @Composable
     override fun Content() {
         val viewModel: CreateBookStatusViewModel = koinScreenModel()
         val uiState: CreateBookStatusUiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+        LaunchedEffect(args) {
+            viewModel.onLaunched(args)
+        }
         CreateBookStatusScreenContent(
             controller = viewModel,
             uiState = uiState

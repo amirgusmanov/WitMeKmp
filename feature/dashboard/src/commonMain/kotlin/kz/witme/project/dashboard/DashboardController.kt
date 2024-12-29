@@ -12,5 +12,7 @@ internal interface DashboardController {
 
     fun onTimerClick(bookId: String)
 
+    fun onEmptyClick()
+
     fun onErrorDismiss()
 }

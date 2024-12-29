@@ -30,10 +30,13 @@ internal fun BookPager(
     pagerState: PagerState,
     onBookClick: (bookId: String) -> Unit = {},
     onTimerClick: (bookId: String) -> Unit = {},
+    onEmptyClick: () -> Unit = {}
 ) {
     val haptic = LocalHapticFeedback.current
     LaunchedEffect(pagerState.currentPage) {
-        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+        if (pagerState.isScrollInProgress) {
+            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+        }
     }
     HorizontalPager(
         modifier = modifier,
@@ -64,7 +67,8 @@ internal fun BookPager(
                     modifier = Modifier.defaultDashboardCardModifier(
                         pagerState = pagerState,
                         pageIndex = pageIndex
-                    )
+                    ),
+                    onClick = onEmptyClick
                 )
             }
         }
