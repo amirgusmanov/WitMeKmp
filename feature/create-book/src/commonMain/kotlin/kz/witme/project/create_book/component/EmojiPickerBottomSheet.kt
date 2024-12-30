@@ -51,12 +51,12 @@ internal class EmojiBottomSheetScreen(
         private val emojis = persistentListOf(
             "\uD83D\uDE00", // 😁
             "\uD83D\uDE42", // 🙂
-            "\uD83D\uDE10", // 😐
-            "\uD83D\uDE12", // 😒
-            "\uD83D\uDE44", // 🙄
+            "\uD83D\uDE43", // 🙃
+            "\uD83D\uDE11", // 😑
+            "\uD83E\uDD28", // 🤨
+            "\uD83E\uDEE4", // 🫤
             "\uD83D\uDE2D", // 😭
-            "\uD83D\uDE33", // 😳
-            "\uD83E\uDD74", // 🤔
+            "\uD83E\uDD71", // 🥱
             "\uD83D\uDE20"  // 😠
         )
     }

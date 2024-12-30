@@ -90,10 +90,14 @@ internal class CreateBookStatusViewModel(
     }
 
     override fun onEmojiPicked(emoji: Int) {
-        uiState.tryToUpdate {
-            it.copy(
-                selectedEmoji = emoji
-            )
+        screenModelScope.launch {
+            uiState.tryToUpdate {
+                it.copy(
+                    selectedEmoji = emoji,
+                    isPickEmojiBottomSheetVisible = false
+                )
+            }
+            createBook()
         }
     }
 
