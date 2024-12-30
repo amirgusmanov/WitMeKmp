@@ -302,7 +302,8 @@ private fun BookItem(
                     }
                 )
                 .padding(12.dp)
-                .clickableWithoutRipple { onBookClick(book.id) }
+                .clickableWithoutRipple { onBookClick(book.id) },
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = book.name,
