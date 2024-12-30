@@ -21,6 +21,7 @@ import coil3.compose.AsyncImage
 import kotlinx.collections.immutable.ImmutableList
 import kz.witme.project.book.domain.model.GetBook
 import kz.witme.project.common_ui.extension.clickableWithoutRipple
+import kz.witme.project.common_ui.image.getImageUrl
 import kz.witme.project.common_ui.theme.DefaultRoundedShape
 import kz.witme.project.common_ui.theme.LocalWitMeTheme
 
@@ -68,7 +69,7 @@ private fun FinishedBookView(
         shape = DefaultRoundedShape
     ) {
         AsyncImage(
-            model = photo,
+            model = getImageUrl(photo),
             contentDescription = "Atomic Habits",
             contentScale = ContentScale.Crop,
             placeholder = ColorPainter(LocalWitMeTheme.colors.secondary300),

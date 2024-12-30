@@ -14,4 +14,6 @@ internal interface TimerController {
     fun onAddNoteClick()
 
     fun onEndSessionClick()
+
+    fun onBookChoose(bookId: String)
 }

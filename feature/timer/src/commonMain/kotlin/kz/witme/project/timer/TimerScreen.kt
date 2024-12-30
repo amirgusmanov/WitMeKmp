@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
@@ -30,12 +32,16 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.flow.collectLatest
+import kz.witme.project.book.domain.model.GetBook
 import kz.witme.project.common.extension.isNull
 import kz.witme.project.common_ui.base.DefaultButton
 import kz.witme.project.common_ui.extension.clickableWithPressedState
+import kz.witme.project.common_ui.extension.clickableWithoutRipple
 import kz.witme.project.common_ui.extension.collectAsStateWithLifecycle
 import kz.witme.project.common_ui.screen.toolbarPaddings
+import kz.witme.project.common_ui.shimmer.ShimmerView
 import kz.witme.project.common_ui.theme.LinearGradient
 import kz.witme.project.common_ui.theme.LocalWitMeTheme
 import kz.witme.project.component.BaseTimerBottomSheet
@@ -48,6 +54,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import witmekmp.core.common_ui.generated.resources.Res
 import witmekmp.core.common_ui.generated.resources.add_note
+import witmekmp.core.common_ui.generated.resources.chevron_right
 import witmekmp.core.common_ui.generated.resources.end_session
 import witmekmp.core.common_ui.generated.resources.ic_back
 import witmekmp.core.common_ui.generated.resources.save_note
@@ -75,13 +82,20 @@ class TimerScreen(private val bookId: String? = null) : Screen {
                 noteText = uiState.tempNote
             )
         }
-        val booksBottomSheet = @Composable { BooksBottomSheet() }
+        val booksBottomSheet = @Composable {
+            BooksBottomSheet(
+                books = uiState.books,
+                selectedBookId = uiState.selectedBookId,
+                areBooksLoading = uiState.areBooksLoading,
+                onBookClick = viewModel::onBookChoose
+            )
+        }
         val detailsScreen = rememberScreen(Destination.TimerDetails)
         LaunchedEffect(viewModel.responseEvent) {
             viewModel.responseEvent.collectLatest { event ->
                 when (event) {
                     TimerViewModel.ResponseEvent.NavigateToDetails -> {
-                        if (bookId.isNull()) {
+                        if (bookId == null && uiState.selectedBookId.isBlank()) {
                             bottomSheetNavigator.show(
                                 BaseTimerBottomSheet(
                                     titleId = Res.string.what_book_you_read,
@@ -89,6 +103,7 @@ class TimerScreen(private val bookId: String? = null) : Screen {
                                 )
                             )
                         } else {
+                            bottomSheetNavigator.hide()
                             navigator?.push(detailsScreen)
                         }
                     }
@@ -102,6 +117,11 @@ class TimerScreen(private val bookId: String? = null) : Screen {
                         )
                     }
                 }
+            }
+        }
+        LaunchedEffect(bookId) {
+            if (bookId.isNull()) {
+                viewModel.getBooks()
             }
         }
         TimerScreenContent(
@@ -225,6 +245,90 @@ private fun NoteBottomSheet(
 
 
 @Composable
-private fun BooksBottomSheet() {
+private fun BooksBottomSheet(
+    books: ImmutableList<GetBook>,
+    selectedBookId: String?,
+    areBooksLoading: Boolean,
+    onBookClick: (String) -> Unit
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        LazyColumn(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            if (areBooksLoading) {
+                items(
+                    count = 7
+                ) {
+                    ShimmerView(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                            .height(40.dp)
+                    )
+                }
+            } else {
+                items(
+                    items = books,
+                    key = GetBook::id
+                ) { book ->
+                    BookItem(
+                        book = book,
+                        isSelected = book.id == selectedBookId,
+                        onBookClick = onBookClick
+                    )
+                }
+            }
+        }
+    }
+}
 
+@Composable
+private fun BookItem(
+    book: GetBook,
+    isSelected: Boolean,
+    onBookClick: (String) -> Unit
+) {
+    Column {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    color = if (isSelected) {
+                        LocalWitMeTheme.colors.primary400
+                    } else {
+                        LocalWitMeTheme.colors.white
+                    }
+                )
+                .padding(12.dp)
+                .clickableWithoutRipple { onBookClick(book.id) }
+        ) {
+            Text(
+                text = book.name,
+                style = LocalWitMeTheme.typography.regular16,
+                color = if (isSelected) {
+                    LocalWitMeTheme.colors.white
+                } else {
+                    LocalWitMeTheme.colors.black
+                }
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            Icon(
+                painter = painterResource(Res.drawable.chevron_right),
+                contentDescription = null,
+                tint = if (isSelected) {
+                    LocalWitMeTheme.colors.white
+                } else {
+                    LocalWitMeTheme.colors.black
+                }
+            )
+        }
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(0.5.dp)
+                .background(LocalWitMeTheme.colors.secondary100)
+        )
+    }
 }

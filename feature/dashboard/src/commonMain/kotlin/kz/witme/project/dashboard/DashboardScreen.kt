@@ -71,7 +71,7 @@ internal fun DashboardScreenContent(
         controller.responseEvent.collectLatest { event ->
             when (event) {
                 is DashboardViewModel.DashboardResponseEvent.NavigateToTimer -> {
-                    ScreenRegistry.get(Destination.Timer(event.bookId)).let {
+                    ScreenRegistry.get(Destination.Timer(null)).let {
                         navigator?.push(it)
                     }
                 }

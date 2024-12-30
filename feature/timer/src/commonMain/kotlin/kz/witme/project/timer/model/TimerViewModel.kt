@@ -2,6 +2,7 @@ package kz.witme.project.timer.model
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.Job
@@ -14,11 +15,16 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kz.witme.project.book.domain.repository.GetBookRepository
 import kz.witme.project.common.extension.tryToUpdate
+import kz.witme.project.data.network.onError
+import kz.witme.project.data.network.onSuccess
 import kz.witme.project.timer.TimerController
 import kz.witme.project.timer.TimerUiState
 
-internal class TimerViewModel : ScreenModel, TimerController {
+internal class TimerViewModel(
+    private val booksRepository: GetBookRepository
+) : ScreenModel, TimerController {
 
     val uiState: StateFlow<TimerUiState> = MutableStateFlow(TimerUiState())
 
@@ -41,6 +47,24 @@ internal class TimerViewModel : ScreenModel, TimerController {
             stopTimer()
         } else {
             startTimer()
+        }
+    }
+
+    fun getBooks() {
+        screenModelScope.launch {
+            changeBooksLoadingState(true)
+            booksRepository.getBooks()
+                .onSuccess { books ->
+                    uiState.tryToUpdate {
+                        it.copy(books = books.toImmutableList())
+                    }
+                }
+                .onError {
+                    uiState.tryToUpdate {
+                        it.copy(areBooksEmpty = true)
+                    }
+                }
+            changeBooksLoadingState(false)
         }
     }
 
@@ -94,6 +118,12 @@ internal class TimerViewModel : ScreenModel, TimerController {
         }
     }
 
+    private fun changeBooksLoadingState(areLoading: Boolean) {
+        uiState.tryToUpdate {
+            it.copy(areBooksLoading = areLoading)
+        }
+    }
+
     override fun onAddNoteClick() {
         screenModelScope.launch {
             _responseEvent.send(ResponseEvent.ShowBookNoteSheet)
@@ -103,6 +133,17 @@ internal class TimerViewModel : ScreenModel, TimerController {
     override fun onEndSessionClick() {
         screenModelScope.launch {
             stopTimer()
+            _responseEvent.send(ResponseEvent.NavigateToDetails)
+        }
+    }
+
+    override fun onBookChoose(bookId: String) {
+        screenModelScope.launch {
+            uiState.tryToUpdate {
+                it.copy(
+                    selectedBookId = bookId
+                )
+            }
             _responseEvent.send(ResponseEvent.NavigateToDetails)
         }
     }

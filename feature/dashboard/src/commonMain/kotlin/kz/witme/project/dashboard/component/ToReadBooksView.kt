@@ -27,6 +27,7 @@ import androidx.compose.ui.zIndex
 import coil3.compose.AsyncImage
 import kotlinx.collections.immutable.ImmutableList
 import kz.witme.project.common_ui.extension.clickableWithoutRipple
+import kz.witme.project.common_ui.image.getImageUrl
 import kz.witme.project.common_ui.theme.LocalWitMeTheme
 import kz.witme.project.dashboard.BookEntry
 import org.jetbrains.compose.resources.painterResource
@@ -96,7 +97,7 @@ private fun ToReadBook(
                 contentAlignment = Alignment.Center
             ) {
                 AsyncImage(
-                    model = bookEntry.bookResponse.bookPhoto,
+                    model = getImageUrl(bookEntry.bookResponse.bookPhoto),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier

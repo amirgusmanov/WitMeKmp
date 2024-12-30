@@ -24,6 +24,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import kz.witme.project.common_ui.extension.clickableWithoutRipple
+import kz.witme.project.common_ui.image.getImageUrl
 import kz.witme.project.common_ui.theme.LinearGradient
 import kz.witme.project.common_ui.theme.LocalWitMeTheme
 import org.jetbrains.compose.resources.painterResource
@@ -73,7 +74,7 @@ internal fun BookCardView(
             Spacer(modifier = Modifier.height(16.dp))
             Row {
                 AsyncImage(
-                    model = imageUrl,
+                    model = getImageUrl(imageUrl),
                     contentDescription = "Atomic Habits",
                     contentScale = ContentScale.Crop,
                     placeholder = ColorPainter(LocalWitMeTheme.colors.secondary300),
