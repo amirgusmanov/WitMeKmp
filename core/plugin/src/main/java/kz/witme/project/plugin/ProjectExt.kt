@@ -13,9 +13,9 @@ internal fun Project.configureKotlinAndroid(extension: LibraryExtension) = exten
         .drop(2)
         .joinToString(".")
 
-    if (moduleName.contains("-")) moduleName.replace("-", "_")
+    val newName = if (moduleName.contains("-")) moduleName.replace("-", "_") else moduleName
 
-    namespace = if (moduleName.isNotEmpty()) "kz.witme.project.$moduleName" else "kz.witme.project"
+    namespace = if (moduleName.isNotEmpty()) "kz.witme.project.$newName" else "kz.witme.project"
     compileSdk = libs.findVersion("android-compileSdk").get().requiredVersion.toInt()
     defaultConfig {
         minSdk = libs.findVersion("android-minSdk").get().requiredVersion.toInt()
@@ -109,8 +109,6 @@ internal fun Project.configureFeatureComposeMultiplatform(extension: KotlinMulti
                     implementation(libs.findLibrary("coil-network-ktor2").get())
                     implementation(libs.findLibrary("coil-network-ktor3").get())
                     implementation(libs.findLibrary("coil-mp").get())
-                    implementation(libs.findLibrary("datastore").get())
-                    implementation(libs.findLibrary("datastore.preferences").get())
                     implementation(libs.findLibrary("androidx.lifecycle.runtime.compose").get())
 
                     implementation(project(":core:common"))

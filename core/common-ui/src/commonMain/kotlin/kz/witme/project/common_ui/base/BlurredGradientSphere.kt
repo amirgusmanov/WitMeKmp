@@ -31,9 +31,10 @@ private const val COLOR_ANIMATION_LABEL = "Color change"
 private const val BLUR_RADIUS = 32
 
 @Composable
-fun BlurredGradientSphere() {
+fun BlurredGradientSphere(
+    modifier: Modifier = Modifier.fillMaxSize()
+) {
     val infiniteTransition = rememberInfiniteTransition(label = TRANSITION_ANIMATION_LABEL)
-
     val position by infiniteTransition.animateFloat(
         initialValue = INITIAL_TRANSITION_VALUE,
         targetValue = TARGET_TRANSITION_VALUE,
@@ -46,7 +47,6 @@ fun BlurredGradientSphere() {
         ),
         label = POSITION_ANIMATION_LABEL
     )
-
     val animatedColor by infiniteTransition.animateColor(
         initialValue = Color.Yellow.copy(alpha = COLOR_OPACITY),
         targetValue = Color.Green.copy(alpha = COLOR_OPACITY),
@@ -62,9 +62,7 @@ fun BlurredGradientSphere() {
 
     //todo: add alternative blur modifier for android 12 and lower versions
     Canvas(
-        modifier = Modifier
-            .fillMaxSize()
-            .blur(BLUR_RADIUS.dp)
+        modifier = modifier.blur(BLUR_RADIUS.dp)
     ) {
         val center = Offset(size.width / 2, size.height / 2)
         val radius = size.minDimension / 2.5f
@@ -83,7 +81,6 @@ fun BlurredGradientSphere() {
             radius = radius,
             center = center
         )
-
         drawCircle(
             brush = Brush.linearGradient(
                 colors = listOf(

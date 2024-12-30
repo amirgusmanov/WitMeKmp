@@ -27,7 +27,7 @@ datastore = "1.1.1"
 jetbrainsKotlinJvm = "2.0.20"
 compose = "1.7.0"
 ktorfit = "2.1.0"
-runtimeAndroid = "1.7.6"
+accompanist-version = "0.37.0"
 
 [libraries]
 android-gradlePlugin = { module = "com.android.tools.build:gradle", version.ref = "gradlePlugin" }
@@ -77,7 +77,8 @@ voyager-bottom-sheet-navigator = { module = "cafe.adriel.voyager:voyager-bottom-
 
 datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
 datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
-androidx-runtime-android = { group = "androidx.compose.runtime", name = "runtime-android", version.ref = "runtimeAndroid" }
+
+accompanist = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist-version" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

@@ -1,6 +1,12 @@
 package kz.witme.project.data.util
 
-object Constants {
-    val BASE_URL = "http://192.168.1.104:8000/"
-    val NETWORK_LOG_TAG = "Network"
+//todo move to gradle files when deploy
+internal object Constants {
+    const val BASE_URL = "https://witbook.ddns.net/"
+    const val NETWORK_LOG_TAG = "Network"
+    const val ACCESS = "Access_token"
+    const val REFRESH = "Refresh_token"
+    const val LOGIN_URL = "${BASE_URL}users/login/"
+    const val REG_URL = "${BASE_URL}users/register/"
+    const val REFRESH_URL = "${BASE_URL}users/refresh_token/"
 }

@@ -1,9 +1,10 @@
 package kz.witme.project.service.auth.data.model.response
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 internal class LoginResponse(
-    val accessToken: String? = null,
-    val refreshToken: String? = null
+    @SerialName("access_token") val accessToken: String,
+    @SerialName("refresh_token") val refreshToken: String?
 )

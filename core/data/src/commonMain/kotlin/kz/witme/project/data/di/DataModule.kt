@@ -11,7 +11,12 @@ expect val platformDataModule: Module
 val sharedDataModule = module {
     single<Ktorfit> {
         Ktorfit.Builder()
-            .httpClient(HttpClientFactory.create(get()))
+            .httpClient(
+                HttpClientFactory.create(
+                    engine = get(),
+                    sessionManager = get()
+                )
+            )
             .baseUrl(Constants.BASE_URL)
             .build()
     }

@@ -49,6 +49,11 @@ kotlin {
             implementation(projects.core.data)
             implementation(projects.feature.auth)
             implementation(projects.service.auth)
+            implementation(projects.service.profile)
+            implementation(projects.feature.dashboard)
+            implementation(projects.service.book)
+            implementation(projects.feature.createBook)
+            implementation(projects.feature.timer)
             implementation(projects.feature.profile)
         }
     }
