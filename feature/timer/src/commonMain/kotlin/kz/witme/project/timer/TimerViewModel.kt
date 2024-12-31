@@ -1,4 +1,4 @@
-package kz.witme.project.timer.model
+package kz.witme.project.timer
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
@@ -15,12 +15,12 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kz.witme.project.book.domain.model.GetBook
 import kz.witme.project.book.domain.repository.GetBookRepository
 import kz.witme.project.common.extension.tryToUpdate
 import kz.witme.project.data.network.onError
 import kz.witme.project.data.network.onSuccess
-import kz.witme.project.timer.TimerController
-import kz.witme.project.timer.TimerUiState
+import kz.witme.project.timer.model.TimerHelperModel
 
 internal class TimerViewModel(
     private val booksRepository: GetBookRepository
@@ -32,10 +32,12 @@ internal class TimerViewModel(
     override val responseEvent = _responseEvent.receiveAsFlow()
 
     private var timerJob: Job? = null
-    private var elapsedSeconds: Long = 0L
 
     private val mutex = Mutex()
     private val notesList: MutableList<String> = mutableListOf()
+
+    var elapsedSeconds: Long = 0L
+        private set
 
     override fun onDispose() {
         super.onDispose()
@@ -66,6 +68,11 @@ internal class TimerViewModel(
                 }
             changeBooksLoadingState(false)
         }
+    }
+
+    //todo rewrite
+    fun getSelectedBook(): GetBook? = uiState.value.books.firstOrNull {
+        it.id == uiState.value.selectedBookId
     }
 
     fun onNoteChanged(currentNoteText: String) {
@@ -148,7 +155,7 @@ internal class TimerViewModel(
         }
     }
 
-    sealed interface ResponseEvent {
+    internal sealed interface ResponseEvent {
         data object NavigateToDetails : ResponseEvent
         data object ShowBookNoteSheet : ResponseEvent
     }

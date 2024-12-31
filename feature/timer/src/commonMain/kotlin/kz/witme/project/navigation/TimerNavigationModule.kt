@@ -8,5 +8,13 @@ val timerNavigationModule = screenModule {
     register<Destination.Timer> { destination ->
         TimerScreen(bookId = destination.bookId)
     }
-    register<Destination.TimerDetails> { TimerDetailsScreen() }
+    register<Destination.TimerDetails> { provider ->
+        TimerDetailsScreen(
+            bookName = provider.bookName,
+            seconds = provider.seconds,
+            readingStatus = provider.readingStatus,
+            previousPage = provider.previousPage,
+            maxPages = provider.maxPages
+        )
+    }
 }

@@ -15,14 +15,32 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
+import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.flow.collectLatest
+import kz.witme.project.common_ui.base.BlurredGradientSphere
+import kz.witme.project.common_ui.base.DefaultButton
 import kz.witme.project.common_ui.extension.clickableWithPressedState
+import kz.witme.project.common_ui.extension.collectAsStateWithLifecycle
 import kz.witme.project.common_ui.screen.toolbarPaddings
+import kz.witme.project.common_ui.spinner.Picker
+import kz.witme.project.common_ui.spinner.rememberPickerState
 import kz.witme.project.common_ui.theme.LocalWitMeTheme
+import kz.witme.project.component.BaseTimerBottomSheet
+import kz.witme.project.timer.model.TimerHelperModel
 import kz.witme.project.timer_details.component.ConfirmButton
 import kz.witme.project.timer_details.component.InfoCard
 import org.jetbrains.compose.resources.painterResource
@@ -33,26 +51,76 @@ import witmekmp.core.common_ui.generated.resources.ic_back
 import witmekmp.core.common_ui.generated.resources.ic_book_status
 import witmekmp.core.common_ui.generated.resources.ic_note
 import witmekmp.core.common_ui.generated.resources.ic_timer_btn
+import witmekmp.core.common_ui.generated.resources.page
+import witmekmp.core.common_ui.generated.resources.save
 import witmekmp.core.common_ui.generated.resources.save_reading_session
 import witmekmp.core.common_ui.generated.resources.session_time
 import witmekmp.core.common_ui.generated.resources.status
 import witmekmp.core.common_ui.generated.resources.str
 import witmekmp.core.common_ui.generated.resources.timer_details_message
 import witmekmp.core.common_ui.generated.resources.total_read
+import witmekmp.core.common_ui.generated.resources.what_page_you_ended
 
-class TimerDetailsScreen : Screen {
+class TimerDetailsScreen(
+    private val bookName: String,
+    private val seconds: Long,
+    private val readingStatus: String,
+    private val previousPage: Int,
+    private val maxPages: Int
+) : Screen {
 
     @Composable
     override fun Content() {
+        val viewModel: TimerDetailsViewModel = koinScreenModel()
+        val uiState: TimerDetailsUiState by viewModel.uiState.collectAsStateWithLifecycle()
+        val bottomSheetNavigator = LocalBottomSheetNavigator.current
+        val navigator = LocalNavigator.current
+
+        val readBookBottomSheet = @Composable {
+            ReadPageBottomSheet(
+                previousPage = uiState.previousPage,
+                maxPages = uiState.maxPages,
+                currentPage = uiState.currentPage.takeIf { it != 0 },
+                onSaveClick = viewModel::onCurrentPageSelect
+            )
+        }
+        LaunchedEffect(Unit) {
+            viewModel.initState(
+                bookName = bookName,
+                seconds = seconds,
+                readingStatus = readingStatus,
+                previousPage = previousPage,
+                maxPages = maxPages
+            )
+            viewModel.onPagesCountClick()
+        }
+        LaunchedEffect(viewModel.responseEvent) {
+            viewModel.responseEvent.collectLatest { event ->
+                when (event) {
+                    TimerDetailsViewModel.ResponseEvent.HidePagePicker -> bottomSheetNavigator.hide()
+                    TimerDetailsViewModel.ResponseEvent.NavigateToDashboard -> navigator?.popUntilRoot()
+                    TimerDetailsViewModel.ResponseEvent.ShowPagePicker -> {
+                        bottomSheetNavigator.show(
+                            BaseTimerBottomSheet(
+                                titleId = Res.string.what_page_you_ended,
+                                content = readBookBottomSheet
+                            )
+                        )
+                    }
+                }
+            }
+        }
         TimerDetailsScreenContent(
-            bookName = "Some book interesting book name"
+            controller = viewModel,
+            uiState = uiState
         )
     }
 }
 
 @Composable
 internal fun TimerDetailsScreenContent(
-    bookName: String
+    controller: TimerDetailsController,
+    uiState: TimerDetailsUiState
 ) {
     val navigator = LocalNavigator.current
     Scaffold(
@@ -79,6 +147,7 @@ internal fun TimerDetailsScreenContent(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
+            BlurredGradientSphere()
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -93,15 +162,30 @@ internal fun TimerDetailsScreenContent(
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = buildAnnotatedString {
-                        append(stringResource(Res.string.timer_details_message))
-                        append(" $bookName")
+                        withStyle(
+                            style = SpanStyle(
+                                color = LocalWitMeTheme.colors.secondary500
+                            )
+                        ) {
+                            append(stringResource(Res.string.timer_details_message))
+                        }
+                        withStyle(
+                            style = SpanStyle(
+                                color = LocalWitMeTheme.colors.primary400,
+                                textDecoration = TextDecoration.Underline
+                            )
+                        ) {
+                            append(" ${uiState.bookName}")
+                        }
                     },
-                    style = LocalWitMeTheme.typography.regular16,
-                    color = LocalWitMeTheme.colors.secondary500
+                    style = LocalWitMeTheme.typography.regular16
                 )
                 Spacer(modifier = Modifier.height(26.dp))
                 Text(
-                    text = stringResource(Res.string.good_boy, 20),
+                    text = stringResource(
+                        Res.string.good_boy,
+                        "${uiState.currentPage - uiState.previousPage}"
+                    ),
                     style = LocalWitMeTheme.typography.regular16,
                     color = LocalWitMeTheme.colors.secondary500
                 )
@@ -114,25 +198,28 @@ internal fun TimerDetailsScreenContent(
                     ) {
                         InfoCard(
                             modifier = Modifier.fillMaxWidth(),
-                            onClick = {},
+                            onClick = controller::onTimerClick,
                             title = stringResource(Res.string.session_time),
-                            subtitle = "00:10:03",
+                            subtitle = with(
+                                TimerHelperModel.getLeftTimerHelperModel(uiState.timerSeconds)
+                            ) {
+                                "$hours:$minutes:$seconds"
+                            },
                             icon = painterResource(Res.drawable.ic_timer_btn)
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         InfoCard(
                             modifier = Modifier.fillMaxWidth(),
-                            onClick = {},
+                            onClick = controller::onPagesCountClick,
                             title = stringResource(Res.string.total_read),
-                            subtitle = "${stringResource(Res.string.str)} 40/304",
+                            subtitle = "${stringResource(Res.string.str)} ${uiState.currentPage}/${uiState.maxPages}",
                             icon = painterResource(Res.drawable.ic_note)
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         InfoCard(
                             modifier = Modifier.fillMaxWidth(),
-                            onClick = {},
                             title = stringResource(Res.string.status),
-                            subtitle = "Читаю",
+                            subtitle = uiState.readingStatus,
                             icon = painterResource(Res.drawable.ic_book_status)
                         )
                     }
@@ -141,12 +228,48 @@ internal fun TimerDetailsScreenContent(
                         modifier = Modifier
                             .weight(0.25f)
                             .fillMaxHeight(),
-                        onClick = {
-
-                        }
+                        onClick = controller::onConfirmClick
                     )
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun ReadPageBottomSheet(
+    onSaveClick: (chosenPage: String) -> Unit,
+    currentPage: Int?,
+    previousPage: Int,
+    maxPages: Int
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        val items = remember {
+            (previousPage..maxPages).toList()
+        }
+        val pickerState = rememberPickerState()
+        Picker(
+            items = items
+                .map { "$it ${stringResource(Res.string.page)}" }
+                .toImmutableList(),
+            state = pickerState,
+            visibleItemsCount = 7,
+            startIndex = items.indexOf(
+                items.find { it == currentPage }
+            )
+        )
+        Spacer(modifier = Modifier.height(24.dp))
+        DefaultButton(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 24.dp),
+            onClick = {
+                onSaveClick(pickerState.selectedItem)
+            },
+            text = stringResource(Res.string.save)
+        )
     }
 }

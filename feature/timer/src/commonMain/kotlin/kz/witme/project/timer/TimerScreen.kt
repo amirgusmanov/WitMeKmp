@@ -27,7 +27,7 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.registry.rememberScreen
+import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -49,7 +49,6 @@ import kz.witme.project.navigation.Destination
 import kz.witme.project.timer.component.PlayButton
 import kz.witme.project.timer.component.TimerButton
 import kz.witme.project.timer.component.TimerView
-import kz.witme.project.timer.model.TimerViewModel
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import witmekmp.core.common_ui.generated.resources.Res
@@ -90,7 +89,6 @@ class TimerScreen(private val bookId: String? = null) : Screen {
                 onBookClick = viewModel::onBookChoose
             )
         }
-        val detailsScreen = rememberScreen(Destination.TimerDetails)
         LaunchedEffect(viewModel.responseEvent) {
             viewModel.responseEvent.collectLatest { event ->
                 when (event) {
@@ -104,7 +102,31 @@ class TimerScreen(private val bookId: String? = null) : Screen {
                             )
                         } else {
                             bottomSheetNavigator.hide()
-                            navigator?.push(detailsScreen)
+                            //todo fix the whole arguments, pass the whole GetBook between screens
+                            ScreenRegistry.get(
+                                Destination.TimerDetails(
+                                    bookName = "Amin",
+                                    seconds = viewModel.elapsedSeconds,
+                                    readingStatus = "Читаю",
+                                    previousPage = 15,
+                                    maxPages = 400
+                                )
+                            ).let {
+                                navigator?.push(it)
+                            }
+                            viewModel.getSelectedBook()?.let { book ->
+                                ScreenRegistry.get(
+                                    Destination.TimerDetails(
+                                        bookName = book.name,
+                                        seconds = viewModel.elapsedSeconds,
+                                        readingStatus = book.readingStatus.displayName,
+                                        previousPage = book.currentPage,
+                                        maxPages = book.pagesAmount
+                                    )
+                                ).let {
+                                    navigator?.push(it)
+                                }
+                            }
                         }
                     }
 

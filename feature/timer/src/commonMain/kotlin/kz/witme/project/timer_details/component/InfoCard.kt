@@ -25,7 +25,7 @@ internal fun InfoCard(
     title: String,
     subtitle: String,
     icon: Painter,
-    onClick: () -> Unit
+    onClick: () -> Unit = {}
 ) {
     ElevatedCard(
         modifier = modifier.clickableWithPressedState(
