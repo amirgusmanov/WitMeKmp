@@ -29,10 +29,14 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.collectLatest
+import kz.witme.project.book.domain.model.GetBook
+import kz.witme.project.book.domain.model.ReadingStatus
 import kz.witme.project.common_ui.base.BlurredGradientSphere
 import kz.witme.project.common_ui.base.DefaultButton
+import kz.witme.project.common_ui.base.ErrorAlert
 import kz.witme.project.common_ui.extension.clickableWithPressedState
 import kz.witme.project.common_ui.extension.collectAsStateWithLifecycle
 import kz.witme.project.common_ui.screen.toolbarPaddings
@@ -62,11 +66,9 @@ import witmekmp.core.common_ui.generated.resources.total_read
 import witmekmp.core.common_ui.generated.resources.what_page_you_ended
 
 class TimerDetailsScreen(
-    private val bookName: String,
+    private val book: GetBook,
     private val seconds: Long,
-    private val readingStatus: String,
-    private val previousPage: Int,
-    private val maxPages: Int
+    private val notes: ImmutableList<String>
 ) : Screen {
 
     @Composable
@@ -86,11 +88,9 @@ class TimerDetailsScreen(
         }
         LaunchedEffect(Unit) {
             viewModel.initState(
-                bookName = bookName,
-                seconds = seconds,
-                readingStatus = readingStatus,
-                previousPage = previousPage,
-                maxPages = maxPages
+                book = book,
+                elapsedSeconds = seconds,
+                notes = notes
             )
             viewModel.onPagesCountClick()
         }
@@ -109,6 +109,12 @@ class TimerDetailsScreen(
                     }
                 }
             }
+        }
+        if (uiState.errorMessage.isNotBlank()) {
+            ErrorAlert(
+                errorText = uiState.errorMessage,
+                onDismiss = viewModel::onErrorDismiss
+            )
         }
         TimerDetailsScreenContent(
             controller = viewModel,
@@ -167,7 +173,8 @@ internal fun TimerDetailsScreenContent(
                                 color = LocalWitMeTheme.colors.secondary500
                             )
                         ) {
-                            append(stringResource(Res.string.timer_details_message))
+                            //todo make it clickable and show book picker bottomsheet if navigated from bottom nav
+                            append("${stringResource(Res.string.timer_details_message)} ")
                         }
                         withStyle(
                             style = SpanStyle(
@@ -175,7 +182,7 @@ internal fun TimerDetailsScreenContent(
                                 textDecoration = TextDecoration.Underline
                             )
                         ) {
-                            append(" ${uiState.bookName}")
+                            append(uiState.book?.name)
                         }
                     },
                     style = LocalWitMeTheme.typography.regular16
@@ -219,7 +226,8 @@ internal fun TimerDetailsScreenContent(
                         InfoCard(
                             modifier = Modifier.fillMaxWidth(),
                             title = stringResource(Res.string.status),
-                            subtitle = uiState.readingStatus,
+                            subtitle = (uiState.book?.readingStatus
+                                ?: ReadingStatus.ReadingNow).displayName,
                             icon = painterResource(Res.drawable.ic_book_status)
                         )
                     }
@@ -228,7 +236,8 @@ internal fun TimerDetailsScreenContent(
                         modifier = Modifier
                             .weight(0.25f)
                             .fillMaxHeight(),
-                        onClick = controller::onConfirmClick
+                        onClick = controller::onConfirmClick,
+                        isLoading = uiState.isLoading
                     )
                 }
             }

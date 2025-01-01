@@ -15,6 +15,7 @@ suspend inline fun <reified T> safeCall(
 } catch (e: ClientRequestException) { // Handles 4xx responses
     handleHttpException(e.response)
 } catch (e: ServerResponseException) { // Handles 5xx responses
+    Logger.e(message = e.toString())
     RequestResult.Error(DataError.Remote.SERVER)
 } catch (e: NullPointerException) {
     Logger.e(message = e.toString())
@@ -33,6 +34,7 @@ suspend inline fun <reified T> safeCall(
 }
 
 fun handleHttpException(response: HttpResponse): RequestResult.Error<DataError.Remote> {
+    Logger.e(message = response.toString())
     return when (response.status.value) {
         401 -> RequestResult.Error(DataError.Remote.UNAUTHORIZED)
         408 -> RequestResult.Error(DataError.Remote.REQUEST_TIMEOUT)

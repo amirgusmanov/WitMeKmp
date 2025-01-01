@@ -27,6 +27,7 @@ internal class TimerViewModel(
 ) : ScreenModel, TimerController {
 
     val uiState: StateFlow<TimerUiState> = MutableStateFlow(TimerUiState())
+    val notesList: MutableList<String> = mutableListOf()
 
     private val _responseEvent = Channel<ResponseEvent>()
     override val responseEvent = _responseEvent.receiveAsFlow()
@@ -34,7 +35,6 @@ internal class TimerViewModel(
     private var timerJob: Job? = null
 
     private val mutex = Mutex()
-    private val notesList: MutableList<String> = mutableListOf()
 
     var elapsedSeconds: Long = 0L
         private set
@@ -70,10 +70,7 @@ internal class TimerViewModel(
         }
     }
 
-    //todo rewrite
-    fun getSelectedBook(): GetBook? = uiState.value.books.firstOrNull {
-        it.id == uiState.value.selectedBookId
-    }
+    fun getSelectedBook(id: String): GetBook? = uiState.value.books.firstOrNull { it.id == id }
 
     fun onNoteChanged(currentNoteText: String) {
         uiState.tryToUpdate {

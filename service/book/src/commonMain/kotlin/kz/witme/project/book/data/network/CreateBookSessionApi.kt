@@ -8,7 +8,7 @@ import kz.witme.project.book.data.model.response.DefaultResponse
 
 internal interface CreateBookSessionApi {
 
-    @POST("/books/{book_id}/create_session/")
+    @POST("books/{book_id}/create_session/")
     suspend fun createSession(
         @Path("book_id") id: String,
         @Body body: CreateSessionBodyRequest

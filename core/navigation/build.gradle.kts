@@ -36,6 +36,7 @@ kotlin {
             api(libs.voyager.koin)
             api(libs.voyager.bottom.sheet.navigator)
             api(libs.voyager.transitions)
+            implementation(projects.service.book)
         }
     }
 }

@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
@@ -20,6 +21,7 @@ import witmekmp.core.common_ui.generated.resources.ic_confirm
 @Composable
 internal fun ConfirmButton(
     modifier: Modifier = Modifier,
+    isLoading: Boolean,
     onClick: () -> Unit
 ) {
     ElevatedCard(
@@ -34,12 +36,19 @@ internal fun ConfirmButton(
         Box(
             modifier = Modifier.fillMaxSize()
         ) {
-            Icon(
-                modifier = Modifier.size(40.dp).align(Alignment.Center),
-                painter = painterResource(Res.drawable.ic_confirm),
-                contentDescription = null,
-                tint = LocalWitMeTheme.colors.white
-            )
+            if (isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(40.dp).align(Alignment.Center),
+                    trackColor = LocalWitMeTheme.colors.white
+                )
+            } else {
+                Icon(
+                    modifier = Modifier.size(40.dp).align(Alignment.Center),
+                    painter = painterResource(Res.drawable.ic_confirm),
+                    contentDescription = null,
+                    tint = LocalWitMeTheme.colors.white
+                )
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 package kz.witme.project.navigation
 
 import cafe.adriel.voyager.core.registry.ScreenProvider
+import kz.witme.project.book.domain.model.GetBook
 
 sealed interface Destination : ScreenProvider {
     data object Onboarding : Destination
@@ -13,10 +14,8 @@ sealed interface Destination : ScreenProvider {
     data class CreateStatusBook(val args: CreateBookArgs) : Destination
     data class Timer(val bookId: String? = null) : Destination
     data class TimerDetails(
-        val bookName: String,
+        val book: GetBook,
         val seconds: Long,
-        val readingStatus: String,
-        val previousPage: Int,
-        val maxPages: Int
+        val notes: List<String>
     ) : Destination
 }

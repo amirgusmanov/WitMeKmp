@@ -7,11 +7,12 @@ import kz.witme.project.book.domain.model.GetBook
 
 @Stable
 internal data class TimerDetailsUiState(
-    val bookName: String = "",
+    val book: GetBook? = null,
     val timerSeconds: Long = 0L,
-    val readingStatus: String = "",
+    val maxPages: Int = 0,
     val previousPage: Int = 0,
     val currentPage: Int = 0,
-    val maxPages: Int = 0,
-    val books: ImmutableList<GetBook> = persistentListOf()
+    val notes: ImmutableList<String> = persistentListOf(),
+    val errorMessage: String = "",
+    val isLoading: Boolean = false
 )

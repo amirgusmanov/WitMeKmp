@@ -1,6 +1,7 @@
 package kz.witme.project.navigation
 
 import cafe.adriel.voyager.core.registry.screenModule
+import kotlinx.collections.immutable.toImmutableList
 import kz.witme.project.timer.TimerScreen
 import kz.witme.project.timer_details.TimerDetailsScreen
 
@@ -10,11 +11,9 @@ val timerNavigationModule = screenModule {
     }
     register<Destination.TimerDetails> { provider ->
         TimerDetailsScreen(
-            bookName = provider.bookName,
+            book = provider.book,
             seconds = provider.seconds,
-            readingStatus = provider.readingStatus,
-            previousPage = provider.previousPage,
-            maxPages = provider.maxPages
+            notes = provider.notes.toImmutableList()
         )
     }
 }

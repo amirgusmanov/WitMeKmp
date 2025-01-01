@@ -83,18 +83,10 @@ fun Picker(
                 .fadingEdge(fadingEdgeGradient)
         ) {
             items(listScrollCount) { index ->
-//                val distanceFromCenter =
-//                    abs(index - (listState.firstVisibleItemIndex + visibleItemsMiddle))
-//                val scaleFactor = when (distanceFromCenter) {
-//                    0 -> 1f
-//                    1 -> 0.8f
-//                    else -> 0.6f
-//                }
                 Text(
                     text = getItem(index),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-//                    style = textStyle.copy(fontSize = textStyle.fontSize * scaleFactor),
                     style = textStyle.copy(fontSize = textStyle.fontSize),
                     modifier = Modifier
                         .onSizeChanged { size -> itemHeightPixels.value = size.height }

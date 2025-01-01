@@ -35,7 +35,6 @@ import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.flow.collectLatest
 import kz.witme.project.book.domain.model.GetBook
-import kz.witme.project.common.extension.isNull
 import kz.witme.project.common_ui.base.DefaultButton
 import kz.witme.project.common_ui.extension.clickableWithPressedState
 import kz.witme.project.common_ui.extension.clickableWithoutRipple
@@ -102,29 +101,15 @@ class TimerScreen(private val bookId: String? = null) : Screen {
                             )
                         } else {
                             bottomSheetNavigator.hide()
-                            //todo fix the whole arguments, pass the whole GetBook between screens
-                            ScreenRegistry.get(
-                                Destination.TimerDetails(
-                                    bookName = "Amin",
-                                    seconds = viewModel.elapsedSeconds,
-                                    readingStatus = "Читаю",
-                                    previousPage = 15,
-                                    maxPages = 400
-                                )
-                            ).let {
-                                navigator?.push(it)
-                            }
-                            viewModel.getSelectedBook()?.let { book ->
+                            viewModel.getSelectedBook(bookId ?: uiState.selectedBookId)?.let {
                                 ScreenRegistry.get(
                                     Destination.TimerDetails(
-                                        bookName = book.name,
+                                        book = it,
                                         seconds = viewModel.elapsedSeconds,
-                                        readingStatus = book.readingStatus.displayName,
-                                        previousPage = book.currentPage,
-                                        maxPages = book.pagesAmount
+                                        notes = viewModel.notesList
                                     )
-                                ).let {
-                                    navigator?.push(it)
+                                ).let { screen ->
+                                    navigator?.push(screen)
                                 }
                             }
                         }
@@ -141,14 +126,15 @@ class TimerScreen(private val bookId: String? = null) : Screen {
                 }
             }
         }
-        LaunchedEffect(bookId) {
-            if (bookId.isNull()) {
-                viewModel.getBooks()
-            }
+        LaunchedEffect(Unit) {
+            viewModel.getBooks()
         }
         TimerScreenContent(
             controller = viewModel,
-            uiState = uiState
+            uiState = uiState,
+            onBackClick = {
+                navigator?.pop()
+            }
         )
     }
 }
@@ -156,7 +142,8 @@ class TimerScreen(private val bookId: String? = null) : Screen {
 @Composable
 internal fun TimerScreenContent(
     controller: TimerController,
-    uiState: TimerUiState
+    uiState: TimerUiState,
+    onBackClick: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -168,11 +155,7 @@ internal fun TimerScreenContent(
                 .toolbarPaddings()
                 .padding(top = 16.dp)
                 .align(Alignment.TopStart)
-                .clickableWithPressedState(
-                    onClick = {
-
-                    }
-                ),
+                .clickableWithPressedState(onClick = onBackClick),
             painter = painterResource(Res.drawable.ic_back),
             tint = LocalWitMeTheme.colors.white,
             contentDescription = "back button"
