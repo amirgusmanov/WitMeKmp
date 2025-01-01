@@ -110,7 +110,7 @@ internal fun CreateBookStatusScreenContent(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         contentWindowInsets = WindowInsets.statusBars,
-        containerColor = LocalWitMeTheme.colors.background,
+        containerColor = LocalWitMeTheme.colors.white,
         topBar = {
             DefaultToolbar(
                 modifier = Modifier.toolbarPaddings(),
