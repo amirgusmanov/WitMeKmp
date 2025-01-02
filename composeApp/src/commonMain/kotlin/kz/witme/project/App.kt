@@ -1,9 +1,14 @@
+@file:OptIn(ExperimentalMaterialApi::class)
+
 package kz.witme.project
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomAppBar
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FabPosition
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
@@ -13,6 +18,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.navigator.bottomSheet.BottomSheetNavigator
 import cafe.adriel.voyager.navigator.tab.CurrentTab
 import cafe.adriel.voyager.navigator.tab.TabNavigator
 import cafe.adriel.voyager.transitions.SlideTransition
@@ -32,44 +38,54 @@ import kz.witme.project.tabs.Timer
 fun App() {
     WitMeTheme {
         val navigateFlow by HttpClientFactory.navigateFlow.collectAsStateWithLifecycle()
-        when (navigateFlow) {
-            HttpClientFactory.NavigateFlow.LoginFlow -> LoginFlow()
-            HttpClientFactory.NavigateFlow.TabsFlow -> TabsFlow()
-            HttpClientFactory.NavigateFlow.SplashFlow -> SplashFlow()
+        AnimatedContent(
+            targetState = navigateFlow
+        ) { flow ->
+            when (flow) {
+                HttpClientFactory.NavigateFlow.LoginFlow -> LoginFlow()
+                HttpClientFactory.NavigateFlow.TabsFlow -> TabsFlow()
+                HttpClientFactory.NavigateFlow.SplashFlow -> SplashFlow()
+            }
         }
     }
 }
 
 @Composable
 private fun TabsFlow() {
-    TabNavigator(tab = Home) {
-        Scaffold(
-            content = {
-                CurrentTab()
-            },
-            floatingActionButtonPosition = FabPosition.Center,
-            isFloatingActionButtonDocked = true,
-            bottomBar = {
-                BottomAppBar(
-                    modifier = Modifier.clip(
-                        RoundedCornerShape(
-                            topStart = 16.dp,
-                            topEnd = 16.dp
-                        )
-                    ),
-                    cutoutShape = CircleShape,
-                    backgroundColor = LocalWitMeTheme.colors.bottomNav,
-                    windowInsets = WindowInsets(bottom = bottomNavigationPaddings()),
-                    elevation = 16.dp
-                ) {
-                    TabNavigationItem(Home)
-                    TabNavigationItem(Profile)
-                }
-            },
-            floatingActionButton = {
-                FabTimer(Timer)
-            }
-        )
+    BottomSheetNavigator(
+        modifier = Modifier.animateContentSize(),
+        sheetShape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
+        skipHalfExpanded = true
+    ) {
+        TabNavigator(tab = Home) {
+            Scaffold(
+                floatingActionButtonPosition = FabPosition.Center,
+                isFloatingActionButtonDocked = true,
+                bottomBar = {
+                    BottomAppBar(
+                        modifier = Modifier.clip(
+                            RoundedCornerShape(
+                                topStart = 16.dp,
+                                topEnd = 16.dp
+                            )
+                        ),
+                        cutoutShape = CircleShape,
+                        backgroundColor = LocalWitMeTheme.colors.bottomNav,
+                        windowInsets = WindowInsets(bottom = bottomNavigationPaddings()),
+                        elevation = 16.dp
+                    ) {
+                        TabNavigationItem(Home)
+                        TabNavigationItem(Profile)
+                    }
+                },
+                floatingActionButton = {
+                    FabTimer(Timer)
+                },
+                content = {
+                    CurrentTab()
+                },
+            )
+        }
     }
 }
 
