@@ -37,6 +37,7 @@ fun PasswordTextField(
     textPlaceholder: String,
     minHeight: Dp = 40.dp,
     isError: Boolean = false,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     onQueryChanged: (String) -> Unit = {}
 ) {
     var passwordVisibility by remember { mutableStateOf(false) }
@@ -69,9 +70,7 @@ fun PasswordTextField(
                 )
             }
         },
-        keyboardOptions = KeyboardOptions().copy(
-            keyboardType = KeyboardType.Password,
-        ),
+        keyboardOptions = keyboardOptions.copy(keyboardType = KeyboardType.Password),
         visualTransformation = if (query.isEmpty()) {
             PlaceholderTransformation(
                 placeholder = textPlaceholder,

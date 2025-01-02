@@ -96,7 +96,13 @@ private fun SplashFlow() {
 
 @Composable
 private fun LoginFlow() {
-    Navigator(screen = rememberScreen(Destination.Onboarding)) {
-        SlideTransition(it)
+    BottomSheetNavigator(
+        modifier = Modifier.animateContentSize(),
+        sheetShape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
+        skipHalfExpanded = true
+    ) {
+        Navigator(screen = rememberScreen(Destination.Onboarding)) {
+            SlideTransition(it)
+        }
     }
 }

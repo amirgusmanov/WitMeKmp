@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.koinScreenModel
@@ -221,6 +224,7 @@ private fun EditProfileContent(
             DefaultTextField(
                 query = uiState.nameQuery,
                 textPlaceholder = stringResource(Res.string.name),
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                 onQueryChanged = controller::onNameQueryChange
             )
             Spacer(modifier = Modifier.height(16.dp))
@@ -239,7 +243,9 @@ private fun EditProfileContent(
             }
             Spacer(modifier = Modifier.weight(1f))
             Box(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .imePadding()
             ) {
                 DefaultProgressButton(
                     onClick = controller::onNextButtonClick,
@@ -251,7 +257,6 @@ private fun EditProfileContent(
                             && uiState.isUpdateButtonEnabled
                 )
             }
-            Spacer(modifier = Modifier.height(40.dp))
         }
     }
 }

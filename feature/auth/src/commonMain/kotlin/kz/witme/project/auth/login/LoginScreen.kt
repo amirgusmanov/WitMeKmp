@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.registry.rememberScreen
@@ -116,13 +117,17 @@ internal fun LoginScreenContent(
                 DefaultTextField(
                     query = uiState.emailQuery,
                     textPlaceholder = stringResource(Res.string.email),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Email,
+                        imeAction = ImeAction.Next
+                    ),
                     onQueryChanged = controller::onEmailQueryChanged
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 PasswordTextField(
                     query = uiState.passwordQuery,
                     textPlaceholder = stringResource(Res.string.password),
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                     onQueryChanged = controller::onPasswordQueryChanged
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -153,7 +158,6 @@ internal fun LoginScreenContent(
                         isLoading = uiState.isLoginButtonLoading
                     )
                 }
-                Spacer(modifier = Modifier.height(40.dp))
             }
         }
     }

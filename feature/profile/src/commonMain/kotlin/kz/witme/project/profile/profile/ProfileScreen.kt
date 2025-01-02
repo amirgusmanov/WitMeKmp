@@ -45,6 +45,7 @@ class ProfileScreen : Screen {
     }
 }
 
+//todo: add photo picker, connect endpoints
 @Composable
 internal fun ProfileScreenContent(
     controller: ProfileController,
