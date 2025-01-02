@@ -55,6 +55,7 @@ kotlin {
             implementation(projects.feature.createBook)
             implementation(projects.feature.timer)
             implementation(projects.feature.profile)
+            implementation(projects.feature.bookDetails)
         }
     }
 }

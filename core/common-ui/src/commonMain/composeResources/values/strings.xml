@@ -76,4 +76,5 @@
     <string name="total_read">Всего страниц прочитано</string>
     <string name="status">Статус</string>
     <string name="save">Сохранить</string>
+    <string name="pages">страниц</string>
 </resources>
