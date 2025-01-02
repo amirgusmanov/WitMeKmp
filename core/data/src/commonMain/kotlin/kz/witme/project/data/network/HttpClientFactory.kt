@@ -15,18 +15,25 @@ import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.accept
+import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.Url
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.serialization.json.Json
+import kz.witme.project.common.extension.tryToUpdate
 import kz.witme.project.data.local.SessionManager
 import kz.witme.project.data.util.Constants
 import kz.witme.project.common.log.Logger as SharedLogger
 
-internal object HttpClientFactory {
+object HttpClientFactory {
+
+    //todo put it somewhere else
+    val navigateFlow: StateFlow<NavigateFlow> = MutableStateFlow(NavigateFlow.SplashFlow)
 
     fun create(
         engine: HttpClientEngine,
@@ -49,7 +56,10 @@ internal object HttpClientFactory {
                     sendRefreshRequest(
                         sessionManager = sessionManager,
                         onRefreshFailed = {
-                            //todo need to navigate to onboarding
+                            navigateFlow.tryToUpdate { NavigateFlow.LoginFlow }
+                        },
+                        onRefreshSuccess = {
+                            navigateFlow.tryToUpdate { NavigateFlow.TabsFlow }
                         }
                     )
                 }
@@ -69,32 +79,52 @@ internal object HttpClientFactory {
         }
     }
 
+    //todo check logs
     private suspend fun RefreshTokensParams.sendRefreshRequest(
         sessionManager: SessionManager,
-        onRefreshFailed: suspend () -> Unit
+        onRefreshFailed: suspend () -> Unit,
+        onRefreshSuccess: suspend () -> Unit
     ): BearerTokens {
+        val refreshToken = sessionManager.getRefreshToken().ifBlank {
+            onRefreshFailed()
+            throw IllegalStateException("Refresh token is blank")
+        }
+        val accessToken = sessionManager.getAccessToken().ifBlank {
+            onRefreshFailed()
+            throw IllegalStateException("Access token is blank")
+        }
         val response = client.post(Url(Constants.REFRESH_URL)) {
             markAsRefreshTokenRequest()
             contentType(ContentType.Application.Json)
+            accept(ContentType.Application.Json)
+            header("Authorization", "Bearer $accessToken")
             setBody(
-                AuthModel(
-                    access = sessionManager.getAccessToken(),
-                    refresh = sessionManager.getRefreshToken()
-                )
+                AuthRequestModel(refresh = refreshToken)
             )
         }
-        if (response.status.value == 401) {
-            sessionManager.clearAccessToken()
-            sessionManager.clearRefreshToken()
-            onRefreshFailed()
-        } else {
-            with(response.body<AuthModel>()) {
-                sessionManager.setAccessToken(access)
-                sessionManager.setRefreshToken(refresh ?: return@with)
+        when (response.status.value) {
+            401 -> {
+                SharedLogger.e("TOKEN", "401 Unauthorized")
+                onRefreshFailed()
+                throw IllegalStateException("Failed to refresh token: Unauthorized")
             }
-        }
-        return with(response.body<AuthModel>()) {
-            BearerTokens(accessToken = access, refreshToken = refresh)
+            in 200..299 -> {
+                onRefreshSuccess()
+                val authModel = response.body<AuthModel>()
+                sessionManager.setAccessToken(authModel.access)
+                sessionManager.setRefreshToken(
+                    authModel.refresh ?: throw IllegalStateException("Refresh token is null")
+                )
+                return BearerTokens(
+                    accessToken = authModel.access,
+                    refreshToken = authModel.refresh
+                )
+            }
+            else -> {
+                throw IllegalStateException(
+                    "Failed to refresh token: Unexpected status ${response.status.value}"
+                )
+            }
         }
     }
 
@@ -125,5 +155,11 @@ internal object HttpClientFactory {
             }
             level = LogLevel.ALL
         }
+    }
+
+    enum class NavigateFlow {
+        LoginFlow,
+        TabsFlow,
+        SplashFlow
     }
 }

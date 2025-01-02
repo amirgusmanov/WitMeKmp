@@ -12,4 +12,6 @@ internal interface LoginController {
     fun onLoginClick()
 
     fun onLoginErrorDismiss()
+
+    fun navigateToTabs()
 }

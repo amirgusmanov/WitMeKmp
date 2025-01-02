@@ -4,6 +4,7 @@ import cafe.adriel.voyager.core.registry.ScreenProvider
 import kz.witme.project.book.domain.model.GetBook
 
 sealed interface Destination : ScreenProvider {
+    data object Splash : Destination
     data object Onboarding : Destination
     data object Login : Destination
     data object Registration : Destination

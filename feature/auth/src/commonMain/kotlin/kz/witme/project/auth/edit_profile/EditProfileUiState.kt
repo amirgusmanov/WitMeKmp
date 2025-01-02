@@ -7,7 +7,6 @@ import androidx.compose.ui.graphics.ImageBitmap
 internal data class EditProfileUiState(
     val nameQuery: String = "",
     val updateErrorMessage: String = "",
-    val isEditProfileSuccess: Boolean = false,
     val isUpdateLoading: Boolean = false,
     val isUpdateButtonEnabled: Boolean = true,
     val imageBitmap: ImageBitmap? = null,

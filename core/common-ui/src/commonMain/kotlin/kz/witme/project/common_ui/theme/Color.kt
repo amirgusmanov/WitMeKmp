@@ -24,7 +24,8 @@ data class Colors(
     val textBrush200: Color,
     val error100: Color,
     val error200: Color,
-    val focusHelperAlert: Color
+    val focusHelperAlert: Color,
+    val bottomNav: Color
 )
 
 internal val lightPalette = Colors(
@@ -49,5 +50,6 @@ internal val lightPalette = Colors(
     textBrush200 = Color(0xFF4D84C7),
     error100 = Color(0xFFE60045),
     error200 = Color(0xFFE60045),
-    focusHelperAlert = Color(0xFFEECA2B)
+    focusHelperAlert = Color(0xFFEECA2B),
+    bottomNav = Color(0xFFFAFBFF)
 )

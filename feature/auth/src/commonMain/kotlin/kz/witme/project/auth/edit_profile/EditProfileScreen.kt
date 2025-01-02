@@ -19,7 +19,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -47,7 +46,6 @@ import kz.witme.project.common_ui.permission.PermissionType
 import kz.witme.project.common_ui.permission.createPermissionsManager
 import kz.witme.project.common_ui.theme.LinearGradient
 import kz.witme.project.common_ui.theme.LocalWitMeTheme
-import kz.witme.project.navigation.Destination
 import org.jetbrains.compose.resources.stringResource
 import witmekmp.core.common_ui.generated.resources.Res
 import witmekmp.core.common_ui.generated.resources.name
@@ -189,12 +187,6 @@ private fun EditProfileContent(
 ) {
     val navigator = LocalNavigator.current
     val focusManager = LocalFocusManager.current
-    val dashboardScreen = rememberScreen(provider = Destination.Dashboard)
-    LaunchedEffect(uiState.isEditProfileSuccess) {
-        if (uiState.isEditProfileSuccess) {
-            navigator?.replaceAll(dashboardScreen)
-        }
-    }
     Box(
         modifier = Modifier
             .padding(contentPaddingValues)
@@ -239,9 +231,9 @@ private fun EditProfileContent(
                         text = stringResource(Res.string.skip_this_step),
                         style = LocalWitMeTheme.typography.regular12,
                         color = LocalWitMeTheme.colors.link200,
-                        modifier = Modifier.clickableWithoutRipple {
-                            navigator?.replaceAll(dashboardScreen)
-                        }
+                        modifier = Modifier.clickableWithoutRipple(
+                            onClick = controller::navigateToTabs
+                        )
                     )
                 }
             }

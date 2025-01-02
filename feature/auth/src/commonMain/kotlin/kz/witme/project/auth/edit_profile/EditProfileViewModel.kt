@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kz.witme.project.common.extension.tryToUpdate
+import kz.witme.project.data.network.HttpClientFactory
 import kz.witme.project.data.network.getMessage
 import kz.witme.project.data.network.onError
 import kz.witme.project.data.network.onSuccess
@@ -39,9 +40,7 @@ internal class EditProfileViewModel(
                 avatar = imageByteArray.value ?: return@launch,
                 username = uiState.value.nameQuery
             ).onSuccess {
-                uiState.tryToUpdate {
-                    it.copy(isEditProfileSuccess = true)
-                }
+                navigateToTabs()
             }.onError { error ->
                 uiState.tryToUpdate {
                     it.copy(updateErrorMessage = error.getMessage())
@@ -125,6 +124,14 @@ internal class EditProfileViewModel(
     override fun onAvatarClear() {
         uiState.tryToUpdate {
             it.copy(imageBitmap = null)
+        }
+    }
+
+    override fun navigateToTabs() {
+        screenModelScope.launch {
+            HttpClientFactory.navigateFlow.tryToUpdate {
+                HttpClientFactory.NavigateFlow.TabsFlow
+            }
         }
     }
 

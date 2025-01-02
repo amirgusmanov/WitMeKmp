@@ -24,7 +24,7 @@ internal class AuthRepositoryImpl(
         )
         with(sessionManager) {
             setAccessToken(response.accessToken)
-            setRefreshToken(response.refreshToken ?: "")
+            setRefreshToken(response.refreshToken.orEmpty())
         }
     }
 
@@ -37,7 +37,7 @@ internal class AuthRepositoryImpl(
         )
         with(sessionManager) {
             setAccessToken(response.accessToken)
-            setRefreshToken(response.refreshToken ?: "")
+            setRefreshToken(response.refreshToken.orEmpty())
         }
     }
 

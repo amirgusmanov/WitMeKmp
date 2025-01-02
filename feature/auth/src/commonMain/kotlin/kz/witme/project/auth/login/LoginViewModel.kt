@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kz.witme.project.common.extension.tryToUpdate
+import kz.witme.project.data.network.HttpClientFactory
 import kz.witme.project.data.network.getMessage
 import kz.witme.project.data.network.onError
 import kz.witme.project.data.network.onSuccess
@@ -39,9 +40,7 @@ internal class LoginViewModel(
                 email = uiState.value.emailQuery,
                 password = uiState.value.passwordQuery
             ).onSuccess {
-                uiState.tryToUpdate {
-                    it.copy(isLoginSuccess = true)
-                }
+                navigateToTabs()
             }.onError { error ->
                 uiState.tryToUpdate {
                     it.copy(loginErrorMessage = error.getMessage())
@@ -54,6 +53,14 @@ internal class LoginViewModel(
     override fun onLoginErrorDismiss() {
         uiState.tryToUpdate {
             it.copy(loginErrorMessage = "")
+        }
+    }
+
+    override fun navigateToTabs() {
+        screenModelScope.launch {
+            HttpClientFactory.navigateFlow.tryToUpdate {
+                HttpClientFactory.NavigateFlow.TabsFlow
+            }
         }
     }
 

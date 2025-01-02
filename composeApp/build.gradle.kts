@@ -42,6 +42,7 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
+            implementation(libs.voyager.tab.navigator)
 
             implementation(projects.core.navigation)
             implementation(projects.core.common)
@@ -56,6 +57,7 @@ kotlin {
             implementation(projects.feature.timer)
             implementation(projects.feature.profile)
             implementation(projects.feature.bookDetails)
+            implementation(projects.feature.splash)
         }
     }
 }

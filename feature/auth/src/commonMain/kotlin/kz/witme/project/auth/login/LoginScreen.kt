@@ -1,6 +1,5 @@
 package kz.witme.project.auth.login
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,7 +14,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
@@ -70,13 +68,7 @@ internal fun LoginScreenContent(
 ) {
     val navigator = LocalNavigator.current
     val registrationScreen = rememberScreen(provider = Destination.Registration)
-    val dashboardScreen = rememberScreen(provider = Destination.Dashboard)
 
-    LaunchedEffect(uiState.isLoginSuccess) {
-        if (uiState.isLoginSuccess) {
-            navigator?.replaceAll(dashboardScreen)
-        }
-    }
     if (uiState.loginErrorMessage.isNotEmpty()) {
         ErrorAlert(
             errorText = uiState.loginErrorMessage,
@@ -136,18 +128,16 @@ internal fun LoginScreenContent(
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Spacer(modifier = Modifier.weight(1f))
-                    AnimatedVisibility(
-                        visible = uiState.isLoginButtonLoading.not()
-                    ) {
-                        Text(
-                            text = stringResource(Res.string.have_no_account),
-                            style = LocalWitMeTheme.typography.regular12,
-                            color = LocalWitMeTheme.colors.link200,
-                            modifier = Modifier.clickableWithoutRipple {
+                    Text(
+                        text = stringResource(Res.string.have_no_account),
+                        style = LocalWitMeTheme.typography.regular12,
+                        color = LocalWitMeTheme.colors.link200,
+                        modifier = Modifier.clickableWithoutRipple {
+                            if (uiState.isLoginButtonLoading.not()) {
                                 navigator?.push(registrationScreen)
                             }
-                        )
-                    }
+                        }
+                    )
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 Box(

@@ -25,6 +25,7 @@ private fun GolosFontFamily(): FontFamily = FontFamily(
 )
 
 data class Typographies(
+    val regular10: TextStyle,
     val regular12: TextStyle,
     val regular14: TextStyle,
     val regular16: TextStyle,
@@ -47,6 +48,12 @@ data class Typographies(
 
 @Composable
 internal fun Typography() = Typographies(
+    regular10 = TextStyle(
+        fontFamily = GolosFontFamily(),
+        fontWeight = FontWeight.Normal,
+        fontSize = 10.sp,
+        lineHeight = 12.sp,
+    ),
     regular12 = TextStyle(
         fontFamily = GolosFontFamily(),
         fontWeight = FontWeight.Normal,

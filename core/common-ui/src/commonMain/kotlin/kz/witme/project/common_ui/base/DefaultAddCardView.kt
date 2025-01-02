@@ -62,7 +62,7 @@ fun DefaultAddCardView(
                         modifier = Modifier.fillMaxWidth(),
                         text = it,
                         style = LocalWitMeTheme.typography.medium24,
-                        color = LocalWitMeTheme.colors.black,
+                        color = LocalWitMeTheme.colors.secondary500,
                         textAlign = TextAlign.Center
                     )
                     Spacer(modifier = Modifier.height(18.dp))

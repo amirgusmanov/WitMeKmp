@@ -35,4 +35,6 @@ internal interface EditProfileController {
     fun onAvatarPick(image: ImageBitmap, imageByteArray: ByteArray)
 
     fun onAvatarClear()
+
+    fun navigateToTabs()
 }
