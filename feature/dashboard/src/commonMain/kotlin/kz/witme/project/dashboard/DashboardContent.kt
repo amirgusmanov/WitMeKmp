@@ -77,6 +77,7 @@ internal fun DashboardContent(
                 onBookClick = onBookClick
             )
         }
+        Spacer(modifier = Modifier.height(65.dp))
     }
 }
 
