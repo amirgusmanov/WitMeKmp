@@ -3,10 +3,10 @@
 package kz.witme.project
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.togetherWith
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -70,44 +70,25 @@ private fun TabsFlow() {
                 floatingActionButtonPosition = FabPosition.Center,
                 isFloatingActionButtonDocked = true,
                 bottomBar = {
-                    AnimatedContent(
-                        targetState = isFirstInStack,
-                        transitionSpec = {
-                            if (targetState) {
-                                slideIntoContainer(
-                                    animationSpec = tween(300),
-                                    towards = AnimatedContentTransitionScope.SlideDirection.Down
-                                ) togetherWith slideOutOfContainer(
-                                    towards = AnimatedContentTransitionScope.SlideDirection.Down,
-                                    animationSpec = tween(300)
+                    AnimatedVisibility(
+                        visible = isFirstInStack,
+                        enter = expandVertically(),
+                        exit = shrinkVertically()
+                    ) {
+                        BottomAppBar(
+                            modifier = Modifier.clip(
+                                RoundedCornerShape(
+                                    topStart = 16.dp,
+                                    topEnd = 16.dp
                                 )
-                            } else {
-                                slideIntoContainer(
-                                    animationSpec = tween(300),
-                                    towards = AnimatedContentTransitionScope.SlideDirection.Up
-                                ) togetherWith slideOutOfContainer(
-                                    towards = AnimatedContentTransitionScope.SlideDirection.Up,
-                                    animationSpec = tween(300)
-                                )
-                            }
-                        }
-                    ) { showBottomBar ->
-                        if (showBottomBar) {
-                            BottomAppBar(
-                                modifier = Modifier.clip(
-                                    RoundedCornerShape(
-                                        topStart = 16.dp,
-                                        topEnd = 16.dp
-                                    )
-                                ),
-                                cutoutShape = CircleShape,
-                                backgroundColor = LocalWitMeTheme.colors.bottomNav,
-                                windowInsets = WindowInsets(bottom = bottomNavigationPaddings()),
-                                elevation = 16.dp
-                            ) {
-                                TabNavigationItem(Home)
-                                TabNavigationItem(Profile)
-                            }
+                            ),
+                            cutoutShape = CircleShape,
+                            backgroundColor = LocalWitMeTheme.colors.bottomNav,
+                            windowInsets = WindowInsets(bottom = bottomNavigationPaddings()),
+                            elevation = 16.dp
+                        ) {
+                            TabNavigationItem(Home)
+                            TabNavigationItem(Profile)
                         }
                     }
                 },
