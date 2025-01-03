@@ -1,6 +1,5 @@
 package kz.witme.project.profile.profile
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,18 +17,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.koinScreenModel
+import coil3.compose.AsyncImage
+import kz.witme.project.common_ui.base.ErrorAlert
+import kz.witme.project.common_ui.base.MessageAlert
+import kz.witme.project.common_ui.extension.clickableWithoutRipple
 import kz.witme.project.common_ui.extension.collectAsStateWithLifecycle
+import kz.witme.project.common_ui.image.getImageUrl
 import kz.witme.project.common_ui.theme.LocalWitMeTheme
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import witmekmp.core.common_ui.generated.resources.Res
 import witmekmp.core.common_ui.generated.resources.account_management_title
 import witmekmp.core.common_ui.generated.resources.delete_account
+import witmekmp.core.common_ui.generated.resources.delete_account_message
 import witmekmp.core.common_ui.generated.resources.ic_arrow_right
 import witmekmp.core.common_ui.generated.resources.ic_profile_placeholder
 import witmekmp.core.common_ui.generated.resources.logout
+import witmekmp.core.common_ui.generated.resources.logout_message
+import witmekmp.core.common_ui.generated.resources.no
 import witmekmp.core.common_ui.generated.resources.privacy_policy
 import witmekmp.core.common_ui.generated.resources.support_title
+import witmekmp.core.common_ui.generated.resources.yes
 
 class ProfileScreen : Screen {
 
@@ -45,44 +53,67 @@ class ProfileScreen : Screen {
     }
 }
 
-//todo: add photo picker, connect endpoints
 @Composable
 internal fun ProfileScreenContent(
     controller: ProfileController,
     uiState: ProfileUiState
 ) {
+    if (uiState.errorMessage.isNotBlank()) {
+        ErrorAlert(
+            errorText = uiState.errorMessage,
+            onDismiss = controller::onErrorDismiss
+        )
+    }
+    if (uiState.showDeleteAccountAlert) {
+        MessageAlert(
+            subtitle = stringResource(Res.string.delete_account_message),
+            onDismiss = controller::onDeleteAccountAlertDismiss,
+            onConfirm = controller::onDeleteAccountAlertConfirm,
+            negativeButtonText = stringResource(Res.string.no),
+            positiveButtonText = stringResource(Res.string.yes)
+        )
+    }
+    if (uiState.showLogoutAlert) {
+        MessageAlert(
+            subtitle = stringResource(Res.string.logout_message),
+            onDismiss = controller::onExitAlertDismiss,
+            onConfirm = controller::onExitAlertConfirm,
+            negativeButtonText = stringResource(Res.string.no),
+            positiveButtonText = stringResource(Res.string.yes)
+        )
+    }
     Column(
         modifier = Modifier
             .padding(top = 64.dp, start = 16.dp, end = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Icon(
-                painter = painterResource(Res.drawable.ic_profile_placeholder),
-                contentDescription = null,
+            AsyncImage(
+                model = getImageUrl(uiState.avatar),
+                contentDescription = "avatar",
                 modifier = Modifier.size(100.dp),
-                tint = LocalWitMeTheme.colors.primary400
+                placeholder = painterResource(Res.drawable.ic_profile_placeholder),
+                error = painterResource(Res.drawable.ic_profile_placeholder),
+                fallback = painterResource(Res.drawable.ic_profile_placeholder)
             )
-
             Spacer(modifier = Modifier.height(12.dp))
             Text(
-                text = "Армар Сарсенов Агабекулы",
+                text = uiState.username,
                 style = LocalWitMeTheme.typography.semiBold20,
                 color = LocalWitMeTheme.colors.primary400
             )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = "adin.ara@gmail.com",
-                style = LocalWitMeTheme.typography.regular18,
-                color = LocalWitMeTheme.colors.secondary400
-            )
+            if (uiState.email.isNotBlank()) {
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = uiState.email,
+                    style = LocalWitMeTheme.typography.regular18,
+                    color = LocalWitMeTheme.colors.secondary400
+                )
+            }
         }
-
         Spacer(modifier = Modifier.height(32.dp))
-
         Column(
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -96,7 +127,7 @@ internal fun ProfileScreenContent(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { /* Handle click */ }
+                    .clickableWithoutRipple(onClick = controller::onPrivacyPolicyClick)
             ) {
                 Text(
                     text = stringResource(Res.string.privacy_policy),
@@ -115,9 +146,7 @@ internal fun ProfileScreenContent(
                 thickness = 1.dp,
                 modifier = Modifier.padding(top = 8.dp)
             )
-
             Spacer(modifier = Modifier.height(24.dp))
-
             Text(
                 text = stringResource(Res.string.account_management_title),
                 style = LocalWitMeTheme.typography.medium16,
@@ -128,7 +157,7 @@ internal fun ProfileScreenContent(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { /* Handle click */ }
+                    .clickableWithoutRipple(onClick = controller::onDeleteAccountClick)
             ) {
                 Text(
                     text = stringResource(Res.string.delete_account),
@@ -152,7 +181,7 @@ internal fun ProfileScreenContent(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { /* Handle click */ }
+                    .clickableWithoutRipple(onClick = controller::onExitClick)
             ) {
                 Text(
                     text = stringResource(Res.string.logout),

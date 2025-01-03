@@ -4,5 +4,10 @@ import androidx.compose.runtime.Stable
 
 @Stable
 internal data class ProfileUiState(
-    val temp: String = ""
+    val username: String = "",
+    val avatar: String = "",
+    val email: String = "",
+    val errorMessage: String = "",
+    val showDeleteAccountAlert: Boolean = false,
+    val showLogoutAlert: Boolean = false
 )

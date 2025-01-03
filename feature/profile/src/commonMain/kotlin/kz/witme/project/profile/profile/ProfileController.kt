@@ -6,6 +6,18 @@ import androidx.compose.runtime.Stable
 internal interface ProfileController {
 
     fun onPrivacyPolicyClick()
+
     fun onDeleteAccountClick()
+
+    fun onDeleteAccountAlertDismiss()
+
+    fun onDeleteAccountAlertConfirm()
+
     fun onExitClick()
+
+    fun onExitAlertDismiss()
+
+    fun onExitAlertConfirm()
+
+    fun onErrorDismiss()
 }

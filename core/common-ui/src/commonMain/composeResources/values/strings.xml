@@ -77,4 +77,8 @@
     <string name="status">Статус</string>
     <string name="save">Сохранить</string>
     <string name="pages">страниц</string>
+    <string name="delete_account_message">Вы уверены, что хотите удалить аккаунт?</string>
+    <string name="logout_message">Вы уверены, что хотите выйти?</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
 </resources>

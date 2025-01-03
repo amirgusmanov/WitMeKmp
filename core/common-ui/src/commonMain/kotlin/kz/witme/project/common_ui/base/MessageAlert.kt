@@ -33,7 +33,9 @@ fun MessageAlert(
     modifier: Modifier = Modifier,
     subtitle: String,
     onDismiss: () -> Unit = {},
-    onConfirm: () -> Unit = {}
+    onConfirm: () -> Unit = {},
+    negativeButtonText: String = stringResource(Res.string.not_okay),
+    positiveButtonText: String =  stringResource(Res.string.okay)
 ) {
     Dialog(onDismissRequest = onDismiss) {
         Column(
@@ -68,12 +70,12 @@ fun MessageAlert(
             ) {
                 DefaultOutlinedButton(
                     onClick = onDismiss,
-                    text = stringResource(Res.string.not_okay),
+                    text = negativeButtonText,
                     modifier = Modifier.weight(1f)
                 )
                 DefaultButton(
                     onClick = onConfirm,
-                    text = stringResource(Res.string.okay),
+                    text = positiveButtonText,
                     modifier = Modifier.weight(1f)
                 )
             }

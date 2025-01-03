@@ -38,4 +38,8 @@ internal class ProfileUpdateRepositoryImpl(
             )
         )
     }
+
+    override suspend fun deleteAccount(): RequestResult<Unit, DataError.Remote> = safeCall {
+        api.deleteAccount()
+    }
 }

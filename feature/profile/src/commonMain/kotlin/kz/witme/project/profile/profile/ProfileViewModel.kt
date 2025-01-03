@@ -1,19 +1,110 @@
 package kz.witme.project.profile.profile
 
-import androidx.compose.runtime.Stable
 import cafe.adriel.voyager.core.model.ScreenModel
+import cafe.adriel.voyager.core.model.screenModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import kz.witme.project.common.extension.tryToUpdate
+import kz.witme.project.data.network.HttpClientFactory
+import kz.witme.project.data.network.getMessage
+import kz.witme.project.data.network.onError
+import kz.witme.project.data.network.onSuccess
+import kz.witme.project.profile.domain.repository.ProfileUpdateRepository
+import kz.witme.project.service.auth.domain.repository.AuthRepository
 
 internal class ProfileViewModel(
-    //private val profileRepository: ProfileRepository
+    private val authRepository: AuthRepository,
+    private val updateProfileRepository: ProfileUpdateRepository
 ) : ScreenModel, ProfileController {
 
     val uiState: StateFlow<ProfileUiState> = MutableStateFlow(ProfileUiState())
 
-    override fun onPrivacyPolicyClick() {}
+    init {
+        collectUserInfo()
+    }
 
-    override fun onDeleteAccountClick() {}
+    private fun collectUserInfo() {
+        screenModelScope.launch {
+            authRepository.getUserInfoFlow().collectLatest { userInfo ->
+                if (userInfo == null) {
+                    authRepository.navigateUser()
+                } else {
+                    uiState.tryToUpdate {
+                        it.copy(
+                            username = userInfo.username.orEmpty(),
+                            avatar = userInfo.avatar.orEmpty()
+                        )
+                    }
+                }
+            }
+        }
+    }
 
-    override fun onExitClick() {}
+    override fun onExitClick() {
+        uiState.tryToUpdate {
+            it.copy(
+                showLogoutAlert = true
+            )
+        }
+    }
+
+    override fun onExitAlertDismiss() {
+        uiState.tryToUpdate {
+            it.copy(
+                showLogoutAlert = false
+            )
+        }
+    }
+
+    override fun onExitAlertConfirm() {
+        screenModelScope.launch {
+            authRepository.logout()
+        }
+    }
+
+    override fun onDeleteAccountClick() {
+        uiState.tryToUpdate {
+            it.copy(
+                showDeleteAccountAlert = true
+            )
+        }
+    }
+
+    override fun onDeleteAccountAlertDismiss() {
+        uiState.tryToUpdate {
+            it.copy(
+                showDeleteAccountAlert = false
+            )
+        }
+    }
+
+    override fun onDeleteAccountAlertConfirm() {
+        screenModelScope.launch {
+            updateProfileRepository.deleteAccount()
+                .onSuccess {
+                    HttpClientFactory.navigateFlow.tryToUpdate {
+                        HttpClientFactory.NavigateFlow.LoginFlow
+                    }
+                }
+                .onError { error ->
+                    uiState.tryToUpdate {
+                        it.copy(errorMessage = error.getMessage())
+                    }
+                }
+        }
+    }
+
+    override fun onPrivacyPolicyClick() {
+        //todo implement pdf viewer
+    }
+
+    override fun onErrorDismiss() {
+        uiState.tryToUpdate {
+            it.copy(
+                errorMessage = ""
+            )
+        }
+    }
 }

@@ -9,4 +9,6 @@ interface ProfileUpdateRepository {
         avatar: ByteArray,
         username: String
     ): RequestResult<Unit, DataError.Remote>
+
+    suspend fun deleteAccount(): RequestResult<Unit, DataError.Remote>
 }
