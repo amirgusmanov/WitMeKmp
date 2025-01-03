@@ -11,18 +11,33 @@ import androidx.compose.material.TabRowDefaults.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.koinScreenModel
+import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
 import coil3.compose.AsyncImage
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kz.witme.project.common_ui.base.ErrorAlert
 import kz.witme.project.common_ui.base.MessageAlert
+import kz.witme.project.common_ui.base.PhotoPickerOptionBottomSheetScreen
+import kz.witme.project.common_ui.camera.rememberCameraManager
+import kz.witme.project.common_ui.extension.clickableWithPressedState
 import kz.witme.project.common_ui.extension.clickableWithoutRipple
 import kz.witme.project.common_ui.extension.collectAsStateWithLifecycle
+import kz.witme.project.common_ui.gallery.rememberGalleryManager
+import kz.witme.project.common_ui.image.SharedImage
 import kz.witme.project.common_ui.image.getImageUrl
+import kz.witme.project.common_ui.permission.PermissionCallback
+import kz.witme.project.common_ui.permission.PermissionStatus
+import kz.witme.project.common_ui.permission.PermissionType
+import kz.witme.project.common_ui.permission.createPermissionsManager
 import kz.witme.project.common_ui.theme.LocalWitMeTheme
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -35,6 +50,7 @@ import witmekmp.core.common_ui.generated.resources.ic_profile_placeholder
 import witmekmp.core.common_ui.generated.resources.logout
 import witmekmp.core.common_ui.generated.resources.logout_message
 import witmekmp.core.common_ui.generated.resources.no
+import witmekmp.core.common_ui.generated.resources.permission_message
 import witmekmp.core.common_ui.generated.resources.privacy_policy
 import witmekmp.core.common_ui.generated.resources.support_title
 import witmekmp.core.common_ui.generated.resources.yes
@@ -45,7 +61,87 @@ class ProfileScreen : Screen {
     override fun Content() {
         val controller: ProfileViewModel = koinScreenModel<ProfileViewModel>()
         val uiState by controller.uiState.collectAsStateWithLifecycle()
+        val bottomSheetNavigator = LocalBottomSheetNavigator.current
+        val coroutineScope = rememberCoroutineScope()
+        val permissionsManager = createPermissionsManager(
+            callback = object : PermissionCallback {
+                override fun onPermissionStatus(
+                    permissionType: PermissionType,
+                    status: PermissionStatus
+                ) {
+                    when (status) {
+                        PermissionStatus.Granted -> {
+                            when (permissionType) {
+                                PermissionType.Gallery -> controller.onGalleryLaunch()
+                                PermissionType.Camera -> controller.onCameraLaunch()
+                            }
+                        }
 
+                        else -> controller.onRationalDialogShow()
+                    }
+                }
+            }
+        )
+        val handleImage: (SharedImage?) -> Unit = { image ->
+            coroutineScope.launch {
+                val imageByteArray = withContext(Dispatchers.Default) {
+                    image?.toByteArray()
+                }
+                if (imageByteArray != null) {
+                    controller.onBookPhotoPicked(byteArray = imageByteArray)
+                }
+            }
+        }
+        val cameraManager = rememberCameraManager(handleImage)
+        val galleryManager = rememberGalleryManager(handleImage)
+        if (uiState.launchCamera) {
+            if (permissionsManager.isPermissionGranted(PermissionType.Camera)) {
+                cameraManager.launch()
+            } else {
+                permissionsManager.askPermission(PermissionType.Camera)
+            }
+            controller.onCameraPermissionAsk()
+        }
+        if (uiState.launchGallery) {
+            if (permissionsManager.isPermissionGranted(PermissionType.Gallery)) {
+                galleryManager.launch()
+            } else {
+                permissionsManager.askPermission(PermissionType.Gallery)
+            }
+            controller.onGalleryPermissionAsk()
+        }
+        if (uiState.launchSettings) {
+            controller.onAvatarPickOptionBottomSheetDismiss()
+            permissionsManager.launchSettings()
+            controller.onSettingsLaunched()
+        }
+        LaunchedEffect(bottomSheetNavigator.isVisible) {
+            if (!bottomSheetNavigator.isVisible) {
+                controller.onAvatarPickOptionBottomSheetDismiss()
+            }
+        }
+        LaunchedEffect(uiState.isAvatarPickOptionBottomSheetVisible) {
+            if (uiState.isAvatarPickOptionBottomSheetVisible) {
+                bottomSheetNavigator.show(
+                    PhotoPickerOptionBottomSheetScreen(
+                        onCameraOptionChoose = controller::onCameraLaunch,
+                        onGalleryOptionChoose = controller::onGalleryLaunch
+                    )
+                )
+            } else {
+                bottomSheetNavigator.hide()
+            }
+        }
+        if (uiState.showRationalDialog) {
+            MessageAlert(
+                subtitle = stringResource(Res.string.permission_message),
+                onDismiss = controller::onRationalDialogDismiss,
+                onConfirm = {
+                    controller.onRationalDialogDismiss()
+                    controller.onSettingsLaunch()
+                }
+            )
+        }
         ProfileScreenContent(
             controller = controller,
             uiState = uiState
@@ -93,7 +189,9 @@ internal fun ProfileScreenContent(
             AsyncImage(
                 model = getImageUrl(uiState.avatar),
                 contentDescription = "avatar",
-                modifier = Modifier.size(100.dp),
+                modifier = Modifier
+                    .size(100.dp)
+                    .clickableWithPressedState(onClick = controller::onAvatarClick),
                 placeholder = painterResource(Res.drawable.ic_profile_placeholder),
                 error = painterResource(Res.drawable.ic_profile_placeholder),
                 fallback = painterResource(Res.drawable.ic_profile_placeholder)

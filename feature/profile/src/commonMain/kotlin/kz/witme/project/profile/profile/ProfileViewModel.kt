@@ -107,4 +107,85 @@ internal class ProfileViewModel(
             )
         }
     }
+
+    fun onSettingsLaunch() {
+        uiState.tryToUpdate { state ->
+            state.copy(launchSettings = true)
+        }
+    }
+
+    fun onCameraLaunch() {
+        uiState.tryToUpdate { state ->
+            state.copy(
+                launchCamera = true,
+                isAvatarPickOptionBottomSheetVisible = false
+            )
+        }
+    }
+
+    fun onGalleryLaunch() {
+        uiState.tryToUpdate { state ->
+            state.copy(
+                launchGallery = true,
+                isAvatarPickOptionBottomSheetVisible = false
+            )
+        }
+    }
+
+    fun onSettingsLaunched() {
+        uiState.tryToUpdate { state ->
+            state.copy(launchSettings = false)
+        }
+    }
+
+    fun onRationalDialogShow() {
+        uiState.tryToUpdate { state ->
+            state.copy(showRationalDialog = true)
+        }
+    }
+
+    fun onRationalDialogDismiss() {
+        uiState.tryToUpdate { state ->
+            state.copy(showRationalDialog = false)
+        }
+    }
+
+    override fun onAvatarClick() {
+        uiState.tryToUpdate { state ->
+            state.copy(isAvatarPickOptionBottomSheetVisible = true)
+        }
+    }
+
+    fun onAvatarPickOptionBottomSheetDismiss() {
+        uiState.tryToUpdate { state ->
+            state.copy(isAvatarPickOptionBottomSheetVisible = false)
+        }
+    }
+
+    fun onCameraPermissionAsk() {
+        uiState.tryToUpdate { state ->
+            state.copy(launchCamera = false)
+        }
+    }
+
+    fun onGalleryPermissionAsk() {
+        uiState.tryToUpdate { state ->
+            state.copy(launchGallery = false)
+        }
+    }
+
+    fun onBookPhotoPicked(byteArray: ByteArray) {
+        screenModelScope.launch {
+            updateProfileRepository.uploadAvatar(
+                avatar = byteArray,
+                username = uiState.value.username.ifBlank { return@launch }
+            ).onSuccess {
+                authRepository.navigateUser()
+            }.onError { error ->
+                uiState.tryToUpdate {
+                    it.copy(errorMessage = error.getMessage())
+                }
+            }
+        }
+    }
 }

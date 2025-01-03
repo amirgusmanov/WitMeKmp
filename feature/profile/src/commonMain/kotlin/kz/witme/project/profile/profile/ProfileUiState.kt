@@ -9,5 +9,10 @@ internal data class ProfileUiState(
     val email: String = "",
     val errorMessage: String = "",
     val showDeleteAccountAlert: Boolean = false,
-    val showLogoutAlert: Boolean = false
+    val showLogoutAlert: Boolean = false,
+    val launchCamera: Boolean = false,
+    val launchGallery: Boolean = false,
+    val launchSettings: Boolean = false,
+    val showRationalDialog: Boolean = false,
+    val isAvatarPickOptionBottomSheetVisible: Boolean = false
 )

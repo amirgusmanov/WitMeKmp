@@ -19,5 +19,7 @@ internal interface ProfileController {
 
     fun onExitAlertConfirm()
 
+    fun onAvatarClick()
+
     fun onErrorDismiss()
 }
