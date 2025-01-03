@@ -3,7 +3,10 @@
 package kz.witme.project
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -57,33 +60,65 @@ private fun TabsFlow() {
         sheetShape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
         skipHalfExpanded = true
     ) {
-        TabNavigator(tab = Home) {
+        TabNavigator(tab = Home) { tabNavigator ->
+            val isFirstInStack = when (val currentTab = tabNavigator.current) {
+                is Home -> currentTab.isFirstInStack().collectAsStateWithLifecycle().value
+                is Profile -> currentTab.isFirstInStack().collectAsStateWithLifecycle().value
+                else -> true
+            }.not()
             Scaffold(
                 floatingActionButtonPosition = FabPosition.Center,
                 isFloatingActionButtonDocked = true,
                 bottomBar = {
-                    BottomAppBar(
-                        modifier = Modifier.clip(
-                            RoundedCornerShape(
-                                topStart = 16.dp,
-                                topEnd = 16.dp
-                            )
-                        ),
-                        cutoutShape = CircleShape,
-                        backgroundColor = LocalWitMeTheme.colors.bottomNav,
-                        windowInsets = WindowInsets(bottom = bottomNavigationPaddings()),
-                        elevation = 16.dp
-                    ) {
-                        TabNavigationItem(Home)
-                        TabNavigationItem(Profile)
+                    AnimatedContent(
+                        targetState = isFirstInStack,
+                        transitionSpec = {
+                            if (targetState) {
+                                slideIntoContainer(
+                                    animationSpec = tween(300),
+                                    towards = AnimatedContentTransitionScope.SlideDirection.Down
+                                ) togetherWith slideOutOfContainer(
+                                    towards = AnimatedContentTransitionScope.SlideDirection.Down,
+                                    animationSpec = tween(300)
+                                )
+                            } else {
+                                slideIntoContainer(
+                                    animationSpec = tween(300),
+                                    towards = AnimatedContentTransitionScope.SlideDirection.Up
+                                ) togetherWith slideOutOfContainer(
+                                    towards = AnimatedContentTransitionScope.SlideDirection.Up,
+                                    animationSpec = tween(300)
+                                )
+                            }
+                        }
+                    ) { showBottomBar ->
+                        if (showBottomBar) {
+                            BottomAppBar(
+                                modifier = Modifier.clip(
+                                    RoundedCornerShape(
+                                        topStart = 16.dp,
+                                        topEnd = 16.dp
+                                    )
+                                ),
+                                cutoutShape = CircleShape,
+                                backgroundColor = LocalWitMeTheme.colors.bottomNav,
+                                windowInsets = WindowInsets(bottom = bottomNavigationPaddings()),
+                                elevation = 16.dp
+                            ) {
+                                TabNavigationItem(Home)
+                                TabNavigationItem(Profile)
+                            }
+                        }
                     }
                 },
                 floatingActionButton = {
-                    FabTimer(Timer)
+                    if (isFirstInStack) {
+                        FabTimer(Timer)
+                    }
                 },
                 content = {
                     CurrentTab()
-                },
+                }
             )
         }
     }

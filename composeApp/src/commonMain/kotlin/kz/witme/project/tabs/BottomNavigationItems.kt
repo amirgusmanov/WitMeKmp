@@ -61,7 +61,8 @@ fun RowScope.TabNavigationItem(tab: Tab) {
                 tab.options.icon?.let {
                     Icon(
                         painter = it,
-                        contentDescription = tab.options.title
+                        contentDescription = tab.options.title,
+                        tint = LocalWitMeTheme.colors.secondary400
                     )
                 }
             }
