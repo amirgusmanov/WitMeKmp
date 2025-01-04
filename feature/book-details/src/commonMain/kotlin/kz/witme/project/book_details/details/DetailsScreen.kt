@@ -45,6 +45,7 @@ import kotlinx.collections.immutable.ImmutableList
 import kz.witme.project.book.domain.model.GetBook
 import kz.witme.project.book.domain.model.GetBookSessionDetails
 import kz.witme.project.book_details.component.BookDataSectionView
+import kz.witme.project.book_details.details.model.SessionItem
 import kz.witme.project.common_ui.base.TopCurvedCircle
 import kz.witme.project.common_ui.extension.clickableWithPressedState
 import kz.witme.project.common_ui.extension.clickableWithoutRipple
@@ -54,6 +55,7 @@ import kz.witme.project.common_ui.theme.LocalWitMeTheme
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import witmekmp.core.common_ui.generated.resources.Res
+import witmekmp.core.common_ui.generated.resources.day
 import witmekmp.core.common_ui.generated.resources.description
 import witmekmp.core.common_ui.generated.resources.ic_arrow_right
 import witmekmp.core.common_ui.generated.resources.ic_back
@@ -236,7 +238,7 @@ private fun DescriptionSectionView(
 @Composable
 private fun SessionsView(
     modifier: Modifier = Modifier,
-    sessions: ImmutableList<GetBookSessionDetails>,
+    sessions: ImmutableList<SessionItem>,
     onSessionClick: (GetBookSessionDetails) -> Unit
 ) {
     ElevatedCard(
@@ -251,14 +253,40 @@ private fun SessionsView(
             modifier = Modifier.padding(16.dp)
         ) {
             sessions.forEach { session ->
-                SessionItem(
-                    session,
-                    onSessionClick = {
-                        onSessionClick(session)
-                    }
-                )
+                when (session) {
+                    is SessionItem.BookSessionDetails -> SessionItem(
+                        session.details,
+                        onSessionClick = {
+                            onSessionClick(session.details)
+                        }
+                    )
+
+                    is SessionItem.Date -> SessionDate(session)
+                }
             }
         }
+    }
+}
+
+@Composable
+private fun SessionDate(
+    sessionDate: SessionItem.Date
+) {
+    Row(
+        modifier = Modifier.padding(vertical = 9.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = stringResource(Res.string.day, sessionDate.day),
+            style = LocalWitMeTheme.typography.semiBold16,
+            color = LocalWitMeTheme.colors.secondary400
+        )
+        Spacer(modifier = Modifier.weight(1f))
+        Text(
+            text = sessionDate.date,
+            style = LocalWitMeTheme.typography.regular16,
+            color = LocalWitMeTheme.colors.secondary400
+        )
     }
 }
 
