@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.TabRowDefaults.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -16,6 +17,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.koinScreenModel
@@ -191,7 +194,9 @@ internal fun ProfileScreenContent(
                 contentDescription = "avatar",
                 modifier = Modifier
                     .size(100.dp)
+                    .clip(CircleShape)
                     .clickableWithPressedState(onClick = controller::onAvatarClick),
+                contentScale = ContentScale.Crop,
                 placeholder = painterResource(Res.drawable.ic_profile_placeholder),
                 error = painterResource(Res.drawable.ic_profile_placeholder),
                 fallback = painterResource(Res.drawable.ic_profile_placeholder)
