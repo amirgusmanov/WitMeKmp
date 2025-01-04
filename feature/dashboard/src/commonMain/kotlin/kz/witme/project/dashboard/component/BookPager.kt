@@ -59,7 +59,7 @@ internal fun BookPager(
                         id = book.bookResponse.id,
                         imageUrl = book.bookResponse.bookPhoto,
                         name = book.bookResponse.name,
-                        date = book.bookResponse.createdDate.toString(), //todo: parse date here with DateUtils
+                        date = book.bookResponse.createdDate, //todo: parse date here with DateUtils
                         status = book.bookResponse.readingStatus.displayName,
                         notes = book.bookResponse.notesAmount,
                         onBookClick = {

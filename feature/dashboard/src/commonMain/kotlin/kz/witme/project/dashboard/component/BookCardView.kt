@@ -41,7 +41,7 @@ internal fun BookCardView(
     id: String,
     imageUrl: String?,
     name: String,
-    date: String,
+    date: String?,
     status: String,
     notes: Int,
     modifier: Modifier = Modifier,
@@ -90,21 +90,23 @@ internal fun BookCardView(
                 Column(
                     modifier = Modifier.weight(0.6f)
                 ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            painter = painterResource(Res.drawable.ic_date),
-                            contentDescription = "Date",
-                            tint = LocalWitMeTheme.colors.primary400
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            text = date,
-                            style = LocalWitMeTheme.typography.regular16,
-                            color = LocalWitMeTheme.colors.secondary400
-                        )
+                    if (!date.isNullOrBlank()) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                painter = painterResource(Res.drawable.ic_date),
+                                contentDescription = "Date",
+                                tint = LocalWitMeTheme.colors.primary400
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = date,
+                                style = LocalWitMeTheme.typography.regular16,
+                                color = LocalWitMeTheme.colors.secondary400
+                            )
+                        }
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                     Row(
