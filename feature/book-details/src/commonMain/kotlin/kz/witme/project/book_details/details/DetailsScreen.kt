@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material3.CardDefaults
@@ -38,20 +39,24 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.coroutines.flow.collectLatest
 import kz.witme.project.book.domain.model.GetBook
 import kz.witme.project.book.domain.model.GetBookSessionDetails
 import kz.witme.project.book_details.component.BookDataSectionView
 import kz.witme.project.book_details.details.model.SessionItem
+import kz.witme.project.common_ui.base.ErrorAlert
 import kz.witme.project.common_ui.base.TopCurvedCircle
 import kz.witme.project.common_ui.extension.clickableWithPressedState
 import kz.witme.project.common_ui.extension.clickableWithoutRipple
 import kz.witme.project.common_ui.extension.collectAsStateWithLifecycle
 import kz.witme.project.common_ui.theme.DefaultRoundedShape
 import kz.witme.project.common_ui.theme.LocalWitMeTheme
+import kz.witme.project.navigation.Destination
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import witmekmp.core.common_ui.generated.resources.Res
@@ -68,9 +73,25 @@ class DetailsScreen(private val book: GetBook) : Screen {
     override fun Content() {
         val controller: DetailsViewModel = koinScreenModel()
         val uiState: DetailsUiState by controller.uiState.collectAsStateWithLifecycle()
+        val navigator = LocalNavigator.current
 
         LaunchedEffect(book) {
             controller.getSessionDetails(book)
+        }
+        LaunchedEffect(controller.responseEventFlow) {
+            controller.responseEventFlow.collectLatest { event ->
+                when (event) {
+                    DetailsViewModel.ResponseEvent.NavigateBack -> {
+                        navigator?.pop()
+                    }
+
+                    is DetailsViewModel.ResponseEvent.NavigateToSessionDetails -> {
+                        ScreenRegistry.get(Destination.BookSessionDetails(event.session)).let {
+                            navigator?.push(it)
+                        }
+                    }
+                }
+            }
         }
         DetailsScreenContent(
             controller = controller,
@@ -111,13 +132,31 @@ internal fun DetailsScreenContent(
                 targetState = uiState
             ) { state ->
                 when (state) {
-                    DetailsUiState.Loading -> Unit
-                    is DetailsUiState.Error -> Unit
-                    is DetailsUiState.Data -> DetailsContent(
-                        controller = controller,
-                        uiState = state,
-                        scrollState = scrollState
-                    )
+                    DetailsUiState.Loading -> {
+                        Box(
+                            modifier = Modifier.fillMaxSize()
+                        ) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(40.dp).align(Alignment.Center),
+                                color = LocalWitMeTheme.colors.primary400
+                            )
+                        }
+                    }
+
+                    is DetailsUiState.Error -> {
+                        ErrorAlert(
+                            errorText = state.message,
+                            onDismiss = controller::onErrorDismiss
+                        )
+                    }
+
+                    is DetailsUiState.Data -> {
+                        DetailsContent(
+                            controller = controller,
+                            uiState = state,
+                            scrollState = scrollState
+                        )
+                    }
                 }
             }
             Box(

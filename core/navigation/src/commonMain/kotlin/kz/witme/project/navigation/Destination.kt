@@ -2,6 +2,7 @@ package kz.witme.project.navigation
 
 import cafe.adriel.voyager.core.registry.ScreenProvider
 import kz.witme.project.book.domain.model.GetBook
+import kz.witme.project.book.domain.model.GetBookSessionDetails
 
 sealed interface Destination : ScreenProvider {
     data object Splash : Destination
@@ -20,5 +21,5 @@ sealed interface Destination : ScreenProvider {
         val notes: List<String>
     ) : Destination
     data class BookDetails(val book: GetBook) : Destination
-    data object BookSessionDetails : Destination
+    data class BookSessionDetails(val bookSessionDetails: GetBookSessionDetails) : Destination
 }

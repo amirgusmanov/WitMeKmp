@@ -7,4 +7,6 @@ import kz.witme.project.book.domain.model.GetBookSessionDetails
 internal interface DetailsController {
 
     fun onSessionClick(session: GetBookSessionDetails)
+
+    fun onErrorDismiss()
 }

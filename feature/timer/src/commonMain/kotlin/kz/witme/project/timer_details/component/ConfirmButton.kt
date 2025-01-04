@@ -39,7 +39,7 @@ internal fun ConfirmButton(
             if (isLoading) {
                 CircularProgressIndicator(
                     modifier = Modifier.size(40.dp).align(Alignment.Center),
-                    trackColor = LocalWitMeTheme.colors.white
+                    color = LocalWitMeTheme.colors.white
                 )
             } else {
                 Icon(

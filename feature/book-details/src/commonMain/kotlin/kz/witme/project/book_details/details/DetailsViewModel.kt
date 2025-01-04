@@ -4,8 +4,11 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kz.witme.project.book.domain.model.GetBook
 import kz.witme.project.book.domain.model.GetBookSessionDetails
@@ -21,6 +24,9 @@ internal class DetailsViewModel(
 ) : ScreenModel, DetailsController {
 
     val uiState: StateFlow<DetailsUiState> = MutableStateFlow(DetailsUiState.Loading)
+
+    private val _responseEventFlow = Channel<ResponseEvent>()
+    val responseEventFlow: Flow<ResponseEvent> = _responseEventFlow.receiveAsFlow()
 
     fun getSessionDetails(book: GetBook) {
         screenModelScope.launch {
@@ -60,5 +66,18 @@ internal class DetailsViewModel(
 
     override fun onSessionClick(session: GetBookSessionDetails) {
         TODO("Not yet implemented")
+    }
+
+    override fun onErrorDismiss() {
+        screenModelScope.launch {
+            _responseEventFlow.send(ResponseEvent.NavigateBack)
+        }
+    }
+
+    sealed interface ResponseEvent {
+        data object NavigateBack : ResponseEvent
+        data class NavigateToSessionDetails(
+            val session: GetBookSessionDetails
+        ) : ResponseEvent
     }
 }
