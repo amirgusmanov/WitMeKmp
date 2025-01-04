@@ -1,4 +1,4 @@
-package kz.witme.project.tabs
+package kz.witme.project.navigation.tabs
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -14,20 +14,20 @@ import kz.witme.project.common.extension.tryToUpdate
 import kz.witme.project.navigation.Destination
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import witmekmp.composeapp.generated.resources.Res
-import witmekmp.composeapp.generated.resources.ic_profile
-import witmekmp.composeapp.generated.resources.profile
+import witmekmp.core.common_ui.generated.resources.Res
+import witmekmp.core.common_ui.generated.resources.home
+import witmekmp.core.common_ui.generated.resources.ic_home
 
-object Profile : Tab, NavigatorEntryProvider {
+object Home : Tab, NavigatorEntryProvider {
 
     override val options: TabOptions
         @Composable
         get() {
-            val icon = painterResource(Res.drawable.ic_profile)
-            val title = stringResource(Res.string.profile)
+            val icon = painterResource(Res.drawable.ic_home)
+            val title = stringResource(Res.string.home)
             return remember {
                 TabOptions(
-                    index = 2u,
+                    index = 0u,
                     title = title,
                     icon = icon
                 )
@@ -38,7 +38,7 @@ object Profile : Tab, NavigatorEntryProvider {
 
     @Composable
     override fun Content() {
-        Navigator(rememberScreen(Destination.Profile)) { navigator ->
+        Navigator(rememberScreen(Destination.Dashboard)) { navigator ->
             LaunchedEffect(navigator.canPop) {
                 canPopFlow.tryToUpdate {
                     navigator.canPop

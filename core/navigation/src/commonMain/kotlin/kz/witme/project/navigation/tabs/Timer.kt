@@ -1,4 +1,4 @@
-package kz.witme.project.tabs
+package kz.witme.project.navigation.tabs
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -9,14 +9,14 @@ import cafe.adriel.voyager.navigator.tab.TabOptions
 import cafe.adriel.voyager.transitions.SlideTransition
 import kz.witme.project.navigation.Destination
 import org.jetbrains.compose.resources.painterResource
-import witmekmp.composeapp.generated.resources.Res
-import witmekmp.composeapp.generated.resources.ic_timer_tab
+import witmekmp.core.common_ui.generated.resources.Res
+import witmekmp.core.common_ui.generated.resources.ic_timer_tab
 
 object Timer : Tab {
 
     @Composable
     override fun Content() {
-        Navigator(screen = rememberScreen(Destination.Timer())) {
+        Navigator(screen = rememberScreen(Destination.Timer(isNavigatedFromTabs = true))) {
             SlideTransition(it)
         }
     }

@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalMaterialApi::class)
+@file:OptIn(ExperimentalMaterialApi::class, InternalVoyagerApi::class)
 
 package kz.witme.project
 
@@ -19,9 +19,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.annotation.InternalVoyagerApi
 import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.bottomSheet.BottomSheetNavigator
+import cafe.adriel.voyager.navigator.internal.BackHandler
 import cafe.adriel.voyager.navigator.tab.CurrentTab
 import cafe.adriel.voyager.navigator.tab.TabNavigator
 import cafe.adriel.voyager.transitions.SlideTransition
@@ -31,11 +33,11 @@ import kz.witme.project.common_ui.theme.LocalWitMeTheme
 import kz.witme.project.common_ui.theme.WitMeTheme
 import kz.witme.project.data.network.HttpClientFactory
 import kz.witme.project.navigation.Destination
-import kz.witme.project.tabs.FabTimer
-import kz.witme.project.tabs.Home
-import kz.witme.project.tabs.Profile
-import kz.witme.project.tabs.TabNavigationItem
-import kz.witme.project.tabs.Timer
+import kz.witme.project.navigation.tabs.FabTimer
+import kz.witme.project.navigation.tabs.Home
+import kz.witme.project.navigation.tabs.Profile
+import kz.witme.project.navigation.tabs.TabNavigationItem
+import kz.witme.project.navigation.tabs.Timer
 
 @Composable
 fun App() {
@@ -66,6 +68,11 @@ private fun TabsFlow() {
                 is Profile -> currentTab.isFirstInStack().collectAsStateWithLifecycle().value
                 else -> true
             }.not()
+            BackHandler(enabled = true) {
+                if (tabNavigator.current is Timer) {
+                    tabNavigator.current = Home
+                }
+            }
             Scaffold(
                 floatingActionButtonPosition = FabPosition.Center,
                 isFloatingActionButtonDocked = true,

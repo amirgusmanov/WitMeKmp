@@ -14,7 +14,10 @@ sealed interface Destination : ScreenProvider {
     data object CreateBook : Destination
     data object Profile : Destination
     data class CreateStatusBook(val args: CreateBookArgs) : Destination
-    data class Timer(val bookId: String? = null) : Destination
+    data class Timer(
+        val bookId: String? = null,
+        val isNavigatedFromTabs: Boolean = false
+    ) : Destination
     data class TimerDetails(
         val book: GetBook,
         val seconds: Long,

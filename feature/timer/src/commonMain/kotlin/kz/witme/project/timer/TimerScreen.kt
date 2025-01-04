@@ -32,6 +32,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
+import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.flow.collectLatest
 import kz.witme.project.book.domain.model.GetBook
@@ -45,6 +46,7 @@ import kz.witme.project.common_ui.theme.LinearGradient
 import kz.witme.project.common_ui.theme.LocalWitMeTheme
 import kz.witme.project.component.BaseTimerBottomSheet
 import kz.witme.project.navigation.Destination
+import kz.witme.project.navigation.tabs.Home
 import kz.witme.project.timer.component.PlayButton
 import kz.witme.project.timer.component.TimerButton
 import kz.witme.project.timer.component.TimerView
@@ -58,7 +60,10 @@ import witmekmp.core.common_ui.generated.resources.ic_back
 import witmekmp.core.common_ui.generated.resources.save_note
 import witmekmp.core.common_ui.generated.resources.what_book_you_read
 
-class TimerScreen(private val bookId: String? = null) : Screen {
+class TimerScreen(
+    private val bookId: String? = null,
+    private val isNavigatedFromTabs: Boolean
+) : Screen {
 
     @Composable
     override fun Content() {
@@ -66,6 +71,7 @@ class TimerScreen(private val bookId: String? = null) : Screen {
         val uiState: TimerUiState by viewModel.uiState.collectAsStateWithLifecycle()
         val bottomSheetNavigator = LocalBottomSheetNavigator.current
         val navigator = LocalNavigator.current
+        val tabsNavigator = LocalTabNavigator.current
         val hapticFeedback = LocalHapticFeedback.current
         val noteBottomSheet = @Composable {
             NoteBottomSheet(
@@ -134,7 +140,11 @@ class TimerScreen(private val bookId: String? = null) : Screen {
             controller = viewModel,
             uiState = uiState,
             onBackClick = {
-                navigator?.pop()
+                if (isNavigatedFromTabs) {
+                    tabsNavigator.current = Home
+                } else {
+                    navigator?.pop()
+                }
             }
         )
     }

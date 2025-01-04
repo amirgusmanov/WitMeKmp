@@ -1,4 +1,4 @@
-package kz.witme.project.tabs
+package kz.witme.project.navigation.tabs
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.shape.CircleShape
@@ -11,10 +11,10 @@ import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import kz.witme.project.common_ui.theme.LocalWitMeTheme
 import org.jetbrains.compose.resources.painterResource
-import witmekmp.composeapp.generated.resources.Res
-import witmekmp.composeapp.generated.resources.ic_home_selected
-import witmekmp.composeapp.generated.resources.ic_profile_selected
-import witmekmp.composeapp.generated.resources.ic_timer_tab
+import witmekmp.core.common_ui.generated.resources.Res
+import witmekmp.core.common_ui.generated.resources.ic_home_selected
+import witmekmp.core.common_ui.generated.resources.ic_profile_selected
+import witmekmp.core.common_ui.generated.resources.ic_timer_tab
 
 @Suppress("NonSkippableComposable")
 @Composable

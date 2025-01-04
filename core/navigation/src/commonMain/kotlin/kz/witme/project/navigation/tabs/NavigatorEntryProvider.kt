@@ -1,4 +1,4 @@
-package kz.witme.project.tabs
+package kz.witme.project.navigation.tabs
 
 import kotlinx.coroutines.flow.StateFlow
 

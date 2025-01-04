@@ -36,7 +36,10 @@ kotlin {
             api(libs.voyager.koin)
             api(libs.voyager.bottom.sheet.navigator)
             api(libs.voyager.transitions)
+            implementation(libs.voyager.tab.navigator)
             implementation(projects.service.book)
+            implementation(projects.core.commonUi)
+            implementation(projects.core.common)
         }
     }
 }

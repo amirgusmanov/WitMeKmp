@@ -7,7 +7,10 @@ import kz.witme.project.timer_details.TimerDetailsScreen
 
 val timerNavigationModule = screenModule {
     register<Destination.Timer> { destination ->
-        TimerScreen(bookId = destination.bookId)
+        TimerScreen(
+            bookId = destination.bookId,
+            isNavigatedFromTabs = destination.isNavigatedFromTabs
+        )
     }
     register<Destination.TimerDetails> { provider ->
         TimerDetailsScreen(
