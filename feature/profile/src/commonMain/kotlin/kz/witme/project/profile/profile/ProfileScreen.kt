@@ -1,5 +1,6 @@
 package kz.witme.project.profile.profile
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -189,18 +190,21 @@ internal fun ProfileScreenContent(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            AsyncImage(
-                model = getImageUrl(uiState.avatar),
-                contentDescription = "avatar",
-                modifier = Modifier
-                    .size(100.dp)
-                    .clip(CircleShape)
-                    .clickableWithPressedState(onClick = controller::onAvatarClick),
-                contentScale = ContentScale.Crop,
-                placeholder = painterResource(Res.drawable.ic_profile_placeholder),
-                error = painterResource(Res.drawable.ic_profile_placeholder),
-                fallback = painterResource(Res.drawable.ic_profile_placeholder)
-            )
+            Box(
+                modifier = Modifier.clickableWithPressedState(onClick = controller::onAvatarClick)
+            ) {
+                AsyncImage(
+                    model = getImageUrl(uiState.avatar),
+                    contentDescription = "avatar",
+                    modifier = Modifier
+                        .size(100.dp)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.Crop,
+                    placeholder = painterResource(Res.drawable.ic_profile_placeholder),
+                    error = painterResource(Res.drawable.ic_profile_placeholder),
+                    fallback = painterResource(Res.drawable.ic_profile_placeholder)
+                )
+            }
             Spacer(modifier = Modifier.height(12.dp))
             Text(
                 text = uiState.username,
