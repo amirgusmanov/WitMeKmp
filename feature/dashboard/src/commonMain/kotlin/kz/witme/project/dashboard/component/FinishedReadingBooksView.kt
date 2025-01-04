@@ -29,7 +29,7 @@ import kz.witme.project.common_ui.theme.LocalWitMeTheme
 internal fun FinishedReadingBooksView(
     books: ImmutableList<GetBook>,
     modifier: Modifier = Modifier,
-    onBookClick: (String) -> Unit,
+    onBookClick: (GetBook) -> Unit,
 ) {
     Box(
         modifier = modifier.fillMaxWidth().padding(horizontal = 16.dp)
@@ -45,7 +45,7 @@ internal fun FinishedReadingBooksView(
                 FinishedBookView(
                     photo = book.bookPhoto,
                     onBookClick = {
-                        onBookClick(book.id)
+                        onBookClick(book)
                     }
                 )
             }

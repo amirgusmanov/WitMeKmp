@@ -14,7 +14,7 @@ internal class GetBookSessionDetailsRepositoryImpl(
 
     override suspend fun getBookSessionDetails(
         bookId: String
-    ): RequestResult<GetBookSessionDetails, DataError.Remote> = safeCall {
-        api.getSessionDetails(bookId).toDomain()
+    ): RequestResult<List<GetBookSessionDetails>, DataError.Remote> = safeCall {
+        api.getSessionDetails(bookId).map { it.toDomain() }
     }
 }

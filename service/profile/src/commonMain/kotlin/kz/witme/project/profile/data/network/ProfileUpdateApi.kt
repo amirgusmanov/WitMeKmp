@@ -10,7 +10,7 @@ import kz.witme.project.profile.data.model.UserProfileResponse
 internal interface ProfileUpdateApi {
 
     @Multipart
-    @POST("/users/update_profile/")
+    @POST("users/update_profile/")
     suspend fun updateProfile(
         @Body map: MultiPartFormDataContent
     ): UserProfileResponse

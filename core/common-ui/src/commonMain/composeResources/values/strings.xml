@@ -81,4 +81,6 @@
     <string name="logout_message">Вы уверены, что хотите выйти?</string>
     <string name="yes">Да</string>
     <string name="no">Нет</string>
+    <string name="description">Описание:</string>
+    <string name="day">День %1$d</string>
 </resources>

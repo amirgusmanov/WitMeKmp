@@ -6,6 +6,6 @@ import kz.witme.project.navigation.Destination
 
 val bookDetailsNavigationModule = screenModule {
     register<Destination.BookDetails> { provider ->
-        DetailsScreen(bookId = provider.bookId)
+        DetailsScreen(book = provider.book)
     }
 }

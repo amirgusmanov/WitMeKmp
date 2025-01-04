@@ -24,7 +24,7 @@ import witmekmp.core.common_ui.generated.resources.pages
 @Composable
 fun BookDataSectionView(
     modifier: Modifier = Modifier,
-    photo: String,
+    photo: String?,
     author: String,
     maxPages: Int
 ) {

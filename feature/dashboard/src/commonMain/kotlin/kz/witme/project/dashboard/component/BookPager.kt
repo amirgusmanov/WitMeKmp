@@ -16,6 +16,7 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import kotlinx.collections.immutable.ImmutableList
+import kz.witme.project.book.domain.model.GetBook
 import kz.witme.project.common_ui.base.DefaultAddCardView
 import kz.witme.project.common_ui.screen.getScreenWidth
 import kz.witme.project.dashboard.BookEntry
@@ -29,7 +30,7 @@ internal fun BookPager(
     modifier: Modifier = Modifier,
     books: ImmutableList<BookEntry>,
     pagerState: PagerState,
-    onBookClick: (bookId: String) -> Unit = {},
+    onBookClick: (book: GetBook) -> Unit = {},
     onTimerClick: (bookId: String) -> Unit = {},
     onEmptyClick: () -> Unit = {}
 ) {
@@ -61,7 +62,9 @@ internal fun BookPager(
                         date = book.bookResponse.createdDate.toString(), //todo: parse date here with DateUtils
                         status = book.bookResponse.readingStatus.displayName,
                         notes = book.bookResponse.notesAmount,
-                        onBookClick = onBookClick,
+                        onBookClick = {
+                            onBookClick(book.bookResponse)
+                        },
                         onTimerClick = onTimerClick,
                         modifier = Modifier.defaultDashboardCardModifier(pageOffset = pageOffset)
                     )

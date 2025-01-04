@@ -8,5 +8,5 @@ interface GetBookSessionDetailsRepository {
 
     suspend fun getBookSessionDetails(
         bookId: String
-    ): RequestResult<GetBookSessionDetails, DataError.Remote>
+    ): RequestResult<List<GetBookSessionDetails>, DataError.Remote>
 }

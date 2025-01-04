@@ -79,6 +79,12 @@ internal fun DashboardScreenContent(
                 DashboardViewModel.DashboardResponseEvent.NavigateToCreateBook -> {
                     navigator?.push(createBookScreen)
                 }
+
+                is DashboardViewModel.DashboardResponseEvent.NavigateToDetails -> {
+                    ScreenRegistry.get(Destination.BookDetails(event.book)).let {
+                        navigator?.push(it)
+                    }
+                }
             }
         }
     }

@@ -9,5 +9,5 @@ internal interface GetBookDetailsApi {
     @GET("books/{book_id}/details/")
     suspend fun getSessionDetails(
         @Path("book_id") id: String
-    ) : GetBookSessionDetailsResponse
+    ) : List<GetBookSessionDetailsResponse>
 }

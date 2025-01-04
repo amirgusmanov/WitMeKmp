@@ -81,8 +81,10 @@ internal class DashboardViewModel(
         }
     }
 
-    override fun onBookClick(bookId: String) {
-        //todo
+    override fun onBookClick(book: GetBook) {
+        screenModelScope.launch {
+            _responseEvent.send(DashboardResponseEvent.NavigateToDetails(book))
+        }
     }
 
     override fun onTimerClick(bookId: String) {
@@ -99,6 +101,7 @@ internal class DashboardViewModel(
 
     sealed interface DashboardResponseEvent {
         data class NavigateToTimer(val bookId: String) : DashboardResponseEvent
+        data class NavigateToDetails(val book: GetBook) : DashboardResponseEvent
         data object NavigateToCreateBook : DashboardResponseEvent
     }
 }

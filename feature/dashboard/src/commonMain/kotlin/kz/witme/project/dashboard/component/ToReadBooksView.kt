@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import coil3.compose.AsyncImage
 import kotlinx.collections.immutable.ImmutableList
+import kz.witme.project.book.domain.model.GetBook
 import kz.witme.project.common_ui.extension.clickableWithoutRipple
 import kz.witme.project.common_ui.image.getImageUrl
 import kz.witme.project.common_ui.theme.LocalWitMeTheme
@@ -38,7 +39,7 @@ import witmekmp.core.common_ui.generated.resources.ic_plus
 internal fun ToReadBooksView(
     bookEntries: ImmutableList<BookEntry>,
     modifier: Modifier = Modifier,
-    onBookClick: (String) -> Unit,
+    onBookClick: (GetBook) -> Unit,
     onEmptyClick: () -> Unit
 ) {
     Box(
@@ -70,7 +71,7 @@ internal fun ToReadBooksView(
                 ToReadBook(
                     bookEntry = book,
                     onBookClick = {
-                        onBookClick((book as BookEntry.Book).bookResponse.id)
+                        onBookClick((book as BookEntry.Book).bookResponse)
                     },
                     onEmptyClick = onEmptyClick
                 )
@@ -83,7 +84,7 @@ internal fun ToReadBooksView(
 private fun ToReadBook(
     bookEntry: BookEntry,
     modifier: Modifier = Modifier,
-    onBookClick: (String) -> Unit,
+    onBookClick: () -> Unit,
     onEmptyClick: () -> Unit
 ) {
     when (bookEntry) {
@@ -91,9 +92,7 @@ private fun ToReadBook(
             Box(
                 modifier = modifier
                     .size(60.dp)
-                    .clickableWithoutRipple {
-                        onBookClick(bookEntry.bookResponse.id)
-                    },
+                    .clickableWithoutRipple(onClick = onBookClick),
                 contentAlignment = Alignment.Center
             ) {
                 AsyncImage(

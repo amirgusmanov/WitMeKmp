@@ -46,12 +46,12 @@ internal fun BookCardView(
     notes: Int,
     modifier: Modifier = Modifier,
     onTimerClick: (bookId: String) -> Unit = {},
-    onBookClick: (bookId: String) -> Unit = {}
+    onBookClick: () -> Unit = {}
 ) {
     ElevatedCard(
         modifier = modifier
             .padding(vertical = 4.dp)
-            .clickableWithoutRipple { onBookClick(id) },
+            .clickableWithoutRipple(onClick = onBookClick),
         colors = CardDefaults.cardColors(containerColor = LocalWitMeTheme.colors.white),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         shape = RoundedCornerShape(size = 16.dp)

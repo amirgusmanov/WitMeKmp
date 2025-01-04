@@ -37,7 +37,7 @@ internal fun DashboardContent(
     finishedReadingBooks: ImmutableList<GetBook>,
     currentlyReadingBooksPager: PagerState,
     onEmptyClick: () -> Unit,
-    onBookClick: (String) -> Unit,
+    onBookClick: (GetBook) -> Unit,
     onTimerClick: (String) -> Unit
 ) {
     Column(modifier = modifier) {
