@@ -44,6 +44,8 @@ import kz.witme.project.common_ui.spinner.Picker
 import kz.witme.project.common_ui.spinner.rememberPickerState
 import kz.witme.project.common_ui.theme.LocalWitMeTheme
 import kz.witme.project.component.BaseTimerBottomSheet
+import kz.witme.project.navigation.result.ResultConstants
+import kz.witme.project.navigation.result.popUntilRootWithResult
 import kz.witme.project.timer.model.TimerHelperModel
 import kz.witme.project.timer_details.component.ConfirmButton
 import kz.witme.project.timer_details.component.InfoCard
@@ -98,7 +100,9 @@ class TimerDetailsScreen(
             viewModel.responseEvent.collectLatest { event ->
                 when (event) {
                     TimerDetailsViewModel.ResponseEvent.HidePagePicker -> bottomSheetNavigator.hide()
-                    TimerDetailsViewModel.ResponseEvent.NavigateToDashboard -> navigator?.popUntilRoot()
+                    TimerDetailsViewModel.ResponseEvent.NavigateToDashboard -> {
+                        navigator?.popUntilRootWithResult(ResultConstants.CREATE_TIMER_SESSION_SUCCESS)
+                    }
                     TimerDetailsViewModel.ResponseEvent.ShowPagePicker -> {
                         bottomSheetNavigator.show(
                             BaseTimerBottomSheet(

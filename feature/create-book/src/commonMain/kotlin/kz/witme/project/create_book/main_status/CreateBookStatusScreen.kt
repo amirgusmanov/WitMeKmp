@@ -40,6 +40,8 @@ import kz.witme.project.common_ui.theme.LocalWitMeTheme
 import kz.witme.project.create_book.component.EmojiBottomSheetScreen
 import kz.witme.project.create_book.component.StarRating
 import kz.witme.project.navigation.CreateBookArgs
+import kz.witme.project.navigation.result.ResultConstants
+import kz.witme.project.navigation.result.popUntilRootWithResult
 import org.jetbrains.compose.resources.stringResource
 import witmekmp.core.common_ui.generated.resources.Res
 import witmekmp.core.common_ui.generated.resources.add_book
@@ -85,7 +87,7 @@ internal fun CreateBookStatusScreenContent(
         controller.navigateFlow.collectLatest { result ->
             when (result) {
                 CreateBookStatusViewModel.NavigateResult.NavigateToDashboard -> {
-                    navigator?.popUntilRoot()
+                    navigator?.popUntilRootWithResult(ResultConstants.CREATE_BOOK_SUCCESS)
                 }
             }
         }

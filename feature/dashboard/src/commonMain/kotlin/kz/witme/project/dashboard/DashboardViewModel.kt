@@ -32,7 +32,23 @@ internal class DashboardViewModel(
         getBooks()
     }
 
-    private fun getBooks() {
+    fun showSuccessDialog() {
+        uiState.tryToUpdate {
+            it.copy(
+                isBookCreated = true
+            )
+        }
+    }
+
+    fun dismissSuccessDialog() {
+        uiState.tryToUpdate {
+            it.copy(
+                isBookCreated = false
+            )
+        }
+    }
+
+    fun getBooks() {
         screenModelScope.launch {
             initLoading()
             bookRepository.getBooks()

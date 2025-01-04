@@ -11,5 +11,6 @@ internal data class DashboardUiState(
     val toReadBooks: ImmutableList<BookEntry> = persistentListOf(),
     val finishedReadingBooks: ImmutableList<GetBook> = persistentListOf(),
     val isLoading: Boolean = true,
-    val errorMessage: String = ""
+    val errorMessage: String = "",
+    val isBookCreated: Boolean = false
 )
