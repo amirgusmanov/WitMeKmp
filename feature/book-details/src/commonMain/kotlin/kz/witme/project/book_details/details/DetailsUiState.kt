@@ -6,7 +6,7 @@ import kotlinx.collections.immutable.persistentListOf
 import kz.witme.project.book_details.details.model.SessionItem
 
 @Stable
-sealed interface DetailsUiState {
+internal sealed interface DetailsUiState {
     data object Loading : DetailsUiState
     data class Error(val message: String) : DetailsUiState
     data class Data(

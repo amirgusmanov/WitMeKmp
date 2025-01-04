@@ -74,6 +74,7 @@
     <string name="good_boy">За эту сессию ты прочитал %1$d страниц</string>
     <string name="session_time">Время сессии</string>
     <string name="total_read">Всего страниц прочитано</string>
+    <string name="total_read_time">Всего времени чтения</string>
     <string name="status">Статус</string>
     <string name="save">Сохранить</string>
     <string name="pages">страниц</string>
@@ -83,4 +84,6 @@
     <string name="no">Нет</string>
     <string name="description">Описание:</string>
     <string name="day">День %1$d</string>
+    <string name="notes">Заметки</string>
+    <string name="no_notes">Нет заметок</string>
 </resources>

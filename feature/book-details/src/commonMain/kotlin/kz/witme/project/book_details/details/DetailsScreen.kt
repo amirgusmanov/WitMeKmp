@@ -3,7 +3,6 @@
 package kz.witme.project.book_details.details
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
@@ -86,7 +85,12 @@ class DetailsScreen(private val book: GetBook) : Screen {
                     }
 
                     is DetailsViewModel.ResponseEvent.NavigateToSessionDetails -> {
-                        ScreenRegistry.get(Destination.BookSessionDetails(event.session)).let {
+                        ScreenRegistry.get(
+                            Destination.BookSessionDetails(
+                                bookSessionDetails = event.session,
+                                bookName = event.bookName
+                            )
+                        ).let {
                             navigator?.push(it)
                         }
                     }
@@ -107,13 +111,7 @@ internal fun DetailsScreenContent(
 ) {
     val navigator = LocalNavigator.current
     val scrollState = rememberScrollState(initial = 0)
-    val backIconColorBackground by animateColorAsState(
-        targetValue = if (scrollState.value != 0) {
-            LocalWitMeTheme.colors.primary400
-        } else {
-            Color.Transparent
-        }
-    )
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = LocalWitMeTheme.colors.white
@@ -172,7 +170,11 @@ internal fun DetailsScreenContent(
                     modifier = Modifier
                         .align(Alignment.Center)
                         .clip(CircleShape)
-                        .background(color = backIconColorBackground)
+                        .background(color = if (scrollState.value != 0) {
+                            LocalWitMeTheme.colors.primary400
+                        } else {
+                            Color.Transparent
+                        })
                 ) {
                     Icon(
                         modifier = Modifier

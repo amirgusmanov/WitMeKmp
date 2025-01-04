@@ -65,7 +65,16 @@ internal class DetailsViewModel(
             .toImmutableList()
 
     override fun onSessionClick(session: GetBookSessionDetails) {
-        TODO("Not yet implemented")
+        screenModelScope.launch {
+            with(uiState.value as? DetailsUiState.Data ?: return@launch) {
+                _responseEventFlow.send(
+                    ResponseEvent.NavigateToSessionDetails(
+                        session = session,
+                        bookName = name
+                    )
+                )
+            }
+        }
     }
 
     override fun onErrorDismiss() {
@@ -77,7 +86,8 @@ internal class DetailsViewModel(
     sealed interface ResponseEvent {
         data object NavigateBack : ResponseEvent
         data class NavigateToSessionDetails(
-            val session: GetBookSessionDetails
+            val session: GetBookSessionDetails,
+            val bookName: String
         ) : ResponseEvent
     }
 }

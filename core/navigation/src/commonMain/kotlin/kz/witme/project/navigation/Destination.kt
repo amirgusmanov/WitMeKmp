@@ -21,5 +21,8 @@ sealed interface Destination : ScreenProvider {
         val notes: List<String>
     ) : Destination
     data class BookDetails(val book: GetBook) : Destination
-    data class BookSessionDetails(val bookSessionDetails: GetBookSessionDetails) : Destination
+    data class BookSessionDetails(
+        val bookSessionDetails: GetBookSessionDetails,
+        val bookName: String
+    ) : Destination
 }

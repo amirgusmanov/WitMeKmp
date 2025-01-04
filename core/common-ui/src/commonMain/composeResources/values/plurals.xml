@@ -5,4 +5,9 @@
         <item quantity="few">%1$d заметки</item>
         <item quantity="other">%1$d заметок</item>
     </plurals>
+    <plurals name="minutes_pl">
+        <item quantity="one">%1$d минута</item>
+        <item quantity="few">%1$d минуты</item>
+        <item quantity="other">%1$d минут</item>
+    </plurals>
 </resources>
