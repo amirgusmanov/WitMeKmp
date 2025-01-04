@@ -92,6 +92,7 @@ class TimerScreen(private val bookId: String? = null) : Screen {
             viewModel.responseEvent.collectLatest { event ->
                 when (event) {
                     TimerViewModel.ResponseEvent.NavigateToDetails -> {
+                        if (viewModel.elapsedSeconds == 0L) return@collectLatest
                         if (bookId == null && uiState.selectedBookId.isBlank()) {
                             bottomSheetNavigator.show(
                                 BaseTimerBottomSheet(

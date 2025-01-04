@@ -16,6 +16,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kz.witme.project.book.domain.model.GetBook
+import kz.witme.project.book.domain.model.ReadingStatus
 import kz.witme.project.book.domain.repository.GetBookRepository
 import kz.witme.project.common.extension.tryToUpdate
 import kz.witme.project.data.network.onError
@@ -58,7 +59,11 @@ internal class TimerViewModel(
             booksRepository.getBooks()
                 .onSuccess { books ->
                     uiState.tryToUpdate {
-                        it.copy(books = books.toImmutableList())
+                        it.copy(
+                            books = books
+                                .filter { book -> book.readingStatus == ReadingStatus.ReadingNow }
+                                .toImmutableList()
+                        )
                     }
                 }
                 .onError {

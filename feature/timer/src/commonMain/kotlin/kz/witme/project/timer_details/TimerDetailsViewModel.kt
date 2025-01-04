@@ -36,8 +36,8 @@ internal class TimerDetailsViewModel(
             it.copy(
                 book = book,
                 timerSeconds = elapsedSeconds,
-                previousPage = book.currentPage,
-                currentPage = book.currentPage,
+                previousPage = book.currentPage + 1,
+                currentPage = book.currentPage + 1,
                 maxPages = book.pagesAmount,
                 notes = notes
             )
