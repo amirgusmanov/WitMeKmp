@@ -1,6 +1,8 @@
 package kz.witme.project.book_details.details
 
 import androidx.compose.runtime.Stable
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import kz.witme.project.book.domain.model.GetBookSessionDetails
 
 @Stable
@@ -13,7 +15,7 @@ sealed interface DetailsUiState {
         val photo: String? = null,
         val description: String = "",
         val maxPages: Int = 0,
-        val details: List<GetBookSessionDetails> = emptyList(),
+        val details: ImmutableList<GetBookSessionDetails> = persistentListOf(),
         val errorMessage: String = ""
     ) : DetailsUiState
 }

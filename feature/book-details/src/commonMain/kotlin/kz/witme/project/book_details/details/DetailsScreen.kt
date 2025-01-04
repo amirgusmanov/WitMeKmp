@@ -3,18 +3,22 @@
 package kz.witme.project.book_details.details
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
@@ -29,18 +33,22 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
+import kotlinx.collections.immutable.ImmutableList
 import kz.witme.project.book.domain.model.GetBook
+import kz.witme.project.book.domain.model.GetBookSessionDetails
 import kz.witme.project.book_details.component.BookDataSectionView
 import kz.witme.project.common_ui.base.TopCurvedCircle
 import kz.witme.project.common_ui.extension.clickableWithPressedState
 import kz.witme.project.common_ui.extension.clickableWithoutRipple
 import kz.witme.project.common_ui.extension.collectAsStateWithLifecycle
-import kz.witme.project.common_ui.screen.toolbarPaddings
 import kz.witme.project.common_ui.theme.DefaultRoundedShape
 import kz.witme.project.common_ui.theme.LocalWitMeTheme
 import org.jetbrains.compose.resources.painterResource
@@ -49,6 +57,8 @@ import witmekmp.core.common_ui.generated.resources.Res
 import witmekmp.core.common_ui.generated.resources.description
 import witmekmp.core.common_ui.generated.resources.ic_arrow_right
 import witmekmp.core.common_ui.generated.resources.ic_back
+import witmekmp.core.common_ui.generated.resources.ic_book_session
+import witmekmp.core.common_ui.generated.resources.min
 
 class DetailsScreen(private val book: GetBook) : Screen {
 
@@ -73,24 +83,16 @@ internal fun DetailsScreenContent(
     uiState: DetailsUiState
 ) {
     val navigator = LocalNavigator.current
+    val scrollState = rememberScrollState(initial = 0)
+    val backIconColorBackground by animateColorAsState(
+        targetValue = if (scrollState.value != 0) {
+            LocalWitMeTheme.colors.primary400
+        } else {
+            Color.Transparent
+        }
+    )
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        topBar = {
-            Icon(
-                modifier = Modifier
-                    .toolbarPaddings()
-                    .padding(top = 16.dp)
-                    .clickableWithPressedState(
-                        onClick = {
-                            navigator?.pop()
-                        }
-                    ),
-                painter = painterResource(Res.drawable.ic_back),
-                tint = LocalWitMeTheme.colors.white,
-                contentDescription = "back button"
-            )
-        },
-        contentWindowInsets = WindowInsets.statusBars,
         containerColor = LocalWitMeTheme.colors.white
     ) { contentPaddingValues ->
         Box(
@@ -98,7 +100,11 @@ internal fun DetailsScreenContent(
                 .fillMaxSize()
                 .padding(contentPaddingValues)
         ) {
-            TopCurvedCircle()
+            TopCurvedCircle(
+                modifier = Modifier.graphicsLayer {
+                    translationY = -scrollState.value.toFloat()
+                }
+            )
             AnimatedContent(
                 targetState = uiState
             ) { state ->
@@ -107,7 +113,33 @@ internal fun DetailsScreenContent(
                     is DetailsUiState.Error -> Unit
                     is DetailsUiState.Data -> DetailsContent(
                         controller = controller,
-                        uiState = state
+                        uiState = state,
+                        scrollState = scrollState
+                    )
+                }
+            }
+            Box(
+                modifier = Modifier
+                    .padding(start = 16.dp)
+                    .clickableWithPressedState(
+                        onClick = {
+                            navigator?.pop()
+                        }
+                    ),
+            ) {
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .clip(CircleShape)
+                        .background(color = backIconColorBackground)
+                ) {
+                    Icon(
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .align(Alignment.Center),
+                        painter = painterResource(Res.drawable.ic_back),
+                        tint = LocalWitMeTheme.colors.white,
+                        contentDescription = "back button"
                     )
                 }
             }
@@ -118,14 +150,15 @@ internal fun DetailsScreenContent(
 @Composable
 private fun DetailsContent(
     controller: DetailsController,
-    uiState: DetailsUiState.Data
+    uiState: DetailsUiState.Data,
+    scrollState: ScrollState
 ) {
     Column(
         modifier = Modifier
+            .verticalScroll(scrollState)
             .padding(horizontal = 16.dp)
-            .verticalScroll(rememberScrollState())
     ) {
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(48.dp))
         Text(
             text = uiState.name,
             style = LocalWitMeTheme.typography.semiBold32,
@@ -140,6 +173,14 @@ private fun DetailsContent(
         )
         Spacer(modifier = Modifier.height(18.dp))
         DescriptionSectionView(bookDescription = uiState.description)
+        Spacer(modifier = Modifier.height(16.dp))
+        if (uiState.details.isNotEmpty()) {
+            SessionsView(
+                sessions = uiState.details,
+                onSessionClick = controller::onSessionClick
+            )
+        }
+        Spacer(modifier = Modifier.height(32.dp))
     }
 }
 
@@ -188,5 +229,88 @@ private fun DescriptionSectionView(
                 )
             }
         }
+    }
+}
+
+//todo rewrite it to lazy column with headers
+@Composable
+private fun SessionsView(
+    modifier: Modifier = Modifier,
+    sessions: ImmutableList<GetBookSessionDetails>,
+    onSessionClick: (GetBookSessionDetails) -> Unit
+) {
+    ElevatedCard(
+        modifier = modifier
+            .animateContentSize()
+            .padding(vertical = 4.dp, horizontal = 2.dp),
+        colors = CardDefaults.cardColors(containerColor = LocalWitMeTheme.colors.white),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        shape = DefaultRoundedShape,
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            sessions.forEach { session ->
+                SessionItem(
+                    session,
+                    onSessionClick = {
+                        onSessionClick(session)
+                    }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun SessionItem(
+    session: GetBookSessionDetails,
+    onSessionClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .padding(vertical = 9.dp)
+            .clickableWithoutRipple(onClick = onSessionClick),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column {
+            if (session.endSessionTime.isNotBlank()) {
+                Text(
+                    text = session.endSessionTime,
+                    style = LocalWitMeTheme.typography.regular12,
+                    color = LocalWitMeTheme.colors.secondary400
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+            }
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    painter = painterResource(Res.drawable.ic_book_session),
+                    contentDescription = null,
+                    tint = LocalWitMeTheme.colors.primary400,
+                    modifier = Modifier.size(20.dp)
+                )
+                Spacer(modifier = Modifier.width(6.dp))
+                Text(
+                    text = session.fromPageToPage,
+                    style = LocalWitMeTheme.typography.regular16,
+                    color = LocalWitMeTheme.colors.primary400
+                )
+                Spacer(modifier = Modifier.width(6.dp))
+                Text(
+                    text = "(${session.getMinutes()} ${stringResource(Res.string.min)})",
+                    style = LocalWitMeTheme.typography.regular12,
+                    color = LocalWitMeTheme.colors.secondary400
+                )
+            }
+        }
+        Spacer(modifier = Modifier.weight(1f))
+        Icon(
+            painter = painterResource(Res.drawable.ic_arrow_right),
+            modifier = Modifier.size(24.dp),
+            tint = LocalWitMeTheme.colors.primary400,
+            contentDescription = "Go to session details"
+        )
     }
 }

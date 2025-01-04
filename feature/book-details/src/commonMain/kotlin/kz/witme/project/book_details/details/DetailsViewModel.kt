@@ -2,10 +2,12 @@ package kz.witme.project.book_details.details
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kz.witme.project.book.domain.model.GetBook
+import kz.witme.project.book.domain.model.GetBookSessionDetails
 import kz.witme.project.book.domain.repository.GetBookSessionDetailsRepository
 import kz.witme.project.common.extension.tryToUpdate
 import kz.witme.project.data.network.getMessage
@@ -24,7 +26,7 @@ internal class DetailsViewModel(
                 .onSuccess { details ->
                     uiState.tryToUpdate {
                         DetailsUiState.Data(
-                            details = details,
+                            details = details.toImmutableList(),
                             name = book.name,
                             author = book.author,
                             photo = book.bookPhoto,
@@ -41,5 +43,9 @@ internal class DetailsViewModel(
                     }
                 }
         }
+    }
+
+    override fun onSessionClick(session: GetBookSessionDetails) {
+        TODO("Not yet implemented")
     }
 }
