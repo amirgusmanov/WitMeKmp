@@ -15,7 +15,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -28,61 +27,49 @@ import kotlinx.coroutines.flow.collectLatest
 import kz.witme.project.common_ui.base.DefaultToolbar
 import kz.witme.project.common_ui.base.ErrorAlert
 import kz.witme.project.common_ui.base.PiggySmileView
+import kz.witme.project.common_ui.base.SuccessAlert
 import kz.witme.project.common_ui.base.TopCurvedCircle
 import kz.witme.project.common_ui.extension.collectAsStateWithLifecycle
 import kz.witme.project.common_ui.screen.toolbarPaddings
 import kz.witme.project.common_ui.theme.LocalWitMeTheme
 import kz.witme.project.navigation.Destination
+import kz.witme.project.navigation.result.ResultConstants
+import kz.witme.project.navigation.result.getScreenResult
 import org.jetbrains.compose.resources.stringResource
 import witmekmp.core.common_ui.generated.resources.Res
 import witmekmp.core.common_ui.generated.resources.currently_reading
 
-@Stable
 class DashboardScreen : Screen {
-
-//    private var isBookCreated: Boolean = false
-//    private var isTimerSessionTracked: Boolean = false
-//    private val mutex = Mutex()
 
     @Composable
     override fun Content() {
         val viewModel: DashboardViewModel = koinScreenModel()
         val uiState: DashboardUiState by viewModel.uiState.collectAsStateWithLifecycle()
+        val navigator = LocalNavigator.current
 
-//        if (uiState.isBookCreated) {
-//            SuccessAlert(
-//                onDismiss = {
-//                    isBookCreated = false
-//                    viewModel.dismissSuccessDialog()
-//                }
-//            )
-//        }
-//        LaunchedEffect(isBookCreated) {
-//            if (isBookCreated) {
-//                viewModel.getBooks()
-//                viewModel.showSuccessDialog()
-//            }
-//        }
-//        LaunchedEffect(isTimerSessionTracked) {
-//            if (isTimerSessionTracked) {
-//                viewModel.getBooks()
-//                mutex.withLock {
-//                    isTimerSessionTracked = false
-//                }
-//            }
-//        }
+        if (uiState.isBookCreated) {
+            SuccessAlert(
+                onDismiss = {
+                    viewModel.dismissSuccessDialog()
+                }
+            )
+        }
+        LaunchedEffect(Unit) {
+            if (navigator?.getScreenResult<Boolean>(ResultConstants.CREATE_BOOK_SUCCESS) == true) {
+                viewModel.getBooks()
+                viewModel.showSuccessDialog()
+            }
+        }
+        LaunchedEffect(Unit) {
+            if (navigator?.getScreenResult<Boolean>(ResultConstants.CREATE_TIMER_SESSION_SUCCESS) == true) {
+                viewModel.getBooks()
+            }
+        }
         DashboardScreenContent(
             controller = viewModel,
             uiState = uiState
         )
     }
-
-//    override fun <T> onResult(obj: T) {
-//        when (obj) {
-//            ResultConstants.CREATE_BOOK_SUCCESS -> isBookCreated = true
-//            ResultConstants.CREATE_TIMER_SESSION_SUCCESS -> isTimerSessionTracked = true
-//        }
-//    }
 }
 
 @Composable
