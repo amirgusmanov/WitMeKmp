@@ -208,8 +208,6 @@ private fun CreateBookContent(
                 .clickableWithoutRipple(onClick = focusManager::clearFocus)
         ) {
             TopCurvedCircle(
-                yOffset = 0f,
-                radiusDivisionNumber = 1.2f,
                 modifier = Modifier.graphicsLayer {
                     translationY = -scrollState.value.toFloat()
                 }
