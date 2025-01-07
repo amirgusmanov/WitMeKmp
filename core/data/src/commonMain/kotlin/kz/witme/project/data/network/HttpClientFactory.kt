@@ -53,6 +53,9 @@ object HttpClientFactory {
         install(Auth) {
             bearer {
                 refreshTokens {
+//                    todo try to use those tokens for refresh
+//                    this.oldTokens?.accessToken
+//                    this.oldTokens?.refreshToken
                     sendRefreshRequest(
                         sessionManager = sessionManager,
                         onRefreshFailed = {
