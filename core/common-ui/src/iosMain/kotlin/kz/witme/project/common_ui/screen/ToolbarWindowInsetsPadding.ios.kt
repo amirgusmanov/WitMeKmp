@@ -6,4 +6,4 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-actual fun Modifier.toolbarPaddings(): Modifier = padding(horizontal = 20.dp).padding(top = 44.dp)
+actual fun Modifier.toolbarPaddings(): Modifier = padding(horizontal = 20.dp).padding(top = 54.dp)

@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.core.screen.Screen
@@ -57,6 +58,7 @@ import witmekmp.core.common_ui.generated.resources.add_note
 import witmekmp.core.common_ui.generated.resources.chevron_right
 import witmekmp.core.common_ui.generated.resources.end_session
 import witmekmp.core.common_ui.generated.resources.ic_back
+import witmekmp.core.common_ui.generated.resources.no_books
 import witmekmp.core.common_ui.generated.resources.save_note
 import witmekmp.core.common_ui.generated.resources.what_book_you_read
 
@@ -91,7 +93,10 @@ class TimerScreen(
                 books = uiState.books,
                 selectedBookId = uiState.selectedBookId,
                 areBooksLoading = uiState.areBooksLoading,
-                onBookClick = viewModel::onBookChoose
+                onBookClick = {
+                    viewModel.onBookChoose(it)
+                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                }
             )
         }
         LaunchedEffect(viewModel.responseEvent) {
@@ -270,30 +275,47 @@ private fun BooksBottomSheet(
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
-        LazyColumn(
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            if (areBooksLoading) {
-                items(
-                    count = 7
-                ) {
-                    ShimmerView(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
-                            .height(40.dp)
-                    )
-                }
-            } else {
-                items(
-                    items = books,
-                    key = GetBook::id
-                ) { book ->
-                    BookItem(
-                        book = book,
-                        isSelected = book.id == selectedBookId,
-                        onBookClick = onBookClick
-                    )
+        if (books.isEmpty()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = stringResource(Res.string.no_books),
+                    style = LocalWitMeTheme.typography.regular16,
+                    color = LocalWitMeTheme.colors.secondary400,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
+        } else {
+            LazyColumn(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                if (areBooksLoading) {
+                    items(
+                        count = 7
+                    ) {
+                        ShimmerView(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp)
+                                .height(40.dp)
+                        )
+                    }
+                } else {
+                    items(
+                        items = books,
+                        key = GetBook::id
+                    ) { book ->
+                        BookItem(
+                            book = book,
+                            isSelected = book.id == selectedBookId,
+                            onBookClick = onBookClick
+                        )
+                    }
                 }
             }
         }

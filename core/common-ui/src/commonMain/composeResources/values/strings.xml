@@ -90,4 +90,5 @@
     <string name="congrats_subtitle">Книга успешно создана! Теперь вы можете перейти к чтению</string>
     <string name="home">Главная</string>
     <string name="profile">Профиль</string>
+    <string name="no_books">К сожалению у вас нет книг. Добавьте их, чтобы начать трекать чтение</string>
 </resources>

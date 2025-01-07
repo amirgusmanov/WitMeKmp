@@ -58,6 +58,11 @@ internal class CreateBookStatusViewModel(
                     it.copy(errorMessage = error.getMessage())
                 }
             }
+            uiState.tryToUpdate {
+                it.copy(
+                    isCreateButtonLoading = false
+                )
+            }
         }
     }
 
