@@ -13,7 +13,7 @@ sealed interface Destination : ScreenProvider {
     data object Dashboard : Destination
     data object CreateBook : Destination
     data object Profile : Destination
-    data class CreateStatusBook(val args: CreateBookArgs) : Destination
+    data class CreateStatusBook(val args: CreateBookArgs) : Destination //todo check here, try to save image in repository
     data class Timer(
         val bookId: String? = null,
         val isNavigatedFromTabs: Boolean = false
