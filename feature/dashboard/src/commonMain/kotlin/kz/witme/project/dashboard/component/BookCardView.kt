@@ -24,9 +24,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import kz.witme.project.common_ui.extension.clickableWithoutRipple
-import kz.witme.project.common_ui.image.getImageUrl
 import kz.witme.project.common_ui.theme.LinearGradient
 import kz.witme.project.common_ui.theme.LocalWitMeTheme
+import kz.witme.project.data.network.getImageUrl
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 import witmekmp.core.common_ui.generated.resources.Res

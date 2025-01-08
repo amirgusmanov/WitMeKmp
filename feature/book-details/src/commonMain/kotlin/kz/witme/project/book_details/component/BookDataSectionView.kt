@@ -14,9 +14,9 @@ import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import kz.witme.project.common_ui.image.getImageUrl
 import kz.witme.project.common_ui.theme.DefaultRoundedShape
 import kz.witme.project.common_ui.theme.LocalWitMeTheme
+import kz.witme.project.data.network.getImageUrl
 import org.jetbrains.compose.resources.stringResource
 import witmekmp.core.common_ui.generated.resources.Res
 import witmekmp.core.common_ui.generated.resources.pages

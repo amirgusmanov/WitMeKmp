@@ -28,9 +28,9 @@ import coil3.compose.AsyncImage
 import kotlinx.collections.immutable.ImmutableList
 import kz.witme.project.book.domain.model.GetBook
 import kz.witme.project.common_ui.extension.clickableWithoutRipple
-import kz.witme.project.common_ui.image.getImageUrl
 import kz.witme.project.common_ui.theme.LocalWitMeTheme
 import kz.witme.project.dashboard.BookEntry
+import kz.witme.project.data.network.getImageUrl
 import org.jetbrains.compose.resources.painterResource
 import witmekmp.core.common_ui.generated.resources.Res
 import witmekmp.core.common_ui.generated.resources.ic_plus

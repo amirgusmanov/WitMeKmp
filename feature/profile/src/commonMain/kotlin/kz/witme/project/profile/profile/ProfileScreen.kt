@@ -37,12 +37,12 @@ import kz.witme.project.common_ui.extension.clickableWithoutRipple
 import kz.witme.project.common_ui.extension.collectAsStateWithLifecycle
 import kz.witme.project.common_ui.gallery.rememberGalleryManager
 import kz.witme.project.common_ui.image.SharedImage
-import kz.witme.project.common_ui.image.getImageUrl
 import kz.witme.project.common_ui.permission.PermissionCallback
 import kz.witme.project.common_ui.permission.PermissionStatus
 import kz.witme.project.common_ui.permission.PermissionType
 import kz.witme.project.common_ui.permission.createPermissionsManager
 import kz.witme.project.common_ui.theme.LocalWitMeTheme
+import kz.witme.project.data.network.getImageUrl
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import witmekmp.core.common_ui.generated.resources.Res
