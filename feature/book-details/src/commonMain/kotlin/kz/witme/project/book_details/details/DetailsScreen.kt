@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterialApi::class)
-
 package kz.witme.project.book_details.details
 
 import androidx.compose.animation.AnimatedContent

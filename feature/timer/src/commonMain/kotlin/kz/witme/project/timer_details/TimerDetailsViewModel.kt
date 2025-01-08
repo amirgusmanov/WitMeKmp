@@ -110,8 +110,16 @@ internal class TimerDetailsViewModel(
 
         val startHours = normalizedStartSeconds / 3600
         val startMinutes = (normalizedStartSeconds % 3600) / 60
-        val startFormatted = "$startHours:$startMinutes"
-        val endFormatted = "${currentTime.hour}:${currentTime.minute}"
+        val startFormatted = buildString {
+            append(startHours.toString().padStart(2, '0'))
+            append(":")
+            append(startMinutes.toString().padStart(2, '0'))
+        }
+        val endFormatted = buildString {
+            append(currentTime.hour.toString().padStart(2, '0'))
+            append(":")
+            append(currentTime.minute.toString().padStart(2, '0'))
+        }
 
         return "$startFormatted-$endFormatted"
     }

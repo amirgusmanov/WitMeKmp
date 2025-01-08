@@ -1,5 +1,7 @@
 package kz.witme.project.book.domain.model
 
+import kz.witme.project.common.serializable.Serializable
+
 data class GetBook(
     val id: String,
     val bookPhoto: String?,
@@ -13,4 +15,4 @@ data class GetBook(
     val notesAmount: Int,
     val currentPage: Int,
     val createdDate: String? = null
-)
+) : Serializable
