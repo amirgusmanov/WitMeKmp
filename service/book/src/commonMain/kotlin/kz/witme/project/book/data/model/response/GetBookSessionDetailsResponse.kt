@@ -7,7 +7,7 @@ import kz.witme.project.book.domain.model.GetBookSessionDetails
 @Serializable
 internal class GetBookSessionDetailsResponse(
     @SerialName("created_date") val createdDate: String,
-    @SerialName("end_session_time") val endSessionTime: String?,
+    @SerialName("from_time_to_time") val endSessionTime: String? = null,
     @SerialName("session_duration") val sessionDuration: Int,
     @SerialName("from_page_to_page") val fromPageToPage: String,
     val notes: List<String>,

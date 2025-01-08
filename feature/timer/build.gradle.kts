@@ -7,6 +7,7 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.service.book)
             implementation(libs.voyager.tab.navigator)
+            implementation(libs.kotlinx.datetime)
         }
     }
 }

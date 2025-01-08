@@ -9,11 +9,15 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import kz.witme.project.book.domain.model.CreateSessionBody
 import kz.witme.project.book.domain.model.GetBook
 import kz.witme.project.book.domain.repository.CreateBookSessionRepository
 import kz.witme.project.common.extension.tryToGet
 import kz.witme.project.common.extension.tryToUpdate
+import kz.witme.project.common.log.Logger
 import kz.witme.project.data.network.getMessage
 import kz.witme.project.data.network.onError
 import kz.witme.project.data.network.onSuccess
@@ -58,7 +62,8 @@ internal class TimerDetailsViewModel(
                         sessionDuration = timerSeconds.toInt(),
                         fromPageToPage = "$previousPage-$currentPage",
                         notes = notes,
-                        currentPage = currentPage
+                        currentPage = currentPage,
+                        fromTimeToTime = getTime()
                     )
                 ).onSuccess {
                     _responseEvent.send(ResponseEvent.NavigateToDashboard)
@@ -84,6 +89,31 @@ internal class TimerDetailsViewModel(
                 errorMessage = ""
             )
         }
+    }
+
+    private fun getTime(): String {
+        val now = Clock.System.now()
+        val timeZone = TimeZone.currentSystemDefault()
+        val currentDateTime = now.toLocalDateTime(timeZone)
+        val currentTime = currentDateTime.time
+        val timerSeconds = uiState.value.timerSeconds
+        val totalCurrentSeconds =
+            currentTime.hour * 3600 + currentTime.minute * 60 + currentTime.second
+        val totalStartSeconds = totalCurrentSeconds - timerSeconds
+
+        // Handle negative time wrap-around (e.g., crossing midnight)
+        val normalizedStartSeconds = if (totalStartSeconds >= 0) {
+            totalStartSeconds
+        } else {
+            24 * 3600 + totalStartSeconds
+        }
+
+        val startHours = normalizedStartSeconds / 3600
+        val startMinutes = (normalizedStartSeconds % 3600) / 60
+        val startFormatted = "$startHours:$startMinutes"
+        val endFormatted = "${currentTime.hour}:${currentTime.minute}"
+
+        return "$startFormatted-$endFormatted"
     }
 
     //todo implement later

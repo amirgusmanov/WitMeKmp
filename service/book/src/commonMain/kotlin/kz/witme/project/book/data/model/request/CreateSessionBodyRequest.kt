@@ -9,12 +9,14 @@ internal class CreateSessionBodyRequest(
     @SerialName("session_duration") val sessionDuration: Int,
     @SerialName("from_page_to_page") val fromPageToPage: String,
     val notes: List<String>,
-    @SerialName("current_page") val currentPage: Int
+    @SerialName("current_page") val currentPage: Int,
+    @SerialName("from_time_to_time") val fromTimeToTime: String,
 )
 
 internal fun CreateSessionBody.toDto(): CreateSessionBodyRequest = CreateSessionBodyRequest(
     sessionDuration = sessionDuration,
     fromPageToPage = fromPageToPage,
     notes = notes,
-    currentPage = currentPage
+    currentPage = currentPage,
+    fromTimeToTime = fromTimeToTime
 )

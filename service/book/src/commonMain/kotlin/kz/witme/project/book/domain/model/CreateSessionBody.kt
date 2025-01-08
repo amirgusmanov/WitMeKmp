@@ -4,5 +4,6 @@ class CreateSessionBody(
     val sessionDuration: Int,
     val fromPageToPage: String,
     val notes: List<String>,
-    val currentPage: Int
+    val currentPage: Int,
+    val fromTimeToTime: String
 )

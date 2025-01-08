@@ -53,9 +53,6 @@ object HttpClientFactory {
         install(Auth) {
             bearer {
                 refreshTokens {
-//                    todo try to use those tokens for refresh
-//                    this.oldTokens?.accessToken
-//                    this.oldTokens?.refreshToken
                     sendRefreshRequest(
                         sessionManager = sessionManager,
                         onRefreshFailed = {
@@ -88,14 +85,15 @@ object HttpClientFactory {
         onRefreshFailed: suspend () -> Unit,
         onRefreshSuccess: suspend () -> Unit
     ): BearerTokens {
-        val refreshToken = sessionManager.getRefreshToken().ifBlank {
+        val refreshToken = this.oldTokens?.refreshToken?.ifBlank {
             onRefreshFailed()
             throw IllegalStateException("Refresh token is blank")
-        }
-        val accessToken = sessionManager.getAccessToken().ifBlank {
+        } ?: throw IllegalStateException("Refresh token is blank")
+        val accessToken = this.oldTokens?.accessToken?.ifBlank {
             onRefreshFailed()
             throw IllegalStateException("Access token is blank")
-        }
+        } ?: throw IllegalStateException("Access token is blank")
+
         val response = client.post(Url(Constants.REFRESH_URL)) {
             markAsRefreshTokenRequest()
             contentType(ContentType.Application.Json)
