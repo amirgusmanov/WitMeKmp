@@ -70,7 +70,7 @@ import witmekmp.core.common_ui.generated.resources.what_page_you_ended
 class TimerDetailsScreen(
     private val book: GetBook,
     private val seconds: Long,
-    private val notes: ImmutableList<String>
+    private val notes: List<String>
 ) : Screen {
 
     @Composable
@@ -92,7 +92,7 @@ class TimerDetailsScreen(
             viewModel.initState(
                 book = book,
                 elapsedSeconds = seconds,
-                notes = notes
+                notes = notes.toImmutableList()
             )
             viewModel.onPagesCountClick()
         }

@@ -16,7 +16,7 @@ val timerNavigationModule = screenModule {
         TimerDetailsScreen(
             book = provider.book,
             seconds = provider.seconds,
-            notes = provider.notes.toImmutableList()
+            notes = provider.notes
         )
     }
 }
