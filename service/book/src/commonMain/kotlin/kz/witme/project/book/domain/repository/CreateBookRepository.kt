@@ -7,4 +7,8 @@ import kz.witme.project.data.network.RequestResult
 interface CreateBookRepository {
 
     suspend fun createBook(request: CreateBookRequest): RequestResult<Unit, DataError.Remote>
+
+    fun saveTempImage(image: ByteArray?)
+
+    fun clearTempImage()
 }

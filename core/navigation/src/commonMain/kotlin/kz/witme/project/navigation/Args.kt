@@ -5,6 +5,5 @@ import kz.witme.project.common.serializable.Serializable
 class CreateBookArgs(
     val bookName: String,
     val authorName: String,
-    val bookListCount: Int,
-    val imageByteArray: ByteArray?
+    val bookListCount: Int
 ) : Serializable

@@ -8,6 +8,5 @@ class CreateBookRequest(
     val readingStatus: ReadingStatus,
     val starRate: Int?,
     val averageEmoji: Int?,
-    val currentPage: Int?,
-    val image: ByteArray?
+    val currentPage: Int?
 )

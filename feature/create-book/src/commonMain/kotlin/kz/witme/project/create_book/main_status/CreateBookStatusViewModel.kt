@@ -46,12 +46,12 @@ internal class CreateBookStatusViewModel(
                             readingStatus = selectedBookStatus ?: ReadingStatus.ReadingNow,
                             starRate = currentRating,
                             averageEmoji = selectedEmoji,
-                            image = args.imageByteArray,
                             currentPage = 0
                         )
                     }
                 } ?: return@launch
             ).onSuccess {
+                repository.clearTempImage()
                 _navigateChannel.send(NavigateResult.NavigateToDashboard)
             }.onError { error ->
                 uiState.tryToUpdate {

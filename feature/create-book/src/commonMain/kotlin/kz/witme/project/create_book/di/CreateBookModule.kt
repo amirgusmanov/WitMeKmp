@@ -5,6 +5,6 @@ import kz.witme.project.create_book.main_status.CreateBookStatusViewModel
 import org.koin.dsl.module
 
 val featureCreateBookModule = module {
-    factory { CreateBookViewModel() }
+    factory { CreateBookViewModel(createBookRepository = get()) }
     factory { CreateBookStatusViewModel(repository = get()) }
 }

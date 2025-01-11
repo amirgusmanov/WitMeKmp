@@ -8,11 +8,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import kz.witme.project.book.domain.repository.CreateBookRepository
 import kz.witme.project.common.extension.tryToGet
 import kz.witme.project.common.extension.tryToUpdate
 import kz.witme.project.navigation.CreateBookArgs
 
-internal class CreateBookViewModel : ScreenModel, CreateBookController {
+internal class CreateBookViewModel(
+    private val createBookRepository: CreateBookRepository
+) : ScreenModel, CreateBookController {
 
     val uiState: StateFlow<CreateBookMainUiState> = MutableStateFlow(CreateBookMainUiState())
 
@@ -124,20 +127,20 @@ internal class CreateBookViewModel : ScreenModel, CreateBookController {
 
     override fun onNextButtonClick() {
         screenModelScope.launch {
+            createBookRepository.saveTempImage(imageByteArray)
             _createBookNavigationChannel.send(
                 CreateBookNavigateChannel.NavigateToCreateStatus(
-                    args = uiState.value.toArgs(imageByteArray)
+                    args = uiState.value.toArgs()
                 )
             )
         }
     }
 
-    private fun CreateBookMainUiState.toArgs(imageByteArray: ByteArray?): CreateBookArgs =
+    private fun CreateBookMainUiState.toArgs(): CreateBookArgs =
         CreateBookArgs(
             bookName = bookName,
             authorName = authorName,
-            bookListCount = bookListCount ?: 0,
-            imageByteArray = imageByteArray
+            bookListCount = bookListCount ?: 0
         )
 
     internal sealed interface CreateBookNavigateChannel {
