@@ -32,6 +32,7 @@ data class Typographies(
     val regular18: TextStyle,
     val regular20: TextStyle,
     val regular24: TextStyle,
+    val medium12: TextStyle,
     val medium16: TextStyle,
     val medium20: TextStyle,
     val medium24: TextStyle,
@@ -89,6 +90,12 @@ internal fun Typography() = Typographies(
         fontWeight = FontWeight.Normal,
         fontSize = 24.sp,
         lineHeight = 24.sp,
+    ),
+    medium12 = TextStyle(
+        fontFamily = GolosFontFamily(),
+        fontWeight = FontWeight.Medium,
+        fontSize = 12.sp,
+        lineHeight = 14.sp,
     ),
     medium16 = TextStyle(
         fontFamily = GolosFontFamily(),

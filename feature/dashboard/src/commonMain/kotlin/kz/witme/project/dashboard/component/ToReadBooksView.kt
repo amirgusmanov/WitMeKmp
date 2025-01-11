@@ -17,17 +17,21 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import coil3.compose.AsyncImage
+import coil3.compose.AsyncImagePainter
+import coil3.compose.SubcomposeAsyncImage
+import coil3.compose.SubcomposeAsyncImageContent
 import kotlinx.collections.immutable.ImmutableList
 import kz.witme.project.book.domain.model.GetBook
 import kz.witme.project.common_ui.extension.clickableWithoutRipple
+import kz.witme.project.common_ui.image.ImagePlaceholder
 import kz.witme.project.common_ui.theme.LocalWitMeTheme
 import kz.witme.project.dashboard.BookEntry
 import kz.witme.project.data.network.getImageUrl
@@ -95,18 +99,25 @@ private fun ToReadBook(
                     .clickableWithoutRipple(onClick = onBookClick),
                 contentAlignment = Alignment.Center
             ) {
-                AsyncImage(
+                SubcomposeAsyncImage(
                     model = getImageUrl(bookEntry.bookResponse.bookPhoto),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .matchParentSize()
                         .clip(CircleShape)
-                        .align(Alignment.Center),
-                    placeholder = ColorPainter(color = LocalWitMeTheme.colors.secondary300),
-                    error = ColorPainter(color = LocalWitMeTheme.colors.secondary300),
-                    fallback = ColorPainter(color = LocalWitMeTheme.colors.secondary300)
-                )
+                        .align(Alignment.Center)
+                ) {
+                    val state by painter.state.collectAsState()
+                    when (state) {
+                        is AsyncImagePainter.State.Success -> SubcomposeAsyncImageContent()
+                        else -> ImagePlaceholder(
+                            modifier = Modifier.matchParentSize(),
+                            bookName = bookEntry.bookResponse.name,
+                            textStyle = LocalWitMeTheme.typography.medium12
+                        )
+                    }
+                }
             }
 
         BookEntry.Empty -> EmptyView(onClick = onEmptyClick)

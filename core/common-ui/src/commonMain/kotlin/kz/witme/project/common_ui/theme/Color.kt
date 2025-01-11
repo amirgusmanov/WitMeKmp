@@ -25,7 +25,9 @@ data class Colors(
     val error100: Color,
     val error200: Color,
     val focusHelperAlert: Color,
-    val bottomNav: Color
+    val bottomNav: Color,
+    val bookBg: Color,
+    val placeholderText: Color
 )
 
 internal val lightPalette = Colors(
@@ -51,5 +53,7 @@ internal val lightPalette = Colors(
     error100 = Color(0xFFE60045),
     error200 = Color(0xFFE60045),
     focusHelperAlert = Color(0xFFEECA2B),
-    bottomNav = Color(0xFFFAFBFF)
+    bottomNav = Color(0xFFFAFBFF),
+    bookBg = Color(0xFFF7F7EB),
+    placeholderText = Color(0xFF4C5058)
 )

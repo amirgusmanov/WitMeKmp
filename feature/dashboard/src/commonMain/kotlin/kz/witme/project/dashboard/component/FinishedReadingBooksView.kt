@@ -12,15 +12,19 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
+import coil3.compose.AsyncImagePainter
+import coil3.compose.SubcomposeAsyncImage
+import coil3.compose.SubcomposeAsyncImageContent
 import kotlinx.collections.immutable.ImmutableList
 import kz.witme.project.book.domain.model.GetBook
 import kz.witme.project.common_ui.extension.clickableWithoutRipple
+import kz.witme.project.common_ui.image.ImagePlaceholder
 import kz.witme.project.common_ui.theme.DefaultRoundedShape
 import kz.witme.project.common_ui.theme.LocalWitMeTheme
 import kz.witme.project.data.network.getImageUrl
@@ -44,6 +48,7 @@ internal fun FinishedReadingBooksView(
             ) { book ->
                 FinishedBookView(
                     photo = book.bookPhoto,
+                    name = book.name,
                     onBookClick = {
                         onBookClick(book)
                     }
@@ -57,6 +62,7 @@ internal fun FinishedReadingBooksView(
 private fun FinishedBookView(
     modifier: Modifier = Modifier,
     photo: String?,
+    name: String,
     onBookClick: () -> Unit
 ) {
     ElevatedCard(
@@ -68,16 +74,22 @@ private fun FinishedBookView(
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
         shape = DefaultRoundedShape
     ) {
-        AsyncImage(
+        SubcomposeAsyncImage(
             model = getImageUrl(photo),
             contentDescription = "Atomic Habits",
             contentScale = ContentScale.Crop,
-            placeholder = ColorPainter(LocalWitMeTheme.colors.secondary300),
-            error = ColorPainter(LocalWitMeTheme.colors.secondary300),
-            fallback = ColorPainter(LocalWitMeTheme.colors.secondary300),
             modifier = Modifier
                 .fillMaxSize()
                 .clip(DefaultRoundedShape)
-        )
+        ) {
+            val state by painter.state.collectAsState()
+            when (state) {
+                is AsyncImagePainter.State.Success -> SubcomposeAsyncImageContent()
+                else -> ImagePlaceholder(
+                    modifier = Modifier.matchParentSize(),
+                    bookName = name
+                )
+            }
+        }
     }
 }
