@@ -2,9 +2,11 @@ package kz.witme.project.profile.profile
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kz.witme.project.common.extension.tryToUpdate
 import kz.witme.project.data.network.HttpClientFactory
@@ -20,6 +22,9 @@ internal class ProfileViewModel(
 ) : ScreenModel, ProfileController {
 
     val uiState: StateFlow<ProfileUiState> = MutableStateFlow(ProfileUiState())
+
+    private val _responseEventFlow = Channel<ResponseEvent>()
+    val responseEventFlow = _responseEventFlow.receiveAsFlow()
 
     init {
         collectUserInfo()
@@ -97,7 +102,9 @@ internal class ProfileViewModel(
     }
 
     override fun onPrivacyPolicyClick() {
-        //todo implement pdf viewer
+        screenModelScope.launch {
+            _responseEventFlow.send(ResponseEvent.NavigateToPrivacyPolicy)
+        }
     }
 
     override fun onErrorDismiss() {
@@ -187,5 +194,9 @@ internal class ProfileViewModel(
                 }
             }
         }
+    }
+
+    sealed interface ResponseEvent {
+        data object NavigateToPrivacyPolicy : ResponseEvent
     }
 }

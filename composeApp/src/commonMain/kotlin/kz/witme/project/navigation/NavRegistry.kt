@@ -7,6 +7,7 @@ import kz.witme.project.create_book.navigation.createBookNavigationModule
 import kz.witme.project.dashboard.navigation.dashboardNavigationModule
 import kz.witme.project.profile.profile.featureProfileNavigationModule
 import kz.witme.project.splash.splashNavigationModule
+import kz.witme.project.web_view.navigation.webViewNavigationModule
 
 object NavRegistry {
 
@@ -19,6 +20,7 @@ object NavRegistry {
             timerNavigationModule()
             bookDetailsNavigationModule()
             splashNavigationModule()
+            webViewNavigationModule()
         }
     }
 }

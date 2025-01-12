@@ -21,11 +21,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.koinScreenModel
+import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
 import coil3.compose.AsyncImage
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kz.witme.project.common_ui.base.ErrorAlert
@@ -43,6 +46,7 @@ import kz.witme.project.common_ui.permission.PermissionType
 import kz.witme.project.common_ui.permission.createPermissionsManager
 import kz.witme.project.common_ui.theme.LocalWitMeTheme
 import kz.witme.project.data.network.getImageUrl
+import kz.witme.project.navigation.Destination
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import witmekmp.core.common_ui.generated.resources.Res
@@ -66,6 +70,8 @@ class ProfileScreen : Screen {
         val controller: ProfileViewModel = koinScreenModel<ProfileViewModel>()
         val uiState by controller.uiState.collectAsStateWithLifecycle()
         val bottomSheetNavigator = LocalBottomSheetNavigator.current
+        val navigator = LocalNavigator.current
+        val privacyPolicyTitle = stringResource(Res.string.privacy_policy)
         val coroutineScope = rememberCoroutineScope()
         val permissionsManager = createPermissionsManager(
             callback = object : PermissionCallback {
@@ -136,6 +142,22 @@ class ProfileScreen : Screen {
                 bottomSheetNavigator.hide()
             }
         }
+        LaunchedEffect(controller.responseEventFlow) {
+            controller.responseEventFlow.collectLatest { event ->
+                when (event) {
+                    ProfileViewModel.ResponseEvent.NavigateToPrivacyPolicy -> {
+                        ScreenRegistry.get(
+                            Destination.WebViewScreen(
+                                title = privacyPolicyTitle,
+                                link = PRIVACY_POLICY_LINK
+                            )
+                        ).let {
+                            navigator?.push(it)
+                        }
+                    }
+                }
+            }
+        }
         if (uiState.showRationalDialog) {
             MessageAlert(
                 subtitle = stringResource(Res.string.permission_message),
@@ -150,6 +172,11 @@ class ProfileScreen : Screen {
             controller = controller,
             uiState = uiState
         )
+    }
+
+    companion object {
+        private const val PRIVACY_POLICY_LINK =
+            "https://drive.google.com/file/d/1AnusQDd2gSKDd6q2PMZUIRaWgdqZ1AY5/view?usp=sharing"
     }
 }
 

@@ -28,4 +28,8 @@ sealed interface Destination : ScreenProvider {
         val bookSessionDetails: GetBookSessionDetails,
         val bookName: String
     ) : Destination
+    data class WebViewScreen(
+        val title: String,
+        val link: String
+    ) : Destination
 }
