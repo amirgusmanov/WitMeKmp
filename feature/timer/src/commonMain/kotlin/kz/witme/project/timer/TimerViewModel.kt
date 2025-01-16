@@ -53,6 +53,17 @@ internal class TimerViewModel(
         }
     }
 
+    fun restartTimer() {
+        timerJob?.cancel()
+        timerJob = null
+        elapsedSeconds = 0L
+        uiState.tryToUpdate {
+            it.copy(
+                timer = TimerHelperModel.getLeftTimerHelperModel(elapsedSeconds)
+            )
+        }
+    }
+
     fun getBooks() {
         screenModelScope.launch {
             changeBooksLoadingState(true)

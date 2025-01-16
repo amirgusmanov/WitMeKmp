@@ -47,6 +47,8 @@ import kz.witme.project.common_ui.theme.LinearGradient
 import kz.witme.project.common_ui.theme.LocalWitMeTheme
 import kz.witme.project.component.BaseTimerBottomSheet
 import kz.witme.project.navigation.Destination
+import kz.witme.project.navigation.result.ResultConstants
+import kz.witme.project.navigation.result.getScreenResult
 import kz.witme.project.navigation.tabs.Home
 import kz.witme.project.timer.component.PlayButton
 import kz.witme.project.timer.component.TimerButton
@@ -98,6 +100,11 @@ class TimerScreen(
                     hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                 }
             )
+        }
+        LaunchedEffect(Unit) {
+            if (navigator?.getScreenResult<Boolean>(ResultConstants.CREATE_TIMER_SESSION_SUCCESS) == true) {
+                viewModel.restartTimer()
+            }
         }
         LaunchedEffect(viewModel.responseEvent) {
             viewModel.responseEvent.collectLatest { event ->
