@@ -36,7 +36,7 @@ internal actual fun WebView(url: String) {
         }
         AndroidView(
             modifier = Modifier
-                .matchParentSize()
+                .fillMaxSize()
                 .clipToBounds(),
             factory = { context ->
                 WebView(context).apply {
@@ -46,6 +46,7 @@ internal actual fun WebView(url: String) {
                         ViewGroup.LayoutParams.MATCH_PARENT
                     )
                     settings.apply {
+                        javaScriptEnabled = true
                         loadWithOverviewMode = true
                         useWideViewPort = true
                         builtInZoomControls = true
