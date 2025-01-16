@@ -54,7 +54,7 @@ internal fun PlayButton(
 
 private fun DrawScope.drawPlayIcon() {
     val centerX = size.width / 2
-    val centerY = size.height / 2
+    val centerY = size.height / 2.25f
     val sideLength = size.width * 0.8f
     val height = (sqrt(3.0) / 2 * sideLength).toFloat()
 
