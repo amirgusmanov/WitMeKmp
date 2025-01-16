@@ -61,7 +61,10 @@ internal class TimerViewModel(
                     uiState.tryToUpdate {
                         it.copy(
                             books = books
-                                .filter { book -> book.readingStatus == ReadingStatus.ReadingNow }
+                                .filter { book ->
+                                    book.readingStatus == ReadingStatus.ReadingNow
+                                            || book.readingStatus == ReadingStatus.GoingToRead
+                                }
                                 .toImmutableList()
                         )
                     }
