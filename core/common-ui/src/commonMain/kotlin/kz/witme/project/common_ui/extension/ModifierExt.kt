@@ -19,7 +19,6 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.semantics.Role
 
-//todo: add clickableWithPressedState
 fun Modifier.clickableWithoutRipple(
     enabled: Boolean = true,
     onClickLabel: String? = null,
