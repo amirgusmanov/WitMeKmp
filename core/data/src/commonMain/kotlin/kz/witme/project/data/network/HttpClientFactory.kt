@@ -6,6 +6,8 @@ import io.ktor.client.call.body
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.auth.Auth
+import io.ktor.client.plugins.auth.authProviders
+import io.ktor.client.plugins.auth.providers.BearerAuthProvider
 import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.RefreshTokensParams
 import io.ktor.client.plugins.auth.providers.bearer
@@ -79,20 +81,21 @@ object HttpClientFactory {
         }
     }
 
-    //todo check logs
     private suspend fun RefreshTokensParams.sendRefreshRequest(
         sessionManager: SessionManager,
         onRefreshFailed: suspend () -> Unit,
         onRefreshSuccess: suspend () -> Unit
     ): BearerTokens {
-        val refreshToken = this.oldTokens?.refreshToken?.ifBlank {
-            onRefreshFailed()
-            throw IllegalStateException("Refresh token is blank")
-        } ?: throw IllegalStateException("Refresh token is blank")
-        val accessToken = this.oldTokens?.accessToken?.ifBlank {
-            onRefreshFailed()
-            throw IllegalStateException("Access token is blank")
-        } ?: throw IllegalStateException("Access token is blank")
+        val refreshToken = this.oldTokens?.refreshToken?.takeIf { it.isNotBlank() }
+            ?: run {
+                onRefreshFailed()
+                throw IllegalStateException("Refresh token is blank")
+            }
+        val accessToken = this.oldTokens?.accessToken?.takeIf { it.isNotBlank() }
+            ?: run {
+                onRefreshFailed()
+                throw IllegalStateException("Access token is blank")
+            }
 
         val response = client.post(Url(Constants.REFRESH_URL)) {
             markAsRefreshTokenRequest()
@@ -105,22 +108,28 @@ object HttpClientFactory {
         }
         when (response.status.value) {
             401 -> {
-                SharedLogger.e("TOKEN", "401 Unauthorized")
                 onRefreshFailed()
                 throw IllegalStateException("Failed to refresh token: Unauthorized")
             }
+
             in 200..299 -> {
-                onRefreshSuccess()
                 val authModel = response.body<AuthModel>()
                 sessionManager.setAccessToken(authModel.access)
                 sessionManager.setRefreshToken(
                     authModel.refresh ?: throw IllegalStateException("Refresh token is null")
                 )
+                this.client.authProviders
+                    .filterIsInstance<BearerAuthProvider>()
+                    .forEach {
+                        it.clearToken()
+                    }
+                onRefreshSuccess()
                 return BearerTokens(
                     accessToken = authModel.access,
                     refreshToken = authModel.refresh
                 )
             }
+
             else -> {
                 throw IllegalStateException(
                     "Failed to refresh token: Unexpected status ${response.status.value}"
