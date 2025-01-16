@@ -106,6 +106,11 @@ object HttpClientFactory {
                 AuthRequestModel(refresh = refreshToken)
             )
         }
+        this.client.authProviders
+            .filterIsInstance<BearerAuthProvider>()
+            .forEach {
+                it.clearToken()
+            }
         when (response.status.value) {
             401 -> {
                 onRefreshFailed()
@@ -118,11 +123,6 @@ object HttpClientFactory {
                 sessionManager.setRefreshToken(
                     authModel.refresh ?: throw IllegalStateException("Refresh token is null")
                 )
-                this.client.authProviders
-                    .filterIsInstance<BearerAuthProvider>()
-                    .forEach {
-                        it.clearToken()
-                    }
                 onRefreshSuccess()
                 return BearerTokens(
                     accessToken = authModel.access,
