@@ -299,7 +299,7 @@ private fun BooksBottomSheet(
             }
         } else {
             LazyColumn(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth().height(200.dp)
             ) {
                 if (areBooksLoading) {
                     items(
