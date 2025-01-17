@@ -86,33 +86,22 @@ object HttpClientFactory {
         onRefreshFailed: suspend () -> Unit,
         onRefreshSuccess: suspend () -> Unit
     ): BearerTokens {
-        val refreshToken = this.oldTokens?.refreshToken?.takeIf { it.isNotBlank() }
-            ?: run {
-                onRefreshFailed()
-                throw IllegalStateException("Refresh token is blank")
-            }
-        val accessToken = this.oldTokens?.accessToken?.takeIf { it.isNotBlank() }
-            ?: run {
-                onRefreshFailed()
-                throw IllegalStateException("Access token is blank")
-            }
-
         val response = client.post(Url(Constants.REFRESH_URL)) {
             markAsRefreshTokenRequest()
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
-            header("Authorization", "Bearer $accessToken")
+            header("Authorization", "Bearer ${sessionManager.getAccessToken()}")
             setBody(
-                AuthRequestModel(refresh = refreshToken)
+                AuthRequestModel(refresh = sessionManager.getRefreshToken())
             )
         }
-        this.client.authProviders
-            .filterIsInstance<BearerAuthProvider>()
-            .forEach {
-                it.clearToken()
-            }
         when (response.status.value) {
             401 -> {
+                this.client.authProviders
+                    .filterIsInstance<BearerAuthProvider>()
+                    .forEach {
+                        it.clearToken()
+                    }
                 onRefreshFailed()
                 throw IllegalStateException("Failed to refresh token: Unauthorized")
             }
@@ -123,6 +112,11 @@ object HttpClientFactory {
                 sessionManager.setRefreshToken(
                     authModel.refresh ?: throw IllegalStateException("Refresh token is null")
                 )
+                this.client.authProviders
+                    .filterIsInstance<BearerAuthProvider>()
+                    .forEach {
+                        it.clearToken()
+                    }
                 onRefreshSuccess()
                 return BearerTokens(
                     accessToken = authModel.access,

@@ -68,7 +68,7 @@ actual class PermissionsManager actual constructor(
     @Composable
     override fun launchSettings() {
         NSURL.URLWithString(UIApplicationOpenSettingsURLString)?.let {
-            UIApplication.sharedApplication.openURL(it)
+            UIApplication.sharedApplication.openURL(it, emptyMap<Any?, Any?>()) {}
         }
     }
 

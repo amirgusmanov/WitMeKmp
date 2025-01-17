@@ -1,5 +1,8 @@
 package kz.witme.project.service.auth.data.repository
 
+import io.ktor.client.HttpClient
+import io.ktor.client.plugins.auth.authProviders
+import io.ktor.client.plugins.auth.providers.BearerAuthProvider
 import kotlinx.coroutines.flow.Flow
 import kz.witme.project.common.extension.tryToUpdate
 import kz.witme.project.data.local.SessionManager
@@ -17,7 +20,8 @@ import kz.witme.project.service.auth.domain.repository.AuthRepository
 internal class AuthRepositoryImpl(
     private val api: AuthApi,
     private val sessionManager: SessionManager,
-    private val runtimeStorage: UserProfileRuntimeStorage
+    private val runtimeStorage: UserProfileRuntimeStorage,
+    private val httpClient: HttpClient
 ) : AuthRepository {
 
     override suspend fun login(
@@ -31,6 +35,8 @@ internal class AuthRepositoryImpl(
             setAccessToken(response.accessToken)
             setRefreshToken(response.refreshToken.orEmpty())
         }
+        clearKtorTokens()
+        navigateUser()
     }
 
     override suspend fun register(
@@ -44,6 +50,8 @@ internal class AuthRepositoryImpl(
             setAccessToken(response.accessToken)
             setRefreshToken(response.refreshToken.orEmpty())
         }
+        clearKtorTokens()
+        navigateUser()
     }
 
     override suspend fun navigateUser(): RequestResult<UserInfo, DataError.Remote> = safeCall {
@@ -59,8 +67,16 @@ internal class AuthRepositoryImpl(
             clearAccessToken()
             clearRefreshToken()
         }
+        clearKtorTokens()
         HttpClientFactory.navigateFlow.tryToUpdate {
             HttpClientFactory.NavigateFlow.LoginFlow
         }
+    }
+
+    private fun clearKtorTokens() {
+        httpClient
+            .authProviders
+            .filterIsInstance<BearerAuthProvider>()
+            .forEach { it.clearToken() }
     }
 }

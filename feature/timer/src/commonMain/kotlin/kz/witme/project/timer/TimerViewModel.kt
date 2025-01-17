@@ -59,7 +59,8 @@ internal class TimerViewModel(
         elapsedSeconds = 0L
         uiState.tryToUpdate {
             it.copy(
-                timer = TimerHelperModel.getLeftTimerHelperModel(elapsedSeconds)
+                timer = TimerHelperModel.getLeftTimerHelperModel(elapsedSeconds),
+                selectedBookId = ""
             )
         }
     }

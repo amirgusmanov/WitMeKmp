@@ -15,7 +15,8 @@ val serviceAuthModule = module {
         AuthRepositoryImpl(
             api = get(),
             sessionManager = get(),
-            runtimeStorage = get()
+            runtimeStorage = get(),
+            httpClient = get()
         )
     }
 }
