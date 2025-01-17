@@ -8,12 +8,16 @@ import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
+import coil3.compose.AsyncImagePainter
+import coil3.compose.SubcomposeAsyncImage
+import coil3.compose.SubcomposeAsyncImageContent
+import kz.witme.project.common_ui.image.ImagePlaceholder
 import kz.witme.project.common_ui.theme.DefaultRoundedShape
 import kz.witme.project.common_ui.theme.LocalWitMeTheme
 import kz.witme.project.data.network.getImageUrl
@@ -24,6 +28,7 @@ import witmekmp.core.common_ui.generated.resources.pages
 @Composable
 fun BookDataSectionView(
     modifier: Modifier = Modifier,
+    name: String,
     photo: String?,
     author: String,
     maxPages: Int
@@ -31,17 +36,23 @@ fun BookDataSectionView(
     Row(
         modifier = modifier
     ) {
-        AsyncImage(
+        SubcomposeAsyncImage(
             model = getImageUrl(photo),
             contentDescription = "Atomic Habits",
             contentScale = ContentScale.Crop,
-            placeholder = ColorPainter(LocalWitMeTheme.colors.secondary300),
-            error = ColorPainter(LocalWitMeTheme.colors.secondary300),
-            fallback = ColorPainter(LocalWitMeTheme.colors.secondary300),
             modifier = Modifier
                 .requiredSize(width = 110.dp, height = 160.dp)
                 .clip(DefaultRoundedShape)
-        )
+        ) {
+            val state by painter.state.collectAsState()
+            when (state) {
+                is AsyncImagePainter.State.Success -> SubcomposeAsyncImageContent()
+                else -> ImagePlaceholder(
+                    modifier = Modifier.matchParentSize(),
+                    bookName = name
+                )
+            }
+        }
         Spacer(modifier = Modifier.width(16.dp))
         Column {
             Text(
