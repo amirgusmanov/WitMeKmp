@@ -17,7 +17,6 @@ import kz.witme.project.book.domain.model.GetBook
 import kz.witme.project.book.domain.repository.CreateBookSessionRepository
 import kz.witme.project.common.extension.tryToGet
 import kz.witme.project.common.extension.tryToUpdate
-import kz.witme.project.common.log.Logger
 import kz.witme.project.data.network.getMessage
 import kz.witme.project.data.network.onError
 import kz.witme.project.data.network.onSuccess
@@ -30,6 +29,12 @@ internal class TimerDetailsViewModel(
 
     private val _responseEvent = Channel<ResponseEvent>()
     val responseEvent: Flow<ResponseEvent> = _responseEvent.receiveAsFlow()
+
+    init {
+        screenModelScope.launch {
+            _responseEvent.send(ResponseEvent.ShowPagePicker)
+        }
+    }
 
     fun initState(
         book: GetBook,

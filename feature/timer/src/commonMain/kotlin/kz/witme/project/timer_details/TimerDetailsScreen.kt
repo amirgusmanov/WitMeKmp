@@ -29,7 +29,6 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
-import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.collectLatest
 import kz.witme.project.book.domain.model.GetBook
@@ -94,7 +93,6 @@ class TimerDetailsScreen(
                 elapsedSeconds = seconds,
                 notes = notes.toImmutableList()
             )
-            viewModel.onPagesCountClick()
         }
         LaunchedEffect(viewModel.responseEvent) {
             viewModel.responseEvent.collectLatest { event ->

@@ -149,6 +149,7 @@ internal fun DashboardScreenContent(
                         )
                     }
                 }
+                Spacer(modifier = Modifier.height(50.dp))
             }
         }
     }

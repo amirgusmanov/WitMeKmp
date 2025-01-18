@@ -11,6 +11,7 @@ androidx-espresso-core = "3.6.1"
 androidx-lifecycle = "2.8.3"
 androidx-material = "1.12.0"
 androidx-test-junit = "1.2.1"
+cloudyVersion = "0.2.4"
 compose-multiplatform = "1.7.0"
 gradlePlugin = "8.1.4"
 junit = "4.13.2"
@@ -33,6 +34,7 @@ voyagerTabNavigatorVersion = "1.1.0-beta01"
 
 [libraries]
 android-gradlePlugin = { module = "com.android.tools.build:gradle", version.ref = "gradlePlugin" }
+cloudy = { module = "com.github.skydoves:cloudy", version.ref = "cloudyVersion" }
 kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 compose-gradlePlugin = { module = "org.jetbrains.compose:org.jetbrains.compose.gradle.plugin", version.ref = "compose" }
 
