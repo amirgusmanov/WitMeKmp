@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalMaterialApi::class, InternalVoyagerApi::class)
+@file:OptIn(ExperimentalMaterialApi::class)
 
 package kz.witme.project
 
@@ -19,7 +19,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.annotation.InternalVoyagerApi
 import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.bottomSheet.BottomSheetNavigator
