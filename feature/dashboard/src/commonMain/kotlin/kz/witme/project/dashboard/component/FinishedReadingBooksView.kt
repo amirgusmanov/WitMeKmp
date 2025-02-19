@@ -1,6 +1,5 @@
 package kz.witme.project.dashboard.component
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -8,7 +7,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.runtime.Composable
@@ -36,17 +35,22 @@ internal fun FinishedReadingBooksView(
     onBookClick: (GetBook) -> Unit,
 ) {
     Box(
-        modifier = modifier.fillMaxWidth().padding(horizontal = 16.dp)
+        modifier = modifier.fillMaxWidth()
     ) {
         LazyRow(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
+            modifier = Modifier.fillMaxWidth()
         ) {
-            items(
+            itemsIndexed(
                 items = books,
-                key = GetBook::id
-            ) { book ->
+                key = { _, book ->
+                    book.id
+                }
+            ) { index, book ->
                 FinishedBookView(
+                    modifier = Modifier.padding(
+                        start = if (index == 0) 16.dp else 8.dp,
+                        end = if (index == books.lastIndex) 16.dp else 8.dp
+                    ),
                     photo = book.bookPhoto,
                     name = book.name,
                     onBookClick = {
