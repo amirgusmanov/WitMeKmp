@@ -60,34 +60,33 @@ internal class TimerViewModel(
         uiState.tryToUpdate {
             it.copy(
                 timer = TimerHelperModel.getLeftTimerHelperModel(elapsedSeconds),
-                selectedBookId = ""
+                selectedBookId = "",
+                isRunning = false
             )
         }
     }
 
-    fun getBooks() {
-        screenModelScope.launch {
-            changeBooksLoadingState(true)
-            booksRepository.getBooks()
-                .onSuccess { books ->
-                    uiState.tryToUpdate {
-                        it.copy(
-                            books = books
-                                .filter { book ->
-                                    book.readingStatus == ReadingStatus.ReadingNow
-                                            || book.readingStatus == ReadingStatus.GoingToRead
-                                }
-                                .toImmutableList()
-                        )
-                    }
+    private suspend fun getBooks() {
+        changeBooksLoadingState(true)
+        booksRepository.getBooks()
+            .onSuccess { books ->
+                uiState.tryToUpdate {
+                    it.copy(
+                        books = books
+                            .filter { book ->
+                                book.readingStatus == ReadingStatus.ReadingNow
+                                        || book.readingStatus == ReadingStatus.GoingToRead
+                            }
+                            .toImmutableList()
+                    )
                 }
-                .onError {
-                    uiState.tryToUpdate {
-                        it.copy(areBooksEmpty = true)
-                    }
+            }
+            .onError {
+                uiState.tryToUpdate {
+                    it.copy(areBooksEmpty = true)
                 }
-            changeBooksLoadingState(false)
-        }
+            }
+        changeBooksLoadingState(false)
     }
 
     fun getSelectedBook(id: String): GetBook? = uiState.value.books.firstOrNull { it.id == id }
@@ -156,6 +155,9 @@ internal class TimerViewModel(
 
     override fun onEndSessionClick() {
         screenModelScope.launch {
+            if (uiState.value.books.isEmpty()) {
+                getBooks()
+            }
             stopTimer()
             _responseEvent.send(ResponseEvent.NavigateToDetails)
         }

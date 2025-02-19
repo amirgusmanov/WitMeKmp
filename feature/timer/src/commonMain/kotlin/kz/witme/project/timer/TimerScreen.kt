@@ -1,3 +1,5 @@
+@file:OptIn(InternalVoyagerApi::class)
+
 package kz.witme.project.timer
 
 import androidx.compose.foundation.background
@@ -29,11 +31,13 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.annotation.InternalVoyagerApi
 import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
+import cafe.adriel.voyager.navigator.internal.BackHandler
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.flow.collectLatest
@@ -102,6 +106,10 @@ class TimerScreen(
                 }
             )
         }
+        fun onBackEvent() {
+            viewModel.restartTimer()
+            if (isNavigatedFromTabs) tabsNavigator.current = Home else navigator?.pop()
+        }
         LaunchedEffect(Unit) {
             if (navigator?.getScreenResult<Boolean>(ResultConstants.CREATE_TIMER_SESSION_SUCCESS) == true) {
                 viewModel.restartTimer()
@@ -147,20 +155,11 @@ class TimerScreen(
                 }
             }
         }
-        //todo check why getBooks are called from launchedEffect
-        LaunchedEffect(Unit) {
-            viewModel.getBooks()
-        }
+        BackHandler(enabled = true, onBack = ::onBackEvent)
         TimerScreenContent(
             controller = viewModel,
             uiState = uiState,
-            onBackClick = {
-                if (isNavigatedFromTabs) {
-                    tabsNavigator.current = Home
-                } else {
-                    navigator?.pop()
-                }
-            }
+            onBackClick = ::onBackEvent
         )
     }
 }

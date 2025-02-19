@@ -23,7 +23,6 @@ import cafe.adriel.voyager.core.annotation.InternalVoyagerApi
 import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.bottomSheet.BottomSheetNavigator
-import cafe.adriel.voyager.navigator.internal.BackHandler
 import cafe.adriel.voyager.navigator.tab.CurrentTab
 import cafe.adriel.voyager.navigator.tab.TabNavigator
 import cafe.adriel.voyager.transitions.SlideTransition
@@ -68,11 +67,6 @@ private fun TabsFlow() {
                 is Profile -> currentTab.isFirstInStack().collectAsStateWithLifecycle().value
                 else -> true
             }.not()
-            BackHandler(enabled = true) {
-                if (tabNavigator.current is Timer) {
-                    tabNavigator.current = Home
-                }
-            }
             Scaffold(
                 floatingActionButtonPosition = FabPosition.Center,
                 isFloatingActionButtonDocked = true,
