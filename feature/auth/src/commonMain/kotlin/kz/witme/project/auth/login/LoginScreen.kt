@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -88,25 +89,29 @@ internal fun LoginScreenContent(
                 modifier = Modifier.padding(horizontal = 16.dp)
             ) {
                 Spacer(modifier = Modifier.height(80.dp))
-                Icon(
-                    painter = painterResource(Res.drawable.ic_back),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .clickableWithoutRipple { navigator?.pop() }
-                        .graphicsLayer(alpha = 0.99f)
-                        .drawWithCache {
-                            onDrawWithContent {
-                                drawContent()
-                                drawRect(LinearGradient, blendMode = BlendMode.SrcAtop)
+                Row(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Icon(
+                        painter = painterResource(Res.drawable.ic_back),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .clickableWithoutRipple { navigator?.pop() }
+                            .graphicsLayer(alpha = 0.99f)
+                            .drawWithCache {
+                                onDrawWithContent {
+                                    drawContent()
+                                    drawRect(LinearGradient, blendMode = BlendMode.SrcAtop)
+                                }
                             }
-                        }
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(
-                    text = stringResource(Res.string.auth),
-                    style = LocalWitMeTheme.typography.medium20,
-                    modifier = Modifier.textBrush(LinearGradient)
-                )
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = stringResource(Res.string.auth),
+                        style = LocalWitMeTheme.typography.medium20,
+                        modifier = Modifier.textBrush(LinearGradient)
+                    )
+                }
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = stringResource(Res.string.email_msg),
