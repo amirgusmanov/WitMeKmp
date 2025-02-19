@@ -21,7 +21,8 @@ sealed interface Destination : ScreenProvider {
     data class TimerDetails(
         val book: GetBook,
         val seconds: Long,
-        val notes: List<String>
+        val notes: List<String>,
+        val isNavigatedFromTabs: Boolean = false
     ) : Destination
     data class BookDetails(val book: GetBook) : Destination
     data class BookSessionDetails(

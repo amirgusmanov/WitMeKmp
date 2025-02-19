@@ -8,12 +8,13 @@ import org.koin.dsl.module
 
 val featureTimerModule = module {
     factory { TimerViewModel(booksRepository = get()) }
-    factory { (book: GetBook, elapsedSeconds: Long, notes: ImmutableList<String>) ->
+    factory { (book: GetBook, elapsedSeconds: Long, notes: ImmutableList<String>, isFromTabs: Boolean) ->
         TimerDetailsViewModel(
             createBookSessionRepository = get(),
             book = book,
             elapsedSeconds = elapsedSeconds,
             notes = notes,
+            isFromTabs = isFromTabs
         )
     }
 }

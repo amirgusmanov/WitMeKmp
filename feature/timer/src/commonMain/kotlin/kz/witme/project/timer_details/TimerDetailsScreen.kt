@@ -70,14 +70,15 @@ import witmekmp.core.common_ui.generated.resources.what_page_you_ended
 class TimerDetailsScreen(
     private val book: GetBook,
     private val seconds: Long,
-    private val notes: List<String>
+    private val notes: List<String>,
+    private val isFromTabs: Boolean
 ) : Screen {
 
     @Suppress("NonSkippableComposable")
     @Composable
     override fun Content() {
         val viewModel: TimerDetailsViewModel = koinScreenModel {
-            parametersOf(book, seconds, notes.toImmutableList())
+            parametersOf(book, seconds, notes.toImmutableList(), isFromTabs)
         }
         val uiState: TimerDetailsUiState by viewModel.uiState.collectAsStateWithLifecycle()
         val bottomSheetNavigator = LocalBottomSheetNavigator.current

@@ -126,7 +126,8 @@ class TimerScreen(
                                     Destination.TimerDetails(
                                         book = it,
                                         seconds = viewModel.elapsedSeconds,
-                                        notes = viewModel.notesList
+                                        notes = viewModel.notesList,
+                                        isNavigatedFromTabs = isNavigatedFromTabs
                                     )
                                 ).let { screen ->
                                     navigator?.push(screen)

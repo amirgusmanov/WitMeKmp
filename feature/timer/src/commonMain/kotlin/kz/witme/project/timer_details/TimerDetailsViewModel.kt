@@ -4,6 +4,7 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,7 +26,8 @@ internal class TimerDetailsViewModel(
     private val createBookSessionRepository: CreateBookSessionRepository,
     private val book: GetBook,
     private val elapsedSeconds: Long,
-    private val notes: ImmutableList<String>
+    private val notes: ImmutableList<String>,
+    private val isFromTabs: Boolean
 ) : ScreenModel, TimerDetailsController {
 
     val uiState: StateFlow<TimerDetailsUiState> = MutableStateFlow(TimerDetailsUiState())
@@ -36,6 +38,13 @@ internal class TimerDetailsViewModel(
     init {
         initState()
         screenModelScope.launch {
+            if (isFromTabs) {
+                /**
+                 * костыль :) походу bottomShitNavigator не успевает среагировать
+                 * на новый ивент открытия другого боттомщита когда навигатор tabs
+                 */
+                delay(1000L)
+            }
             _responseEvent.send(ResponseEvent.ShowPagePicker)
         }
     }
