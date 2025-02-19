@@ -9,5 +9,10 @@ import org.koin.dsl.module
 
 val sharedServiceProfileModule = module {
     single<ProfileUpdateApi> { get<Ktorfit>().createProfileUpdateApi() }
-    single<ProfileUpdateRepository> { ProfileUpdateRepositoryImpl(get()) }
+    single<ProfileUpdateRepository> {
+        ProfileUpdateRepositoryImpl(
+            api = get(),
+            profileRuntimeStorage = get()
+        )
+    }
 }

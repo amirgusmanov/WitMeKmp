@@ -3,7 +3,7 @@ package kz.witme.project.service.auth.domain.repository
 import kotlinx.coroutines.flow.Flow
 import kz.witme.project.data.network.DataError
 import kz.witme.project.data.network.RequestResult
-import kz.witme.project.service.auth.domain.model.UserInfo
+import kz.witme.project.profile_runtime_storage.domain.model.UserInfo
 
 interface AuthRepository {
 

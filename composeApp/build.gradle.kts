@@ -59,6 +59,7 @@ kotlin {
             implementation(projects.feature.bookDetails)
             implementation(projects.feature.splash)
             implementation(projects.feature.webView)
+            implementation(projects.service.profileRuntimeStorage)
         }
     }
 }

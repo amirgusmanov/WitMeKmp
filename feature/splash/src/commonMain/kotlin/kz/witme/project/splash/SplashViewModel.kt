@@ -19,7 +19,6 @@ internal class SplashViewModel(
 
     private fun navigateUser() {
         screenModelScope.launch {
-            //todo think about refreshing token here
             authRepository.navigateUser()
                 .onSuccess {
                     HttpClientFactory.navigateFlow.tryToUpdate {

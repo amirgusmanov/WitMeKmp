@@ -10,11 +10,11 @@ import kz.witme.project.data.network.DataError
 import kz.witme.project.data.network.HttpClientFactory
 import kz.witme.project.data.network.RequestResult
 import kz.witme.project.data.network.safeCall
+import kz.witme.project.profile_runtime_storage.data.local.UserProfileRuntimeStorage
+import kz.witme.project.profile_runtime_storage.domain.model.UserInfo
 import kz.witme.project.service.auth.data.model.request.AuthRequest
 import kz.witme.project.service.auth.data.network.AuthApi
-import kz.witme.project.service.auth.data.storage.runtime.UserProfileRuntimeStorage
-import kz.witme.project.service.auth.domain.model.UserInfo
-import kz.witme.project.service.auth.domain.model.toUserInfo
+import kz.witme.project.service.auth.domain.mapper.toUserInfo
 import kz.witme.project.service.auth.domain.repository.AuthRepository
 
 internal class AuthRepositoryImpl(

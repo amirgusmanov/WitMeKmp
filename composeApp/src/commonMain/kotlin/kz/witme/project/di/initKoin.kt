@@ -9,6 +9,7 @@ import kz.witme.project.data.di.platformDataModule
 import kz.witme.project.data.di.sharedDataModule
 import kz.witme.project.profile.di.sharedServiceProfileModule
 import kz.witme.project.profile.profile.featureProfileModule
+import kz.witme.project.profile_runtime_storage.di.serviceProfileRuntimeStorageModule
 import kz.witme.project.service.auth.di.serviceAuthModule
 import kz.witme.project.splash.featureSplashModule
 import org.koin.core.context.startKoin
@@ -29,7 +30,8 @@ fun initKoin(config: KoinAppDeclaration? = null) {
             featureCreateBookModule,
             featureTimerModule,
             featureBookDetailsModule,
-            featureSplashModule
+            featureSplashModule,
+            serviceProfileRuntimeStorageModule
         )
     }
 }
