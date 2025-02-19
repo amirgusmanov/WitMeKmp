@@ -43,6 +43,7 @@ import kz.witme.project.navigation.CreateBookArgs
 import kz.witme.project.navigation.result.ResultConstants
 import kz.witme.project.navigation.result.setScreenResult
 import org.jetbrains.compose.resources.stringResource
+import org.koin.core.parameter.parametersOf
 import witmekmp.core.common_ui.generated.resources.Res
 import witmekmp.core.common_ui.generated.resources.add_book
 import witmekmp.core.common_ui.generated.resources.book_description
@@ -55,12 +56,11 @@ class CreateBookStatusScreen(private val args: CreateBookArgs) : Screen {
 
     @Composable
     override fun Content() {
-        val viewModel: CreateBookStatusViewModel = koinScreenModel()
+        val viewModel: CreateBookStatusViewModel = koinScreenModel {
+            parametersOf(args)
+        }
         val uiState: CreateBookStatusUiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-        LaunchedEffect(args) {
-            viewModel.onLaunched(args)
-        }
         CreateBookStatusScreenContent(
             controller = viewModel,
             uiState = uiState

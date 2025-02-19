@@ -7,16 +7,20 @@ import kotlinx.coroutines.flow.StateFlow
 import kz.witme.project.book.domain.model.GetBookSessionDetails
 import kz.witme.project.common.extension.tryToUpdate
 
-internal class SessionDetailsInfoViewModel : ScreenModel {
+internal class SessionDetailsInfoViewModel(
+    private val session: GetBookSessionDetails,
+    private val bookName: String
+) : ScreenModel {
 
     val uiState: StateFlow<SessionDetailsInfoUiState> = MutableStateFlow(
         SessionDetailsInfoUiState()
     )
 
-    fun initUiState(
-        session: GetBookSessionDetails,
-        bookName: String
-    ) {
+    init {
+        initUiState()
+    }
+
+    private fun initUiState() {
         uiState.tryToUpdate {
             it.copy(
                 bookName = bookName,

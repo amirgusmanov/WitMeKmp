@@ -18,7 +18,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,6 +36,7 @@ import kz.witme.project.common_ui.theme.LocalWitMeTheme
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
+import org.koin.core.parameter.parametersOf
 import witmekmp.core.common_ui.generated.resources.Res
 import witmekmp.core.common_ui.generated.resources.ic_back
 import witmekmp.core.common_ui.generated.resources.ic_timer
@@ -52,13 +52,12 @@ class SessionDetailsInfoScreen(
 
     @Composable
     override fun Content() {
-        val controller: SessionDetailsInfoViewModel = koinScreenModel()
+        val controller: SessionDetailsInfoViewModel = koinScreenModel {
+            parametersOf(session, bookName)
+        }
         val uiState by controller.uiState.collectAsStateWithLifecycle()
         val navigator = LocalNavigator.current
 
-        LaunchedEffect(session, bookName) {
-            controller.initUiState(session, bookName)
-        }
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             topBar = {

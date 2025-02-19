@@ -54,6 +54,7 @@ import kz.witme.project.common_ui.theme.LocalWitMeTheme
 import kz.witme.project.navigation.Destination
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import org.koin.core.parameter.parametersOf
 import witmekmp.core.common_ui.generated.resources.Res
 import witmekmp.core.common_ui.generated.resources.day
 import witmekmp.core.common_ui.generated.resources.description
@@ -66,13 +67,12 @@ class DetailsScreen(private val book: GetBook) : Screen {
 
     @Composable
     override fun Content() {
-        val controller: DetailsViewModel = koinScreenModel()
+        val controller: DetailsViewModel = koinScreenModel {
+            parametersOf(book)
+        }
         val uiState: DetailsUiState by controller.uiState.collectAsStateWithLifecycle()
         val navigator = LocalNavigator.current
 
-        LaunchedEffect(book) {
-            controller.getSessionDetails(book)
-        }
         LaunchedEffect(controller.responseEventFlow) {
             controller.responseEventFlow.collectLatest { event ->
                 when (event) {
@@ -166,11 +166,13 @@ internal fun DetailsScreenContent(
                     modifier = Modifier
                         .align(Alignment.Center)
                         .clip(DefaultRoundedShape)
-                        .background(color = if (scrollState.value != 0) {
-                            LocalWitMeTheme.colors.primary400
-                        } else {
-                            Color.Transparent
-                        })
+                        .background(
+                            color = if (scrollState.value != 0) {
+                                LocalWitMeTheme.colors.primary400
+                            } else {
+                                Color.Transparent
+                            }
+                        )
                 ) {
                     Icon(
                         modifier = Modifier

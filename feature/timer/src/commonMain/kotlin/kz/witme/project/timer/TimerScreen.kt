@@ -146,6 +146,7 @@ class TimerScreen(
                 }
             }
         }
+        //todo check why getBooks are called from launchedEffect
         LaunchedEffect(Unit) {
             viewModel.getBooks()
         }

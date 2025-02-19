@@ -22,7 +22,10 @@ import kz.witme.project.data.network.onError
 import kz.witme.project.data.network.onSuccess
 
 internal class TimerDetailsViewModel(
-    private val createBookSessionRepository: CreateBookSessionRepository
+    private val createBookSessionRepository: CreateBookSessionRepository,
+    private val book: GetBook,
+    private val elapsedSeconds: Long,
+    private val notes: ImmutableList<String>
 ) : ScreenModel, TimerDetailsController {
 
     val uiState: StateFlow<TimerDetailsUiState> = MutableStateFlow(TimerDetailsUiState())
@@ -31,16 +34,13 @@ internal class TimerDetailsViewModel(
     val responseEvent: Flow<ResponseEvent> = _responseEvent.receiveAsFlow()
 
     init {
+        initState()
         screenModelScope.launch {
             _responseEvent.send(ResponseEvent.ShowPagePicker)
         }
     }
 
-    fun initState(
-        book: GetBook,
-        elapsedSeconds: Long,
-        notes: ImmutableList<String>
-    ) {
+    private fun initState() {
         uiState.tryToUpdate {
             it.copy(
                 book = book,

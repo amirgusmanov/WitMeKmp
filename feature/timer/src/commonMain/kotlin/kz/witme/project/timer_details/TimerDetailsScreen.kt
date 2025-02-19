@@ -50,6 +50,7 @@ import kz.witme.project.timer_details.component.ConfirmButton
 import kz.witme.project.timer_details.component.InfoCard
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import org.koin.core.parameter.parametersOf
 import witmekmp.core.common_ui.generated.resources.Res
 import witmekmp.core.common_ui.generated.resources.good_boy
 import witmekmp.core.common_ui.generated.resources.ic_back
@@ -72,9 +73,12 @@ class TimerDetailsScreen(
     private val notes: List<String>
 ) : Screen {
 
+    @Suppress("NonSkippableComposable")
     @Composable
     override fun Content() {
-        val viewModel: TimerDetailsViewModel = koinScreenModel()
+        val viewModel: TimerDetailsViewModel = koinScreenModel {
+            parametersOf(book, seconds, notes.toImmutableList())
+        }
         val uiState: TimerDetailsUiState by viewModel.uiState.collectAsStateWithLifecycle()
         val bottomSheetNavigator = LocalBottomSheetNavigator.current
         val navigator = LocalNavigator.current
@@ -85,13 +89,6 @@ class TimerDetailsScreen(
                 maxPages = uiState.maxPages,
                 currentPage = uiState.currentPage.takeIf { it != 0 },
                 onSaveClick = viewModel::onCurrentPageSelect
-            )
-        }
-        LaunchedEffect(Unit) {
-            viewModel.initState(
-                book = book,
-                elapsedSeconds = seconds,
-                notes = notes.toImmutableList()
             )
         }
         LaunchedEffect(viewModel.responseEvent) {
@@ -105,6 +102,7 @@ class TimerDetailsScreen(
                         )
                         navigator?.popUntilRoot()
                     }
+
                     TimerDetailsViewModel.ResponseEvent.ShowPagePicker -> {
                         bottomSheetNavigator.show(
                             BaseTimerBottomSheet(

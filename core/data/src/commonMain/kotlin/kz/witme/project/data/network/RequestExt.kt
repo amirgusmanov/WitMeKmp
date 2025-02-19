@@ -8,7 +8,7 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.util.network.UnresolvedAddressException
 import kz.witme.project.common.log.Logger
 
-suspend inline fun <reified T> safeCall(
+inline fun <reified T> safeCall(
     execute: () -> T
 ): RequestResult<T, DataError.Remote> = try {
     RequestResult.Success(execute())
@@ -39,6 +39,7 @@ fun handleHttpException(response: HttpResponse): RequestResult.Error<DataError.R
         401 -> RequestResult.Error(DataError.Remote.UNAUTHORIZED)
         408 -> RequestResult.Error(DataError.Remote.REQUEST_TIMEOUT)
         429 -> RequestResult.Error(DataError.Remote.TOO_MANY_REQUESTS)
+        502 -> RequestResult.Error(DataError.Remote.SERVER)
         else -> RequestResult.Error(DataError.Remote.UNKNOWN)
     }
 }
@@ -52,6 +53,7 @@ fun DataError.getMessage(): String = when (this) {
     DataError.Remote.TOO_MANY_REQUESTS -> ERROR_TOO_MANY_REQUESTS
     DataError.Remote.NO_INTERNET -> ERROR_NO_INTERNET
     DataError.Remote.SERIALIZATION -> ERROR_SERIALIZATION
+    DataError.Remote.SERVER -> SERVER_ERROR
     else -> ERROR_UNKNOWN
 }
 
@@ -61,3 +63,4 @@ private const val ERROR_REQUEST_TIMEOUT = "Время запроса истек�
 private const val ERROR_NO_INTERNET = "Не удалось соединиться с сервером, проверьте подключение"
 private const val ERROR_TOO_MANY_REQUESTS = "Слишком много запросов"
 private const val ERROR_SERIALIZATION = "Не удалось обработать данные"
+private const val SERVER_ERROR = "Что-то не так с сервером"

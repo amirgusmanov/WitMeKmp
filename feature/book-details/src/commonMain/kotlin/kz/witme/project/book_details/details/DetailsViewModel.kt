@@ -20,7 +20,8 @@ import kz.witme.project.data.network.onError
 import kz.witme.project.data.network.onSuccess
 
 internal class DetailsViewModel(
-    private val sessionRepository: GetBookSessionDetailsRepository
+    private val sessionRepository: GetBookSessionDetailsRepository,
+    private val book: GetBook
 ) : ScreenModel, DetailsController {
 
     val uiState: StateFlow<DetailsUiState> = MutableStateFlow(DetailsUiState.Loading)
@@ -28,7 +29,11 @@ internal class DetailsViewModel(
     private val _responseEventFlow = Channel<ResponseEvent>()
     val responseEventFlow: Flow<ResponseEvent> = _responseEventFlow.receiveAsFlow()
 
-    fun getSessionDetails(book: GetBook) {
+    init {
+        getSessionDetails()
+    }
+
+    private fun getSessionDetails() {
         screenModelScope.launch {
             sessionRepository.getBookSessionDetails(book.id)
                 .onSuccess { details ->

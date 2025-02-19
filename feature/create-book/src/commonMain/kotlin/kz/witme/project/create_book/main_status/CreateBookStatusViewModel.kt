@@ -18,15 +18,14 @@ import kz.witme.project.data.network.onSuccess
 import kz.witme.project.navigation.CreateBookArgs
 
 internal class CreateBookStatusViewModel(
-    private val repository: CreateBookRepository
+    private val repository: CreateBookRepository,
+    private val navArgs: CreateBookArgs
 ) : ScreenModel, CreateBookStatusController {
 
     val uiState: StateFlow<CreateBookStatusUiState> = MutableStateFlow(CreateBookStatusUiState())
 
     private val _navigateChannel = Channel<NavigateResult>()
     override val navigateFlow: Flow<NavigateResult> = _navigateChannel.receiveAsFlow()
-
-    private var navArgs: CreateBookArgs? = null
 
     private suspend fun createBook() {
         screenModelScope.launch {
@@ -36,20 +35,18 @@ internal class CreateBookStatusViewModel(
                 )
             }
             repository.createBook(
-                navArgs?.let { args ->
-                    with(uiState.value) {
-                        CreateBookRequest(
-                            name = args.bookName,
-                            author = args.authorName,
-                            pagesAmount = args.bookListCount.toString(),
-                            description = bookDescription,
-                            readingStatus = selectedBookStatus ?: ReadingStatus.ReadingNow,
-                            starRate = currentRating,
-                            averageEmoji = selectedEmoji,
-                            currentPage = 0
-                        )
-                    }
-                } ?: return@launch
+                with(uiState.value) {
+                    CreateBookRequest(
+                        name = navArgs.bookName,
+                        author = navArgs.authorName,
+                        pagesAmount = navArgs.bookListCount.toString(),
+                        description = bookDescription,
+                        readingStatus = selectedBookStatus ?: ReadingStatus.ReadingNow,
+                        starRate = currentRating,
+                        averageEmoji = selectedEmoji,
+                        currentPage = 0
+                    )
+                }
             ).onSuccess {
                 repository.clearTempImage()
                 _navigateChannel.send(NavigateResult.NavigateToDashboard)
@@ -64,10 +61,6 @@ internal class CreateBookStatusViewModel(
                 )
             }
         }
-    }
-
-    fun onLaunched(args: CreateBookArgs) {
-        navArgs = args
     }
 
     override fun onBookStatusSelected(status: ReadingStatus) {
