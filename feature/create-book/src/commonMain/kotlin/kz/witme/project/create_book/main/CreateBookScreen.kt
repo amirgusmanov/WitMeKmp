@@ -20,7 +20,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalFocusManager
@@ -253,22 +252,21 @@ private fun CreateBookContent(
                     query = uiState.bookListCount?.toString().orEmpty(),
                     onQueryChanged = controller::onBookListCountQueryChanged
                 )
+                Spacer(modifier = Modifier.height(24.dp))
+                DefaultButton(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .navigationBarsPadding(),
+                    onClick = controller::onNextButtonClick,
+                    text = stringResource(Res.string.next),
+                    isEnabled = with(uiState) {
+                        bookName.isNotBlank()
+                                && authorName.isNotBlank()
+                                && bookListCount.isNotNull()
+                    }
+                )
+
             }
-            DefaultButton(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .navigationBarsPadding()
-                    .padding(horizontal = 16.dp)
-                    .padding(bottom = 24.dp)
-                    .align(Alignment.BottomCenter),
-                onClick = controller::onNextButtonClick,
-                text = stringResource(Res.string.next),
-                isEnabled = with(uiState) {
-                    bookName.isNotBlank()
-                            && authorName.isNotBlank()
-                            && bookListCount.isNotNull()
-                }
-            )
         }
     }
 }
