@@ -70,11 +70,13 @@ internal fun BookPager(
                     )
                 }
 
-                BookEntry.Empty -> DefaultAddCardView(
-                    text = stringResource(Res.string.add_book),
-                    modifier = Modifier.defaultDashboardCardModifier(pageOffset = pageOffset),
-                    onClick = onEmptyClick
-                )
+                BookEntry.Empty -> {
+                    DefaultAddCardView(
+                        text = stringResource(Res.string.add_book),
+                        modifier = Modifier.defaultDashboardCardModifier(pageOffset = pageOffset),
+                        onClick = onEmptyClick
+                    )
+                }
             }
         }
     }

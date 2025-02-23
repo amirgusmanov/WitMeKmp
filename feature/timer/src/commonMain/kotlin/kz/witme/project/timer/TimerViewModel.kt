@@ -53,6 +53,12 @@ internal class TimerViewModel(
         }
     }
 
+    fun handleAlert(visible: Boolean) {
+        uiState.tryToUpdate {
+            it.copy(isTimerAlertVisible = visible)
+        }
+    }
+
     fun restartTimer() {
         timerJob?.cancel()
         timerJob = null

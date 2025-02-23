@@ -51,6 +51,7 @@ import kz.witme.project.common_ui.shimmer.ShimmerView
 import kz.witme.project.common_ui.theme.LinearGradient
 import kz.witme.project.common_ui.theme.LocalWitMeTheme
 import kz.witme.project.component.BaseTimerBottomSheet
+import kz.witme.project.component.TimerAlert
 import kz.witme.project.navigation.Destination
 import kz.witme.project.navigation.result.ResultConstants
 import kz.witme.project.navigation.result.getScreenResult
@@ -67,6 +68,7 @@ import witmekmp.core.common_ui.generated.resources.end_session
 import witmekmp.core.common_ui.generated.resources.ic_back
 import witmekmp.core.common_ui.generated.resources.no_books
 import witmekmp.core.common_ui.generated.resources.save_note
+import witmekmp.core.common_ui.generated.resources.timer_alert_message
 import witmekmp.core.common_ui.generated.resources.what_book_you_read
 
 class TimerScreen(
@@ -107,6 +109,10 @@ class TimerScreen(
             )
         }
         fun onBackEvent() {
+            if (viewModel.elapsedSeconds != 0L) {
+                viewModel.handleAlert(true)
+                return
+            }
             viewModel.restartTimer()
             if (isNavigatedFromTabs) tabsNavigator.current = Home else navigator?.pop()
         }
@@ -154,6 +160,19 @@ class TimerScreen(
                     }
                 }
             }
+        }
+        if (uiState.isTimerAlertVisible) {
+            TimerAlert(
+                errorText = stringResource(Res.string.timer_alert_message),
+                onDismissRequest = {
+                    viewModel.handleAlert(false)
+                },
+                onButtonClick = {
+                    viewModel.handleAlert(false)
+                    viewModel.restartTimer()
+                    onBackEvent()
+                }
+            )
         }
         BackHandler(enabled = true, onBack = ::onBackEvent)
         TimerScreenContent(
