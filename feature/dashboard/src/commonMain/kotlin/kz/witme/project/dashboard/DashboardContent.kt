@@ -122,11 +122,19 @@ internal fun DashboardLoadingContent(
             modifier = Modifier.padding(horizontal = 16.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            ShimmerView(modifier = Modifier.fillMaxWidth().height(150.dp).weight(1f))
-            Spacer(modifier = Modifier.width(16.dp))
-            ShimmerView(modifier = Modifier.fillMaxWidth().height(150.dp).weight(1f))
-            Spacer(modifier = Modifier.width(16.dp))
-            ShimmerView(modifier = Modifier.fillMaxWidth().height(150.dp).weight(1f))
+            repeat(LOADING_SHIMMER_COUNT) { index ->
+                ShimmerView(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(150.dp)
+                        .weight(1f)
+                )
+                if (index != LOADING_SHIMMER_COUNT - 1) {
+                    Spacer(modifier = Modifier.width(16.dp))
+                }
+            }
         }
     }
 }
+
+private const val LOADING_SHIMMER_COUNT = 3
