@@ -3,7 +3,6 @@ package kz.witme.project.book_details.details
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,9 +28,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.registry.ScreenRegistry
@@ -46,7 +43,6 @@ import kz.witme.project.book_details.component.BookDataSectionView
 import kz.witme.project.book_details.details.model.SessionItem
 import kz.witme.project.common_ui.base.ErrorAlert
 import kz.witme.project.common_ui.base.TopCurvedCircle
-import kz.witme.project.common_ui.extension.clickableWithPressedState
 import kz.witme.project.common_ui.extension.clickableWithoutRipple
 import kz.witme.project.common_ui.extension.collectAsStateWithLifecycle
 import kz.witme.project.common_ui.theme.DefaultRoundedShape
@@ -153,37 +149,6 @@ internal fun DetailsScreenContent(
                     }
                 }
             }
-            Box(
-                modifier = Modifier
-                    .padding(start = 16.dp)
-                    .clickableWithPressedState(
-                        onClick = {
-                            navigator?.pop()
-                        }
-                    ),
-            ) {
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .clip(DefaultRoundedShape)
-                        .background(
-                            color = if (scrollState.value != 0) {
-                                LocalWitMeTheme.colors.primary400
-                            } else {
-                                Color.Transparent
-                            }
-                        )
-                ) {
-                    Icon(
-                        modifier = Modifier
-                            .padding(8.dp)
-                            .align(Alignment.Center),
-                        painter = painterResource(Res.drawable.ic_back),
-                        tint = LocalWitMeTheme.colors.white,
-                        contentDescription = "back button"
-                    )
-                }
-            }
         }
     }
 }
@@ -199,7 +164,14 @@ private fun DetailsContent(
             .verticalScroll(scrollState)
             .padding(horizontal = 16.dp)
     ) {
-        Spacer(modifier = Modifier.height(48.dp))
+        Spacer(modifier = Modifier.height(24.dp))
+        Icon(
+            modifier = Modifier,
+            painter = painterResource(Res.drawable.ic_back),
+            tint = LocalWitMeTheme.colors.white,
+            contentDescription = "back button"
+        )
+        Spacer(modifier = Modifier.height(24.dp))
         Text(
             text = uiState.name,
             style = LocalWitMeTheme.typography.semiBold32,
