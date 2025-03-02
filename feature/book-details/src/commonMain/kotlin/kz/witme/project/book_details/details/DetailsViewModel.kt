@@ -62,7 +62,7 @@ internal class DetailsViewModel(
         this
             .groupBy { it.createdDate }
             .entries
-            .sortedBy { it.key }
+            .sortedByDescending { it.key }
             .flatMapIndexed { index, (date, sessions) ->
                 val sessionItems = sessions.map { SessionItem.BookSessionDetails(it) }
                 listOf(SessionItem.Date(day = index + 1, date = date)) + sessionItems
