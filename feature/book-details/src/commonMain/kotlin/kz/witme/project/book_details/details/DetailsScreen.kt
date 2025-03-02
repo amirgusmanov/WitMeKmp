@@ -43,6 +43,7 @@ import kz.witme.project.book_details.component.BookDataSectionView
 import kz.witme.project.book_details.details.model.SessionItem
 import kz.witme.project.common_ui.base.ErrorAlert
 import kz.witme.project.common_ui.base.TopCurvedCircle
+import kz.witme.project.common_ui.extension.clickableWithPressedState
 import kz.witme.project.common_ui.extension.clickableWithoutRipple
 import kz.witme.project.common_ui.extension.collectAsStateWithLifecycle
 import kz.witme.project.common_ui.theme.DefaultRoundedShape
@@ -101,7 +102,6 @@ internal fun DetailsScreenContent(
     controller: DetailsController,
     uiState: DetailsUiState
 ) {
-    val navigator = LocalNavigator.current
     val scrollState = rememberScrollState(initial = 0)
 
     Scaffold(
@@ -159,6 +159,7 @@ private fun DetailsContent(
     uiState: DetailsUiState.Data,
     scrollState: ScrollState
 ) {
+    val navigator = LocalNavigator.current
     Column(
         modifier = Modifier
             .verticalScroll(scrollState)
@@ -166,7 +167,11 @@ private fun DetailsContent(
     ) {
         Spacer(modifier = Modifier.height(24.dp))
         Icon(
-            modifier = Modifier,
+            modifier = Modifier.clickableWithPressedState(
+                onClick = {
+                    navigator?.pop()
+                }
+            ),
             painter = painterResource(Res.drawable.ic_back),
             tint = LocalWitMeTheme.colors.white,
             contentDescription = "back button"
