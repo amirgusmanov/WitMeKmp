@@ -118,6 +118,7 @@ class TimerScreen(
         LaunchedEffect(Unit) {
             if (navigator?.getScreenResult<Boolean>(ResultConstants.CREATE_TIMER_SESSION_SUCCESS) == true) {
                 viewModel.restartTimer()
+                viewModel.notesList.clear()
             }
         }
         LaunchedEffect(viewModel.responseEvent) {
