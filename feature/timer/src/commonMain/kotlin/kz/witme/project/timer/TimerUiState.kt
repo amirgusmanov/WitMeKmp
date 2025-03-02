@@ -13,7 +13,5 @@ data class TimerUiState(
     val tempNote: String = "",
     val selectedBookId: String = "",
     val books: ImmutableList<GetBook> = persistentListOf(),
-    val areBooksEmpty: Boolean = false,
-    val areBooksLoading: Boolean = false,
     val isTimerAlertVisible: Boolean = false
 )

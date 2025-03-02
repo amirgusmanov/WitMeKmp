@@ -16,6 +16,7 @@ import kotlinx.datetime.toLocalDateTime
 import kz.witme.project.book.domain.model.CreateSessionBody
 import kz.witme.project.book.domain.model.GetBook
 import kz.witme.project.book.domain.repository.CreateBookSessionRepository
+import kz.witme.project.book.domain.repository.GetBookRepository
 import kz.witme.project.common.extension.tryToGet
 import kz.witme.project.common.extension.tryToUpdate
 import kz.witme.project.data.network.getMessage
@@ -24,6 +25,7 @@ import kz.witme.project.data.network.onSuccess
 
 internal class TimerDetailsViewModel(
     private val createBookSessionRepository: CreateBookSessionRepository,
+    private val getBookRepository: GetBookRepository,
     private val book: GetBook,
     private val elapsedSeconds: Long,
     private val notes: ImmutableList<String>,
@@ -43,7 +45,7 @@ internal class TimerDetailsViewModel(
                  * костыль :) походу bottomShitNavigator не успевает среагировать
                  * на новый ивент открытия другого боттомщита когда навигатор tabs
                  */
-                delay(1000L)
+                delay(700L)
             }
             _responseEvent.send(ResponseEvent.ShowPagePicker)
         }
@@ -80,6 +82,7 @@ internal class TimerDetailsViewModel(
                         fromTimeToTime = getTime()
                     )
                 ).onSuccess {
+                    getBookRepository.updateBooks()
                     _responseEvent.send(ResponseEvent.NavigateToDashboard)
                 }.onError { error ->
                     uiState.tryToUpdate {

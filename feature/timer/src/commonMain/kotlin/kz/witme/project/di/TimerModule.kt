@@ -11,6 +11,7 @@ val featureTimerModule = module {
     factory { (book: GetBook, elapsedSeconds: Long, notes: ImmutableList<String>, isFromTabs: Boolean) ->
         TimerDetailsViewModel(
             createBookSessionRepository = get(),
+            getBookRepository = get(),
             book = book,
             elapsedSeconds = elapsedSeconds,
             notes = notes,

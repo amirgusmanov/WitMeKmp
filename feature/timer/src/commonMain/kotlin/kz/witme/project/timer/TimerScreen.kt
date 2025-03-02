@@ -47,7 +47,6 @@ import kz.witme.project.common_ui.extension.clickableWithPressedState
 import kz.witme.project.common_ui.extension.clickableWithoutRipple
 import kz.witme.project.common_ui.extension.collectAsStateWithLifecycle
 import kz.witme.project.common_ui.screen.toolbarPaddings
-import kz.witme.project.common_ui.shimmer.ShimmerView
 import kz.witme.project.common_ui.theme.LinearGradient
 import kz.witme.project.common_ui.theme.LocalWitMeTheme
 import kz.witme.project.component.BaseTimerBottomSheet
@@ -101,13 +100,13 @@ class TimerScreen(
             BooksBottomSheet(
                 books = uiState.books,
                 selectedBookId = uiState.selectedBookId,
-                areBooksLoading = uiState.areBooksLoading,
                 onBookClick = {
                     viewModel.onBookChoose(it)
                     hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                 }
             )
         }
+
         fun onBackEvent() {
             if (viewModel.elapsedSeconds != 0L) {
                 viewModel.handleAlert(true)
@@ -298,7 +297,6 @@ private fun NoteBottomSheet(
 private fun BooksBottomSheet(
     books: ImmutableList<GetBook>,
     selectedBookId: String?,
-    areBooksLoading: Boolean,
     onBookClick: (String) -> Unit
 ) {
     Column(
@@ -323,28 +321,15 @@ private fun BooksBottomSheet(
             LazyColumn(
                 modifier = Modifier.fillMaxWidth().height(200.dp)
             ) {
-                if (areBooksLoading) {
-                    items(
-                        count = 7
-                    ) {
-                        ShimmerView(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp)
-                                .height(40.dp)
-                        )
-                    }
-                } else {
-                    items(
-                        items = books,
-                        key = GetBook::id
-                    ) { book ->
-                        BookItem(
-                            book = book,
-                            isSelected = book.id == selectedBookId,
-                            onBookClick = onBookClick
-                        )
-                    }
+                items(
+                    items = books,
+                    key = GetBook::id
+                ) { book ->
+                    BookItem(
+                        book = book,
+                        isSelected = book.id == selectedBookId,
+                        onBookClick = onBookClick
+                    )
                 }
             }
         }

@@ -7,6 +7,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kz.witme.project.book.domain.model.GetBook
@@ -15,10 +16,7 @@ import kz.witme.project.book.domain.repository.GetBookRepository
 import kz.witme.project.common.extension.tryToUpdate
 import kz.witme.project.data.network.getMessage
 import kz.witme.project.data.network.onError
-import kz.witme.project.data.network.onSuccess
 
-//todo add runtime storage for to read books,
-// and when user tries to create more than 5 books show warning
 internal class DashboardViewModel(
     private val bookRepository: GetBookRepository
 ) : ScreenModel, DashboardController {
@@ -29,7 +27,8 @@ internal class DashboardViewModel(
     override val responseEvent: Flow<DashboardResponseEvent> = _responseEvent.receiveAsFlow()
 
     init {
-        getBooks()
+        updateBooks()
+        observeBooks()
     }
 
     fun showSuccessDialog() {
@@ -48,18 +47,23 @@ internal class DashboardViewModel(
         }
     }
 
-    fun getBooks() {
+    fun updateBooks() {
         screenModelScope.launch {
             initLoading()
-            bookRepository.getBooks()
-                .onSuccess(::filterBooks)
-                .onError { error ->
-                    filterBooks(emptyList())
-                    uiState.tryToUpdate {
-                        it.copy(errorMessage = error.getMessage())
-                    }
+            bookRepository.updateBooks().onError { error ->
+                uiState.tryToUpdate {
+                    it.copy(errorMessage = error.getMessage())
                 }
+            }
             endLoading()
+        }
+    }
+
+    private fun observeBooks() {
+        screenModelScope.launch {
+            bookRepository.observeBooks().collectLatest {
+                filterBooks(it)
+            }
         }
     }
 

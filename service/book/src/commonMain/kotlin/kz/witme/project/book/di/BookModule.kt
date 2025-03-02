@@ -1,6 +1,7 @@
 package kz.witme.project.book.di
 
 import de.jensklingenberg.ktorfit.Ktorfit
+import kz.witme.project.book.data.local.runtime.BooksStorage
 import kz.witme.project.book.data.network.CreateBookApi
 import kz.witme.project.book.data.network.CreateBookSessionApi
 import kz.witme.project.book.data.network.GetBookApi
@@ -24,7 +25,8 @@ val serviceBookModule = module {
     single<CreateBookApi> { get<Ktorfit>().createCreateBookApi() }
     single<CreateBookSessionApi> { get<Ktorfit>().createCreateBookSessionApi() }
     single<GetBookDetailsApi> { get<Ktorfit>().createGetBookDetailsApi() }
-    single<GetBookRepository> { GetBookRepositoryImpl(api = get()) }
+    single<BooksStorage> { BooksStorage() }
+    single<GetBookRepository> { GetBookRepositoryImpl(api = get(), storage = get()) }
     single<CreateBookRepository> { CreateBookRepositoryImpl(api = get()) }
     single<CreateBookSessionRepository> { CreateBookSessionRepositoryImpl(api = get()) }
     single<GetBookSessionDetailsRepository> { GetBookSessionDetailsRepositoryImpl(api = get()) }

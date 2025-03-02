@@ -10,6 +10,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -19,8 +20,6 @@ import kz.witme.project.book.domain.model.GetBook
 import kz.witme.project.book.domain.model.ReadingStatus
 import kz.witme.project.book.domain.repository.GetBookRepository
 import kz.witme.project.common.extension.tryToUpdate
-import kz.witme.project.data.network.onError
-import kz.witme.project.data.network.onSuccess
 import kz.witme.project.timer.model.TimerHelperModel
 
 internal class TimerViewModel(
@@ -73,9 +72,9 @@ internal class TimerViewModel(
     }
 
     private suspend fun getBooks() {
-        changeBooksLoadingState(true)
-        booksRepository.getBooks()
-            .onSuccess { books ->
+        booksRepository.updateBooks()
+        booksRepository.observeBooks()
+            .collectLatest { books ->
                 uiState.tryToUpdate {
                     it.copy(
                         books = books
@@ -87,12 +86,6 @@ internal class TimerViewModel(
                     )
                 }
             }
-            .onError {
-                uiState.tryToUpdate {
-                    it.copy(areBooksEmpty = true)
-                }
-            }
-        changeBooksLoadingState(false)
     }
 
     fun getSelectedBook(id: String): GetBook? = uiState.value.books.firstOrNull { it.id == id }
@@ -144,12 +137,6 @@ internal class TimerViewModel(
             it.copy(
                 isRunning = false
             )
-        }
-    }
-
-    private fun changeBooksLoadingState(areLoading: Boolean) {
-        uiState.tryToUpdate {
-            it.copy(areBooksLoading = areLoading)
         }
     }
 

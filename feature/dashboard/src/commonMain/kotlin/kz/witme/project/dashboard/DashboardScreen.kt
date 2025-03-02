@@ -56,13 +56,13 @@ class DashboardScreen : Screen {
         }
         LaunchedEffect(Unit) {
             if (navigator?.getScreenResult<Boolean>(ResultConstants.CREATE_BOOK_SUCCESS) == true) {
-                viewModel.getBooks()
+                viewModel.updateBooks()
                 viewModel.showSuccessDialog()
             }
         }
         LaunchedEffect(Unit) {
             if (navigator?.getScreenResult<Boolean>(ResultConstants.CREATE_TIMER_SESSION_SUCCESS) == true) {
-                viewModel.getBooks()
+                viewModel.updateBooks()
             }
         }
         DashboardScreenContent(
