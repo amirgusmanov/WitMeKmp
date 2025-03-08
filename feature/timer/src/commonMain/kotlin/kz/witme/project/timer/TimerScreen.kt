@@ -24,8 +24,11 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -40,6 +43,7 @@ import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
 import cafe.adriel.voyager.navigator.internal.BackHandler
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kz.witme.project.book.domain.model.GetBook
 import kz.witme.project.common_ui.base.DefaultButton
@@ -247,6 +251,12 @@ private fun NoteBottomSheet(
     onSaveNoteClick: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
+    val focusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(Unit) {
+        delay(300)
+        focusRequester.requestFocus()
+    }
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -263,7 +273,8 @@ private fun NoteBottomSheet(
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(150.dp),
+                .height(150.dp)
+                .focusRequester(focusRequester),
             textStyle = LocalWitMeTheme.typography.regular16.copy(
                 color = LocalWitMeTheme.colors.black
             ),
