@@ -14,7 +14,8 @@ import platform.UIKit.UIImage
 import platform.UIKit.UIImageJPEGRepresentation
 
 actual class SharedImage(private val image: UIImage?) {
-    actual fun toByteArray(): ByteArray? = if (image != null) {
+    actual suspend fun toByteArray(): ByteArray? {
+        if (image == null) return null
         val imageData = UIImageJPEGRepresentation(image, COMPRESSION_QUALITY)
             ?: throw IllegalArgumentException("image data is null")
         val bytes = imageData.bytes
@@ -22,18 +23,12 @@ actual class SharedImage(private val image: UIImage?) {
         val length = imageData.length
 
         val data: CPointer<ByteVar> = bytes.reinterpret()
-        ByteArray(length.toInt()) { index -> data[index] }
-    } else {
-        null
+        return ByteArray(length.toInt()) { index -> data[index] }
     }
 
-    actual fun toImageBitmap(): ImageBitmap? {
-        val byteArray = toByteArray()
-        return if (byteArray != null) {
-            Image.makeFromEncoded(byteArray).toComposeImageBitmap()
-        } else {
-            null
-        }
+    actual suspend fun toImageBitmap(): ImageBitmap? {
+        val byteArray = toByteArray() ?: return null
+        return Image.makeFromEncoded(byteArray).toComposeImageBitmap()
     }
 
     private companion object {

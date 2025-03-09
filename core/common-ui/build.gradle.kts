@@ -30,6 +30,7 @@ kotlin {
             implementation(libs.accompanist)
             implementation(libs.androidx.appcompat)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.compressor)
         }
         commonMain.dependencies {
             implementation(compose.runtime)

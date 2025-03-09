@@ -146,7 +146,7 @@ object HttpClientFactory {
     private fun HttpClientConfig<*>.installHttpTimeout() {
         install(HttpTimeout) {
             socketTimeoutMillis = 20_000L
-            requestTimeoutMillis = 20_000L
+            requestTimeoutMillis = 30_000L
         }
     }
 
