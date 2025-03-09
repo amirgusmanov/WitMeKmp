@@ -11,7 +11,6 @@ internal data class EditProfileUiState(
     val isUpdateButtonEnabled: Boolean = true,
     val imageBitmap: ImageBitmap? = null,
     val launchCamera: Boolean = false,
-    val launchGallery: Boolean = false,
     val launchSettings: Boolean = false,
     val showRationalDialog: Boolean = false,
     val isAvatarPickOptionBottomSheetVisible: Boolean = false

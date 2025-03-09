@@ -26,8 +26,6 @@ internal interface CreateBookController {
 
     fun onSettingsLaunch()
 
-    fun onGalleryLaunch()
-
     fun onCameraLaunch()
 
     fun onRationalDialogShow()
@@ -35,8 +33,6 @@ internal interface CreateBookController {
     fun onAvatarPickOptionBottomSheetDismiss()
 
     fun onCameraPermissionAsk()
-
-    fun onGalleryPermissionAsk()
 
     fun onSettingsLaunched()
 

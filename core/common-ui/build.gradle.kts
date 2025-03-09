@@ -42,6 +42,8 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(libs.kotlinx.immutable)
+            api(libs.peekaboo.ui)
+            api(libs.peekaboo.image.picker)
         }
     }
 }

@@ -23,6 +23,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
@@ -114,7 +115,8 @@ private fun ImageSourceButton(
                 ImageSourceButtonKind.Camera -> stringResource(Res.string.make_from_camera)
             },
             color = LocalWitMeTheme.colors.primary400,
-            style = LocalWitMeTheme.typography.medium16
+            style = LocalWitMeTheme.typography.medium16,
+            textAlign = TextAlign.Center
         )
     }
 }

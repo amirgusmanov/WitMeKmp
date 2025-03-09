@@ -130,15 +130,6 @@ internal class ProfileViewModel(
         }
     }
 
-    fun onGalleryLaunch() {
-        uiState.tryToUpdate { state ->
-            state.copy(
-                launchGallery = true,
-                isAvatarPickOptionBottomSheetVisible = false
-            )
-        }
-    }
-
     fun onSettingsLaunched() {
         uiState.tryToUpdate { state ->
             state.copy(launchSettings = false)
@@ -172,12 +163,6 @@ internal class ProfileViewModel(
     fun onCameraPermissionAsk() {
         uiState.tryToUpdate { state ->
             state.copy(launchCamera = false)
-        }
-    }
-
-    fun onGalleryPermissionAsk() {
-        uiState.tryToUpdate { state ->
-            state.copy(launchGallery = false)
         }
     }
 

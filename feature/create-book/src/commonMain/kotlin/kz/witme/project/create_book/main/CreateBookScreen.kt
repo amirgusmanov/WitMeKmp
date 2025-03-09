@@ -30,6 +30,9 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
+import com.preat.peekaboo.image.picker.SelectionMode
+import com.preat.peekaboo.image.picker.rememberImagePickerLauncher
+import com.preat.peekaboo.image.picker.toImageBitmap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -45,7 +48,6 @@ import kz.witme.project.common_ui.base.TopCurvedCircle
 import kz.witme.project.common_ui.camera.rememberCameraManager
 import kz.witme.project.common_ui.extension.clickableWithoutRipple
 import kz.witme.project.common_ui.extension.collectAsStateWithLifecycle
-import kz.witme.project.common_ui.gallery.rememberGalleryManager
 import kz.witme.project.common_ui.image.SharedImage
 import kz.witme.project.common_ui.permission.PermissionCallback
 import kz.witme.project.common_ui.permission.PermissionStatus
@@ -96,7 +98,7 @@ internal fun CreateBookScreenContent(
                 when (status) {
                     PermissionStatus.Granted -> {
                         when (permissionType) {
-                            PermissionType.Gallery -> controller.onGalleryLaunch()
+                            PermissionType.Gallery -> Unit
                             PermissionType.Camera -> controller.onCameraLaunch()
                         }
                     }
@@ -120,7 +122,18 @@ internal fun CreateBookScreenContent(
         }
     }
     val cameraManager = rememberCameraManager(handleImage)
-    val galleryManager = rememberGalleryManager(handleImage)
+    val photoPicker = rememberImagePickerLauncher(
+        selectionMode = SelectionMode.Single,
+        scope = coroutineScope,
+        onResult = { byteArrays ->
+            byteArrays.firstOrNull()?.let {
+                controller.onBookPhotoPicked(
+                    byteArray = it,
+                    image = it.toImageBitmap()
+                )
+            }
+        }
+    )
     if (uiState.launchCamera) {
         if (permissionsManager.isPermissionGranted(PermissionType.Camera)) {
             cameraManager.launch()
@@ -128,14 +141,6 @@ internal fun CreateBookScreenContent(
             permissionsManager.askPermission(PermissionType.Camera)
         }
         controller.onCameraPermissionAsk()
-    }
-    if (uiState.launchGallery) {
-        if (permissionsManager.isPermissionGranted(PermissionType.Gallery)) {
-            galleryManager.launch()
-        } else {
-            permissionsManager.askPermission(PermissionType.Gallery)
-        }
-        controller.onGalleryPermissionAsk()
     }
     if (uiState.launchSettings) {
         controller.onAvatarPickOptionBottomSheetDismiss()
@@ -152,7 +157,9 @@ internal fun CreateBookScreenContent(
             bottomSheetNavigator.show(
                 PhotoPickerOptionBottomSheetScreen(
                     onCameraOptionChoose = controller::onCameraLaunch,
-                    onGalleryOptionChoose = controller::onGalleryLaunch
+                    onGalleryOptionChoose = {
+                        photoPicker.launch()
+                    }
                 )
             )
         } else {

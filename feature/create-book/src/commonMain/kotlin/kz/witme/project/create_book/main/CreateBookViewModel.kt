@@ -65,15 +65,6 @@ internal class CreateBookViewModel(
         }
     }
 
-    override fun onGalleryLaunch() {
-        uiState.tryToUpdate { state ->
-            state.copy(
-                launchGallery = true,
-                isAvatarPickOptionBottomSheetVisible = false
-            )
-        }
-    }
-
     override fun onSettingsLaunched() {
         uiState.tryToUpdate { state ->
             state.copy(launchSettings = false)
@@ -107,12 +98,6 @@ internal class CreateBookViewModel(
     override fun onCameraPermissionAsk() {
         uiState.tryToUpdate { state ->
             state.copy(launchCamera = false)
-        }
-    }
-
-    override fun onGalleryPermissionAsk() {
-        uiState.tryToUpdate { state ->
-            state.copy(launchGallery = false)
         }
     }
 

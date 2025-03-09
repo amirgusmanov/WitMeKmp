@@ -14,8 +14,6 @@ internal interface EditProfileController {
 
     fun onCameraLaunch()
 
-    fun onGalleryLaunch()
-
     fun onSettingsLaunch()
 
     fun onSettingsLaunched()
@@ -29,8 +27,6 @@ internal interface EditProfileController {
     fun onAvatarPickOptionBottomSheetDismiss()
 
     fun onCameraPermissionAsk()
-
-    fun onGalleryPermissionAsk()
 
     fun onAvatarPick(image: ImageBitmap, imageByteArray: ByteArray)
 

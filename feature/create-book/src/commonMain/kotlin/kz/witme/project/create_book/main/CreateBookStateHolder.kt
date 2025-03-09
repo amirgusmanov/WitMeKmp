@@ -10,7 +10,6 @@ data class CreateBookMainUiState(
     val bookListCount: Int? = null,
     val photo: ImageBitmap? = null,
     val launchCamera: Boolean = false,
-    val launchGallery: Boolean = false,
     val launchSettings: Boolean = false,
     val showRationalDialog: Boolean = false,
     val isAvatarPickOptionBottomSheetVisible: Boolean = false

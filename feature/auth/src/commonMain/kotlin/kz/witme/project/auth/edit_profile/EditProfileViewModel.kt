@@ -59,15 +59,6 @@ internal class EditProfileViewModel(
         }
     }
 
-    override fun onGalleryLaunch() {
-        uiState.tryToUpdate {
-            it.copy(
-                launchGallery = true,
-                isAvatarPickOptionBottomSheetVisible = false
-            )
-        }
-    }
-
     override fun onSettingsLaunch() {
         uiState.tryToUpdate {
             it.copy(launchSettings = true)
@@ -107,12 +98,6 @@ internal class EditProfileViewModel(
     override fun onCameraPermissionAsk() {
         uiState.tryToUpdate {
             it.copy(launchCamera = false)
-        }
-    }
-
-    override fun onGalleryPermissionAsk() {
-        uiState.tryToUpdate {
-            it.copy(launchGallery = false)
         }
     }
 
