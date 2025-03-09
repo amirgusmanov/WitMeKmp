@@ -25,7 +25,16 @@ actual fun rememberGalleryManager(onResult: (SharedImage?) -> Unit): GalleryMana
         ActivityResultContracts.PickVisualMedia()
     ) { uri ->
         uri?.let {
-            onResult.invoke(SharedImage(BitmapUtils.getBitmapFromUri(uri, contentResolver)))
+            onResult.invoke(
+                SharedImage(
+                    context = context,
+                    bitmap = BitmapUtils.getBitmapFromUri(
+                        uri = it,
+                        contentResolver = contentResolver
+                    ),
+                    uri = it
+                )
+            )
         }
     }
     return remember {
