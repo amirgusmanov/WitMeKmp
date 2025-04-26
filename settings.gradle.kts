@@ -13,7 +13,7 @@ pluginManagement {
         mavenCentral()
         gradlePluginPortal()
     }
-    includeBuild("core/plugin")
+    includeBuild("build-logic")
 }
 
 dependencyResolutionManagement {

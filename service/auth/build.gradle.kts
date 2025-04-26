@@ -1,5 +1,5 @@
 plugins {
-    id("kz.witme.project.service-module")
+    alias(libs.plugins.service.module)
 }
 
 kotlin {

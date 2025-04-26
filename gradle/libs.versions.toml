@@ -93,6 +93,10 @@ peekaboo-ui = { module = "io.github.onseok:peekaboo-ui", version.ref = "peekaboo
 peekaboo-image-picker = { module = "io.github.onseok:peekaboo-image-picker", version.ref = "peekaboo" }
 
 [plugins]
+# convention plugins
+feature-module = { id = "feature-module" }
+service-module = { id = "service-module" }
+
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
