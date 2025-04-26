@@ -45,9 +45,6 @@ fun handleHttpException(response: HttpResponse): RequestResult.Error<DataError.R
 }
 
 
-/**
- * to display error text in snackbar or error dialog
- */
 fun DataError.getMessage(): String = when (this) {
     DataError.Remote.REQUEST_TIMEOUT -> ERROR_REQUEST_TIMEOUT
     DataError.Remote.TOO_MANY_REQUESTS -> ERROR_TOO_MANY_REQUESTS
@@ -57,7 +54,6 @@ fun DataError.getMessage(): String = when (this) {
     else -> ERROR_UNKNOWN
 }
 
-//todo: separate this into strings.xml and observe on each string Res into to display it
 private const val ERROR_UNKNOWN = "Упс, что-то пошло не так"
 private const val ERROR_REQUEST_TIMEOUT = "Время запроса истекло"
 private const val ERROR_NO_INTERNET = "Не удалось соединиться с сервером, проверьте подключение"
