@@ -6,28 +6,22 @@ internal fun Project.applyServiceDependencies(extension: KotlinMultiplatformExte
         sourceSets.apply {
             androidMain {
                 dependencies {
-                    implementation(libs.ktor.client.okhttp.get())
+                    implementation(libs.ktor.client.okhttp)
                 }
             }
             iosMain {
                 dependencies {
-                    implementation(libs.ktor.client.darwin.get())
+                    implementation(libs.ktor.client.darwin)
                 }
             }
             commonMain {
                 dependencies {
-                    implementation(libs.ktor.client.core.get())
-                    implementation(libs.ktor.client.content.negotiation.get())
-                    implementation(libs.ktor.client.logging.get())
-                    implementation(libs.ktor.serialization.kotlinx.json.get())
-                    implementation(libs.ktor.client.auth.get())
-                    implementation(libs.ktorfit.get())
-                    implementation(libs.koin.core.get())
-                    implementation(libs.kotlinx.coroutines.core.get())
-                    implementation(libs.kotlinx.immutable.get())
-                    implementation(libs.kotlinx.serialization.json.get())
-                    implementation(libs.datastore.preferences.get())
-                    implementation(libs.datastore.asProvider().get())
+                    implementation(libs.bundles.ktor)
+                    implementation(libs.ktorfit)
+                    implementation(libs.koin.core)
+                    implementation(libs.kotlinx.coroutines.core)
+                    implementation(libs.kotlinx.immutable)
+                    implementation(libs.kotlinx.serialization.json)
                     implementation(project(":core:common"))
                     implementation(project(":core:data"))
                 }
@@ -50,16 +44,12 @@ internal fun Project.applyFeatureDependencies(extension: KotlinMultiplatformExte
                     implementation(compose.dependencies.components.uiToolingPreview)
                     implementation(compose.dependencies.ui)
 
-                    implementation(libs.koin.core.get())
-                    implementation(libs.kotlinx.coroutines.core.get())
-                    implementation(libs.kotlinx.serialization.json.get())
-                    implementation(libs.kotlinx.immutable.get())
-                    implementation(libs.coil.compose.asProvider().get())
-                    implementation(libs.coil.compose.core.get())
-                    implementation(libs.coil.network.ktor2.get())
-                    implementation(libs.coil.network.ktor3.get())
-                    implementation(libs.coil.mp.get())
-                    implementation(libs.androidx.lifecycle.runtime.compose.get())
+                    implementation(libs.koin.core)
+                    implementation(libs.kotlinx.coroutines.core)
+                    implementation(libs.kotlinx.serialization.json)
+                    implementation(libs.kotlinx.immutable)
+                    implementation(libs.bundles.coil)
+                    implementation(libs.androidx.lifecycle.runtime.compose)
 
                     implementation(project(":core:common"))
                     implementation(project(":core:common-ui"))
@@ -69,7 +59,7 @@ internal fun Project.applyFeatureDependencies(extension: KotlinMultiplatformExte
             }
             androidMain {
                 dependencies {
-                    implementation(libs.koin.android.get())
+                    implementation(libs.koin.android)
                 }
             }
         }
