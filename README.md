@@ -1,14 +1,42 @@
-This is a Kotlin Multiplatform project targeting Android, iOS.
+# This is a Kotlin Multiplatform project targeting Android, iOS.
 
-* `/composeApp` is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - `commonMain` is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    `iosMain` would be the right folder for such calls.
+WitBook is a multiplatform-platform mobile application built with Kotlin Multiplatform, designed to track your reading session efficiently.
 
-* `/iosApp` contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform, 
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+## 🚀 Download the App
 
+[![Google Play](https://img.shields.io/badge/Google_Play-414141?style=for-the-badge&logo=google-play&logoColor=white)](https://play.google.com/store/apps/details?id=kz.witme.project)
+[![App Store](https://img.shields.io/badge/App_Store-0D96F6?style=for-the-badge&logo=app-store&logoColor=white)](https://apps.apple.com/kz/app/witbook/id6742798201)
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+## 🛠️ Technologies Used
+
+- **Kotlin Multiplatform**: For sharing business logic across platforms
+- **Compose Multiplatform**: For Android & iOS UI
+- **Kotlin Coroutines**: For asynchronous programming
+- **KotlinX Serialization**: For data serialization
+- **Ktor & Ktorfit**: For networking
+- **Voyager**: For navigation
+- **Coil**: For image loading
+- **Koin**: For dependency injection
+
+## 🏗️ Architecture
+
+The project follows a clean architecture approach with the following structure:
+
+```
+├── core/
+│   ├── common/       # Shared business logic
+│   ├── common-ui/    # Shared UI components
+│   ├── data/         # Data layer implementation
+│   └── navigation/   # Navigation logic
+├── feature/          # Feature modules
+│   ├── auth/         # Authentication
+│   ├── dashboard/    # Main dashboard
+│   ├── profile/      # User profile
+│   └── ...          # Other features
+├── service/          # Service modules
+│   ├── auth/         # Authentication service
+│   ├── profile/      # Profile service
+│   └── ...          # Other services
+├── composeApp/       # App entry point
+└── iosApp/          # iOS-specific code
+```
