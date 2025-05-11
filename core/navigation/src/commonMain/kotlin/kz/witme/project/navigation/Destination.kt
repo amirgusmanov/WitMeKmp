@@ -12,6 +12,7 @@ sealed interface Destination : ScreenProvider {
     data object EditProfile : Destination
     data object Dashboard : Destination
     data object CreateBook : Destination
+    data object SearchBooks : Destination
     data object Profile : Destination
     data class CreateStatusBook(val args: CreateBookArgs) : Destination
     data class Timer(

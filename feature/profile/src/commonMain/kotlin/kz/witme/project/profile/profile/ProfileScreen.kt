@@ -35,7 +35,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kz.witme.project.common_ui.base.ErrorAlert
 import kz.witme.project.common_ui.base.MessageAlert
-import kz.witme.project.common_ui.base.PhotoPickerOptionBottomSheetScreen
+import kz.witme.project.common_ui.base.OptionItem
+import kz.witme.project.common_ui.base.OptionsPickerScreen
 import kz.witme.project.common_ui.camera.rememberCameraManager
 import kz.witme.project.common_ui.extension.clickableWithPressedState
 import kz.witme.project.common_ui.extension.clickableWithoutRipple
@@ -55,11 +56,15 @@ import witmekmp.core.common_ui.generated.resources.account_management_title
 import witmekmp.core.common_ui.generated.resources.delete_account
 import witmekmp.core.common_ui.generated.resources.delete_account_message
 import witmekmp.core.common_ui.generated.resources.ic_arrow_right
+import witmekmp.core.common_ui.generated.resources.ic_camera
+import witmekmp.core.common_ui.generated.resources.ic_picture
 import witmekmp.core.common_ui.generated.resources.ic_profile_placeholder
 import witmekmp.core.common_ui.generated.resources.logout
 import witmekmp.core.common_ui.generated.resources.logout_message
+import witmekmp.core.common_ui.generated.resources.make_from_camera
 import witmekmp.core.common_ui.generated.resources.no
 import witmekmp.core.common_ui.generated.resources.permission_message
+import witmekmp.core.common_ui.generated.resources.pick_from_gallery
 import witmekmp.core.common_ui.generated.resources.privacy_policy
 import witmekmp.core.common_ui.generated.resources.support_title
 import witmekmp.core.common_ui.generated.resources.yes
@@ -134,11 +139,19 @@ class ProfileScreen : Screen {
         LaunchedEffect(uiState.isAvatarPickOptionBottomSheetVisible) {
             if (uiState.isAvatarPickOptionBottomSheetVisible) {
                 bottomSheetNavigator.show(
-                    PhotoPickerOptionBottomSheetScreen(
-                        onCameraOptionChoose = controller::onCameraLaunch,
-                        onGalleryOptionChoose = {
-                            photoPicker.launch()
-                        }
+                    OptionsPickerScreen(
+                        options = listOf(
+                            OptionItem(
+                                icon = OptionItem.IconType.ResourceIcon(Res.drawable.ic_picture),
+                                labelRes = Res.string.pick_from_gallery,
+                                onClick = photoPicker::launch
+                            ),
+                            OptionItem(
+                                icon = OptionItem.IconType.ResourceIcon(Res.drawable.ic_camera),
+                                labelRes = Res.string.make_from_camera,
+                                onClick = controller::onCameraLaunch
+                            )
+                        )
                     )
                 )
             } else {

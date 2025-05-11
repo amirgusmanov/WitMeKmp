@@ -38,7 +38,8 @@ import kz.witme.project.common_ui.base.DefaultProgressButton
 import kz.witme.project.common_ui.base.DefaultTextField
 import kz.witme.project.common_ui.base.ErrorAlert
 import kz.witme.project.common_ui.base.MessageAlert
-import kz.witme.project.common_ui.base.PhotoPickerOptionBottomSheetScreen
+import kz.witme.project.common_ui.base.OptionItem
+import kz.witme.project.common_ui.base.OptionsPickerScreen
 import kz.witme.project.common_ui.camera.rememberCameraManager
 import kz.witme.project.common_ui.extension.clickableWithoutRipple
 import kz.witme.project.common_ui.extension.collectAsStateWithLifecycle
@@ -52,9 +53,13 @@ import kz.witme.project.common_ui.theme.LinearGradient
 import kz.witme.project.common_ui.theme.LocalWitMeTheme
 import org.jetbrains.compose.resources.stringResource
 import witmekmp.core.common_ui.generated.resources.Res
+import witmekmp.core.common_ui.generated.resources.ic_camera
+import witmekmp.core.common_ui.generated.resources.ic_picture
+import witmekmp.core.common_ui.generated.resources.make_from_camera
 import witmekmp.core.common_ui.generated.resources.name
 import witmekmp.core.common_ui.generated.resources.next
 import witmekmp.core.common_ui.generated.resources.permission_message
+import witmekmp.core.common_ui.generated.resources.pick_from_gallery
 import witmekmp.core.common_ui.generated.resources.skip_this_step
 import witmekmp.core.common_ui.generated.resources.whats_your_name
 import witmekmp.core.common_ui.generated.resources.your_profile
@@ -163,11 +168,19 @@ internal fun EditProfileScreenContent(
     LaunchedEffect(uiState.isAvatarPickOptionBottomSheetVisible) {
         if (uiState.isAvatarPickOptionBottomSheetVisible) {
             bottomSheetNavigator.show(
-                PhotoPickerOptionBottomSheetScreen(
-                    onCameraOptionChoose = controller::onCameraLaunch,
-                    onGalleryOptionChoose = {
-                        photoPicker.launch()
-                    }
+                OptionsPickerScreen(
+                    options = listOf(
+                        OptionItem(
+                            icon = OptionItem.IconType.ResourceIcon(Res.drawable.ic_picture),
+                            labelRes = Res.string.pick_from_gallery,
+                            onClick = photoPicker::launch
+                        ),
+                        OptionItem(
+                            icon = OptionItem.IconType.ResourceIcon(Res.drawable.ic_camera),
+                            labelRes = Res.string.make_from_camera,
+                            onClick = controller::onCameraLaunch
+                        )
+                    )
                 )
             )
         } else {

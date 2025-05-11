@@ -13,10 +13,12 @@ import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import kz.witme.project.common_ui.extension.clickableWithoutRipple
 import kz.witme.project.common_ui.theme.DefaultRoundedShape
 import kz.witme.project.common_ui.theme.LocalWitMeTheme
 import kz.witme.project.common_ui.theme.WitMeTheme
@@ -31,12 +33,14 @@ fun DefaultTextField(
     maxLines: Int = 1,
     keyboardOptions: KeyboardOptions = KeyboardOptions(),
     onQueryChanged: (String) -> Unit = {},
+    onTrailingIconClick: () -> Unit = {},
     interactionSource: MutableInteractionSource = MutableInteractionSource(),
     containerColor: Color = LocalWitMeTheme.colors.search,
     borderColor: Color = LocalWitMeTheme.colors.search,
     placeholderTextColor: Color = LocalWitMeTheme.colors.searchPlaceholder,
     placeholderTextStyle: TextStyle = LocalWitMeTheme.typography.regular14,
     textStyle: TextStyle = LocalWitMeTheme.typography.regular14,
+    shape: Shape = DefaultRoundedShape,
     trailingIcon: ImageVector? = null,
     singleLine: Boolean = true,
     openKeyboardEnabled: Boolean = true,
@@ -68,7 +72,7 @@ fun DefaultTextField(
         minLines = maxLines.takeIf { maxLines != 1 } ?: 1,
         keyboardOptions = keyboardOptions,
         textStyle = textStyle,
-        shape = DefaultRoundedShape,
+        shape = shape,
         isError = isError,
         modifier = modifier
             .fillMaxWidth()
@@ -76,6 +80,7 @@ fun DefaultTextField(
         trailingIcon = {
             trailingIcon?.let {
                 Icon(
+                    modifier = Modifier.clickableWithoutRipple(onClick = onTrailingIconClick),
                     imageVector = it,
                     tint = LocalWitMeTheme.colors.black,
                     contentDescription = null

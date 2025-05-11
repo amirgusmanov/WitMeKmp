@@ -13,6 +13,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,38 +24,48 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import kz.witme.project.common_ui.theme.DefaultRoundedShape
 import kz.witme.project.common_ui.theme.LocalWitMeTheme
+import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import witmekmp.core.common_ui.generated.resources.Res
-import witmekmp.core.common_ui.generated.resources.ic_camera
-import witmekmp.core.common_ui.generated.resources.ic_picture
-import witmekmp.core.common_ui.generated.resources.make_from_camera
-import witmekmp.core.common_ui.generated.resources.pick_from_gallery
 
-class PhotoPickerOptionBottomSheetScreen(
-    private val onCameraOptionChoose: () -> Unit,
-    private val onGalleryOptionChoose: () -> Unit
+class OptionsPickerScreen(
+    private val options: List<OptionItem>
 ) : Screen {
 
     @Composable
     override fun Content() {
-        PhotoPickerOptionBottomSheetContent(
-            onCameraOptionChoose = onCameraOptionChoose,
-            onGalleryOptionChoose = onGalleryOptionChoose
-        )
+        OptionPickerScreenContent(options = options)
+    }
+}
+
+@Stable
+data class OptionItem(
+    val icon: IconType,
+    val labelRes: StringResource,
+    val onClick: () -> Unit
+) {
+    sealed interface IconType {
+        data class VectorIcon(
+            val vector: ImageVector
+        ) : IconType
+
+        data class ResourceIcon(
+            val res: DrawableResource
+        ) : IconType
     }
 }
 
 @Composable
-private fun PhotoPickerOptionBottomSheetContent(
-    onCameraOptionChoose: () -> Unit,
-    onGalleryOptionChoose: () -> Unit
+private fun OptionPickerScreenContent(
+    options: List<OptionItem>
 ) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
@@ -65,24 +76,19 @@ private fun PhotoPickerOptionBottomSheetContent(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 32.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            ImageSourceButton(
-                kind = ImageSourceButtonKind.Gallery,
-                onClick = onGalleryOptionChoose,
-                modifier = Modifier.weight(1f)
-            )
-            ImageSourceButton(
-                kind = ImageSourceButtonKind.Camera,
-                onClick = onCameraOptionChoose,
-                modifier = Modifier.weight(1f)
-            )
+            options.forEach {
+                ImageSourceButton(
+                    optionItem = it,
+                    modifier = Modifier.weight(1f)
+                )
+            }
         }
     }
 }
 
 @Composable
 private fun ImageSourceButton(
-    kind: ImageSourceButtonKind,
-    onClick: () -> Unit,
+    optionItem: OptionItem,
     modifier: Modifier = Modifier
 ) {
     val cornerRadius = 12.dp
@@ -94,36 +100,36 @@ private fun ImageSourceButton(
                 cornerRadius = cornerRadius,
                 borderColor = LocalWitMeTheme.colors.primary400
             )
-            .clickable(onClick = onClick),
+            .clickable(onClick = optionItem.onClick),
         verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Icon(
-            painter = painterResource(
-                when (kind) {
-                    ImageSourceButtonKind.Gallery -> Res.drawable.ic_picture
-                    ImageSourceButtonKind.Camera -> Res.drawable.ic_camera
-                }
-            ),
-            contentDescription = "image source icon",
-            tint = LocalWitMeTheme.colors.primary400,
-            modifier = Modifier.size(24.dp)
-        )
+        when (optionItem.icon) {
+            is OptionItem.IconType.ResourceIcon -> {
+                Icon(
+                    painter = painterResource(optionItem.icon.res),
+                    contentDescription = "image source icon",
+                    tint = LocalWitMeTheme.colors.primary400,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+
+            is OptionItem.IconType.VectorIcon -> {
+                Icon(
+                    imageVector = optionItem.icon.vector,
+                    contentDescription = "image source icon",
+                    tint = LocalWitMeTheme.colors.primary400,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+        }
         Text(
-            text = when (kind) {
-                ImageSourceButtonKind.Gallery -> stringResource(Res.string.pick_from_gallery)
-                ImageSourceButtonKind.Camera -> stringResource(Res.string.make_from_camera)
-            },
+            text = stringResource(optionItem.labelRes),
             color = LocalWitMeTheme.colors.primary400,
             style = LocalWitMeTheme.typography.medium16,
             textAlign = TextAlign.Center
         )
     }
-}
-
-private enum class ImageSourceButtonKind {
-    Gallery,
-    Camera
 }
 
 private fun Modifier.dashBorder(

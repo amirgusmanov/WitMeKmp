@@ -12,6 +12,9 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.MenuBook
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -23,9 +26,12 @@ import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
 import kotlinx.coroutines.flow.collectLatest
 import kz.witme.project.common_ui.base.DefaultToolbar
 import kz.witme.project.common_ui.base.ErrorAlert
+import kz.witme.project.common_ui.base.OptionItem
+import kz.witme.project.common_ui.base.OptionsPickerScreen
 import kz.witme.project.common_ui.base.PiggySmileView
 import kz.witme.project.common_ui.base.SuccessAlert
 import kz.witme.project.common_ui.base.TopCurvedCircle
@@ -37,7 +43,9 @@ import kz.witme.project.navigation.result.ResultConstants
 import kz.witme.project.navigation.result.getScreenResult
 import org.jetbrains.compose.resources.stringResource
 import witmekmp.core.common_ui.generated.resources.Res
+import witmekmp.core.common_ui.generated.resources.add_book
 import witmekmp.core.common_ui.generated.resources.currently_reading
+import witmekmp.core.common_ui.generated.resources.search
 
 class DashboardScreen : Screen {
 
@@ -78,8 +86,10 @@ internal fun DashboardScreenContent(
     uiState: DashboardUiState
 ) {
     val navigator = LocalNavigator.current
+    val bottomSheetNavigator = LocalBottomSheetNavigator.current
     val scrollState = rememberScrollState()
     val createBookScreen = rememberScreen(Destination.CreateBook)
+    val searchBooksScreen = rememberScreen(Destination.SearchBooks)
     val currentlyReadingBooksPager = rememberPagerState(
         pageCount = uiState.currentlyReadingBooks::size
     )
@@ -93,19 +103,40 @@ internal fun DashboardScreenContent(
         controller.responseEvent.collectLatest { event ->
             when (event) {
                 is DashboardViewModel.DashboardResponseEvent.NavigateToTimer -> {
-                    ScreenRegistry.get(Destination.Timer(event.bookId)).let {
-                        navigator?.push(it)
-                    }
+                    navigator?.push(ScreenRegistry.get(Destination.Timer(event.bookId)))
                 }
 
-                DashboardViewModel.DashboardResponseEvent.NavigateToCreateBook -> {
-                    navigator?.push(createBookScreen)
+                DashboardViewModel.DashboardResponseEvent.ShowCreateBookCasesPickerScreen -> {
+                    bottomSheetNavigator.show(
+                        screen = OptionsPickerScreen(
+                            options = listOf(
+                                OptionItem(
+                                    icon = OptionItem.IconType.VectorIcon(
+                                        vector = Icons.Filled.Search
+                                    ),
+                                    labelRes = Res.string.search,
+                                    onClick = {
+                                        bottomSheetNavigator.hide()
+                                        navigator?.push(searchBooksScreen)
+                                    }
+                                ),
+                                OptionItem(
+                                    icon = OptionItem.IconType.VectorIcon(
+                                        vector = Icons.AutoMirrored.Filled.MenuBook
+                                    ),
+                                    labelRes = Res.string.add_book,
+                                    onClick = {
+                                        bottomSheetNavigator.hide()
+                                        navigator?.push(createBookScreen)
+                                    }
+                                )
+                            )
+                        )
+                    )
                 }
 
                 is DashboardViewModel.DashboardResponseEvent.NavigateToDetails -> {
-                    ScreenRegistry.get(Destination.BookDetails(event.book)).let {
-                        navigator?.push(it)
-                    }
+                    navigator?.push(ScreenRegistry.get(Destination.BookDetails(event.book)))
                 }
             }
         }

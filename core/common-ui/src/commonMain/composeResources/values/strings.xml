@@ -91,4 +91,5 @@
     <string name="home">Главная</string>
     <string name="profile">Профиль</string>
     <string name="no_books">К сожалению у вас нет книг. Добавьте их, чтобы начать трекать чтение</string>
+    <string name="search">Поиск</string>
 </resources>

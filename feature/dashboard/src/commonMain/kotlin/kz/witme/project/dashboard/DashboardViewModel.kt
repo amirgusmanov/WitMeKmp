@@ -115,13 +115,13 @@ internal class DashboardViewModel(
 
     override fun onEmptyClick() {
         screenModelScope.launch {
-            _responseEvent.send(DashboardResponseEvent.NavigateToCreateBook)
+            _responseEvent.send(DashboardResponseEvent.ShowCreateBookCasesPickerScreen)
         }
     }
 
     sealed interface DashboardResponseEvent {
         data class NavigateToTimer(val bookId: String) : DashboardResponseEvent
         data class NavigateToDetails(val book: GetBook) : DashboardResponseEvent
-        data object NavigateToCreateBook : DashboardResponseEvent
+        data object ShowCreateBookCasesPickerScreen : DashboardResponseEvent
     }
 }

@@ -42,7 +42,8 @@ import kz.witme.project.common_ui.base.DefaultAddCardView
 import kz.witme.project.common_ui.base.DefaultButton
 import kz.witme.project.common_ui.base.DefaultToolbar
 import kz.witme.project.common_ui.base.InputSectionView
-import kz.witme.project.common_ui.base.PhotoPickerOptionBottomSheetScreen
+import kz.witme.project.common_ui.base.OptionItem
+import kz.witme.project.common_ui.base.OptionsPickerScreen
 import kz.witme.project.common_ui.base.PiggySmileView
 import kz.witme.project.common_ui.base.TopCurvedCircle
 import kz.witme.project.common_ui.camera.rememberCameraManager
@@ -63,8 +64,12 @@ import witmekmp.core.common_ui.generated.resources.author_placeholder
 import witmekmp.core.common_ui.generated.resources.author_title
 import witmekmp.core.common_ui.generated.resources.book_lists_count
 import witmekmp.core.common_ui.generated.resources.book_name
+import witmekmp.core.common_ui.generated.resources.ic_camera
+import witmekmp.core.common_ui.generated.resources.ic_picture
+import witmekmp.core.common_ui.generated.resources.make_from_camera
 import witmekmp.core.common_ui.generated.resources.next
 import witmekmp.core.common_ui.generated.resources.number_example
+import witmekmp.core.common_ui.generated.resources.pick_from_gallery
 import witmekmp.core.common_ui.generated.resources.text_placeholder
 
 class CreateBookScreen : Screen {
@@ -155,11 +160,19 @@ internal fun CreateBookScreenContent(
     LaunchedEffect(uiState.isAvatarPickOptionBottomSheetVisible) {
         if (uiState.isAvatarPickOptionBottomSheetVisible) {
             bottomSheetNavigator.show(
-                PhotoPickerOptionBottomSheetScreen(
-                    onCameraOptionChoose = controller::onCameraLaunch,
-                    onGalleryOptionChoose = {
-                        photoPicker.launch()
-                    }
+                OptionsPickerScreen(
+                    options = listOf(
+                        OptionItem(
+                            icon = OptionItem.IconType.ResourceIcon(Res.drawable.ic_picture),
+                            labelRes = Res.string.pick_from_gallery,
+                            onClick = photoPicker::launch
+                        ),
+                        OptionItem(
+                            icon = OptionItem.IconType.ResourceIcon(Res.drawable.ic_camera),
+                            labelRes = Res.string.make_from_camera,
+                            onClick = controller::onCameraLaunch
+                        )
+                    )
                 )
             )
         } else {
